@@ -39,9 +39,9 @@ $colors.ErrorBackgroundColor = "red"
 
 # Checks paths to my Coding folders, and sets "Coding" PSDrive and $env:PSModulesPath Variable to them if found
 # Allows loading of modules, not in the default directory. Defaults to "UserProfile" and no $env:PSModulesPath change.
-If (Test-Path -Path "Z:\Wravien\Dropbox\Jon\Coding") {
-    $env:PSModulePath = $env:PSModulePath + ";Z:\Wravien\Dropbox\Jon\Coding\SW_Config_Files\PowerShell\PSModules"
-    new-psdrive -name Coding -psprovider FileSystem -root "Z:\Wravien\Dropbox\Jon\Coding" | Out-Null
+If (Test-Path -Path "Z:\Deuce\Dropbox\Jon\Coding") {
+    $env:PSModulePath = $env:PSModulePath + ";Z:\Deuce\Dropbox\Jon\Coding\SW_Config_Files\PowerShell\PSModules"
+    new-psdrive -name Coding -psprovider FileSystem -root "Z:\Deuce\Dropbox\Jon\Coding" | Out-Null
     Set-Location Coding:
 }
 ElseIf (Test-Path -Path "F:\dropbox\jon\coding") {
@@ -53,9 +53,6 @@ Else {
     set-location $env:USERPROFILE
 }
 
-# In Dev: Command to find the Coding Folder Path - ISSUES: Very slow to search, fails using a VM on a MAC while sharing Mac Folders.
-# $CodingPath = Get-ChildItem -path (Get-PSDrive -PSProvider FileSystem | Where-Object { $_.name -ne "Coding"}).root -Directory "*psmodules*" -Recurse -ErrorAction SilentlyContinue
-
 #endregion
 
 #=======================================================================
@@ -63,9 +60,6 @@ Else {
 #region Import Modules
 
 #region User Module Directory
-
-# Load PSReadLine module from user modules directory if available
-Import-Module PSReadLine
 
 #endregion
 #-----------------------------------------------------------------------
@@ -130,15 +124,6 @@ function Start-ConsoleTranscript() {
 }
 # End Start-ConsoleTranscript Function
 #-----------------------------------------------------------------------
-# Edit-InSublime Function
-function Edit-InSublime {
-    param (
-            [string]$fileName
-        )
-    . 'C:\Program Files\Sublime Text 3\sublime_text.exe' $fileName
-}
-# End Edit-InSublime Function
-#-----------------------------------------------------------------------
 # Start-RDP Function
 function Start-RDP {
     param (
@@ -162,42 +147,21 @@ function Start-Chrome {
 }
 # End Start-Chrome Function
 #-----------------------------------------------------------------------
-# PSReadLine Keybind Functions
-
-# Matched history completion using same up/down arrows
-Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
-Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
-Set-PSReadlineOption -HistorySearchCursorMovesToEnd
-
-# Automatic Double "" and '', works with ctrl-z (Undo) as well
-Set-PSReadlineKeyHandler -Chord 'Oem7','Shift+Oem7' `
-                         -BriefDescription SmartInsertQuote `
-                         -LongDescription "Insert paired quotes if not already on a quote" `
-                         -ScriptBlock {
-    param (
-          $key, $arg
-        )
-
-    $line = $null
-    $cursor = $null
-    [PSConsoleUtilities.PSConsoleReadline]::GetBufferState([ref]$line, [ref]$cursor)
-
-    if ($line[$cursor] -eq $key.KeyChar) {
-        # Just move the cursor
-        [PSConsoleUtilities.PSConsoleReadline]::SetCursorPosition($cursor + 1)
-    }
-    else {
-        # Insert matching quotes, move cursor to be in between the quotes
-        [PSConsoleUtilities.PSConsoleReadline]::Insert("$($key.KeyChar)" * 2)
-        [PSConsoleUtilities.PSConsoleReadline]::GetBufferState([ref]$line, [ref]$cursor)
-        [PSConsoleUtilities.PSConsoleReadline]::SetCursorPosition($cursor - 1)
-    }
+# Goto-Desktop Function
+function Goto-Desktop {
+    Set-Location $env:USERPROFILE\Desktop
 }
-# End PSReadLine Keybind Functions
+# End Goto-Dekstop Function
+#-----------------------------------------------------------------------
+# Goto-Repos Function
+function Goto-Repos {
+    Set-Location Coding:
+}
+# End Goto-Repos Function
 #-----------------------------------------------------------------------
 # Script Browser Setup
 if ($host.Name -eq "Windows PowerShell ISE Host") {
-    #Version: 1.2.1
+    #Version: 1.3.2
     Add-Type -Path 'C:\Program Files (x86)\Microsoft Corporation\Microsoft Script Browser\System.Windows.Interactivity.dll'
     Add-Type -Path 'C:\Program Files (x86)\Microsoft Corporation\Microsoft Script Browser\ScriptBrowser.dll'
     Add-Type -Path 'C:\Program Files (x86)\Microsoft Corporation\Microsoft Script Browser\BestPractices.dll'
@@ -244,6 +208,8 @@ Set-Alias st Stop-Transcript
 Set-Alias subl Edit-InSublime
 Set-Alias rdp Start-RDP
 Set-Alias chrome Start-Chrome
+Set-Alias gtd Goto-Desktop
+Set-Alias repos Goto-Repos
 
 #endregion
 
