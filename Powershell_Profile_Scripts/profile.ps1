@@ -50,7 +50,7 @@ ElseIf (Test-Path -Path "F:\dropbox\jon\coding") {
     Set-Location Coding:
 }
 Else {
-    set-location $env:USERPROFILE
+    set-location $env:USERPROFILE\desktop
 }
 
 #endregion
@@ -88,7 +88,7 @@ function Check-IfNotPathCreate([string]$FolderPath) {
 # End Check-IfNotPathCreate Function
 #-----------------------------------------------------------------------
 # Start-ConsoleTranscript Function
-function Start-ConsoleTranscript() {
+function Start-ConsoleTranscript {
 
     # Check if I want to start a Transcript, Used if I am trying out commands
     [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
@@ -159,6 +159,22 @@ function Goto-Repos {
 }
 # End Goto-Repos Function
 #-----------------------------------------------------------------------
+# Show-MyAliasList Function
+function Show-MyAliasList {
+    echo {
+            MY CUSTOM ALIASES
+
+            chrome  Start-Chrome
+            gh      Get-Help
+            gtd     Goto-Desktop
+            rdp     Start-RDP
+            repos   Goto-Repo
+            rt      Start-ConsoleTranscript
+            st      Stop-Transcript
+         }
+}
+# End Show-MyAliasList Function
+#-----------------------------------------------------------------------
 # Script Browser Setup
 if ($host.Name -eq "Windows PowerShell ISE Host") {
     #Version: 1.3.2
@@ -210,6 +226,8 @@ Set-Alias rdp Start-RDP
 Set-Alias chrome Start-Chrome
 Set-Alias gtd Goto-Desktop
 Set-Alias repos Goto-Repos
+Set-Alias ma Show-MyAliasList
+Set-Alias rt Start-ConsoleTranscript
 
 #endregion
 
