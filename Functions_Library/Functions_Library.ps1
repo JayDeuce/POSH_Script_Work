@@ -88,7 +88,7 @@ Function EnsureFolder ($Path)
 #-----------------
 
 # ====================================================================================
-# Check is a folder path is therr, if not create it.
+# Check is a folder path is there, if not create it.
 # ====================================================================================
 function checkfolderPath([string]$FolderPath)
 {
@@ -182,3 +182,30 @@ BODY OF THE EMAIL
 
 #Build the Notification Email and send it to the Recipients
 Send-MailMessage -To $Recipients -From $Sender -Subject $Subject -Body $Body -SmtpServer $SMTPServer
+
+#-----------------
+
+# ====================================================================================
+#  Find-Files
+#  Func: One Liner
+#  Desc: Find File in File Path
+#  From: https://gallery.technet.microsoft.com/scriptcenter/Search-for-Files-Using-340397aa
+# ====================================================================================
+
+Get-ChildItem -Recurse -Force $filePath -ErrorAction SilentlyContinue | Where-Object { ($_.PSIsContainer -eq $false) -and  ( $_.Name -like "*$fileName*") } | Select-Object Name,Directory| Format-Table -AutoSize * 
+
+#-----------------
+
+# ====================================================================================
+#  Get-Parameters
+#  Func: One Liner
+#  Desc: List all parameters of a Script or cmdlet in a neat little format
+# ====================================================================================
+
+# List Just Parameter Names
+(get-help %SCRIPT/CMDLETNAME%).Syntax | SELECT-OBJECT –ExpandProperty SyntaxItem | SELECT-OBJECT –ExpandProperty parameter | SELECT-OBJECT name
+
+# List Parameters and their proerties (Description, Mandatory, etc)
+(get-help %SCRIPT/CMDLETNAME%).Syntax | SELECT-OBJECT –ExpandProperty SyntaxItem | SELECT-OBJECT –ExpandProperty parameter
+
+#-----------------
