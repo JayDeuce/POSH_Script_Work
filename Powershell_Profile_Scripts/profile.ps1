@@ -161,17 +161,17 @@ function Goto-Repos {
 #-----------------------------------------------------------------------
 # Show-MyAliasList Function
 function Show-MyAliasList {
-    echo {
-            MY CUSTOM ALIASES
+    Write-Output {
+        MY CUSTOM ALIASES
 
-            chrome  Start-Chrome
-            gh      Get-Help
-            gtd     Goto-Desktop
-            rdp     Start-RDP
-            repos   Goto-Repo
-            rt      Start-ConsoleTranscript
-            st      Stop-Transcript
-         }
+        chrome  Start-Chrome
+        gh      Get-Help
+        gtd     Goto-Desktop
+        rdp     Start-RDP
+        repos   Goto-Repo
+        rt      Start-ConsoleTranscript
+        st      Stop-Transcript
+    }
 }
 # End Show-MyAliasList Function
 #-----------------------------------------------------------------------
