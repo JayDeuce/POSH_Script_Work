@@ -161,17 +161,17 @@ function Goto-Repos {
 #-----------------------------------------------------------------------
 # Show-MyAliasList Function
 function Show-MyAliasList {
-    Write-Output {
-        MY CUSTOM ALIASES
+    echo {
+            MY CUSTOM ALIASES
 
-        chrome  Start-Chrome
-        gh      Get-Help
-        gtd     Goto-Desktop
-        rdp     Start-RDP
-        repos   Goto-Repo
-        rt      Start-ConsoleTranscript
-        st      Stop-Transcript
-    }
+            chrome  Start-Chrome
+            gh      Get-Help
+            gtd     Goto-Desktop
+            rdp     Start-RDP
+            repos   Goto-Repo
+            rt      Start-ConsoleTranscript
+            st      Stop-Transcript
+         }
 }
 # End Show-MyAliasList Function
 #-----------------------------------------------------------------------
@@ -184,6 +184,48 @@ if ($host.Name -eq "Windows PowerShell ISE Host") {
     $scriptBrowser = $psISE.CurrentPowerShellTab.VerticalAddOnTools.Add('Script Browser', [ScriptExplorer.Views.MainView], $true)
     $scriptAnalyzer = $psISE.CurrentPowerShellTab.VerticalAddOnTools.Add('Script Analyzer', [BestPractices.Views.BestPracticesView], $true)
     $psISE.CurrentPowerShellTab.VisibleVerticalAddOnTools.SelectedAddOnTool = $scriptBrowser
+}
+# End Script Browser
+#-----------------------------------------------------------------------
+# Out-Notepad Function
+#requires -Version 2
+function Out-Notepad {
+      param (
+            [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+            [Object]
+            [AllowEmptyString()] 
+            $Object,
+
+            [Int]
+            $Width = 150
+      )
+
+      begin {
+                $al = New-Object System.Collections.ArrayList
+      }
+
+      process {
+        $null = $al.Add($Object)
+      }
+      end {
+            $text = $al | 
+            Format-Table -AutoSize -Wrap | 
+            Out-String -Width $Width
+
+            $process = Start-Process notepad -PassThru
+            $null = $process.WaitForInputIdle()
+
+
+            $sig = '
+              [DllImport("user32.dll", EntryPoint = "FindWindowEx")]public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+              [DllImport("User32.dll")]public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
+            '
+
+            $type = Add-Type -MemberDefinition $sig -Name APISendMessage2 -PassThru
+            $hwnd = $process.MainWindowHandle
+            [IntPtr]$child = $type::FindWindowEx($hwnd, [IntPtr]::Zero, "Edit", $null)
+            $null = $type::SendMessage($child, 0x000C, 0, $text)
+      }
 }
 # End Script Browser
 #-----------------------------------------------------------------------
