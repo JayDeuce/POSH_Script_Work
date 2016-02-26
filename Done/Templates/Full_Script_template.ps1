@@ -1,5 +1,4 @@
-﻿#requires -version 2
-<#
+﻿<#
 .SYNOPSIS
     Simple one line Description
 
@@ -28,6 +27,7 @@
 
 .INPUTS
     NONE
+
 .OUTPUTS
     NONE
 #>
@@ -70,32 +70,30 @@ $Var2 = ""
 #region === Internal Functions ===
 
 function Verb-Noun {
+    # Function Description
+    Param (
+        [Parameter(mandatory=$true,Position=0)]
+            [string]$PARAM1 = ""
+    )
 
-# Function Description
-Param (
-    [Parameter(mandatory=$true,Position=0)]
-        [string]$PARAM1 = ""
-)
-
-Begin {
-
-}
-
-Process {
-
-    Try {
+    Begin {
 
     }
 
-    Catch {
+    Process {
 
-    }   
-}
+        Try {
 
-End {
+        }
 
-}
+        Catch {
 
+        }   
+    }
+
+    End {
+
+    }
 }
 
 #endregion === Internal Functions ===
