@@ -143,7 +143,3 @@ process {
         break
     }
 }
-
-
-#Write-Host "`n$hotFixName is either not found or is of a unknown update filetype, please run manually on each computer. Moving on...."
-#break
