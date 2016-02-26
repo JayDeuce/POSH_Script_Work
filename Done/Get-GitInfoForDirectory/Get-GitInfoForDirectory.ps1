@@ -1,8 +1,6 @@
-﻿function Get-GitInfoForDirectory {
-<#
+﻿<#
 .SYNOPSIS
-    Uses Git for windows to gather info about the current directory and 
-    updates the prompt function with visual status and branch name
+    Uses Git for windows to gather info about the current directory and updates the prompt function with visual 'Status' and 'Branch Name' indicators.
 
 .DESCRIPTION
     The function will use the installed Git For Windows application to 
@@ -42,7 +40,7 @@
     The function will run automatically each time the prompt function is called. Because of this,
     there are no Parameters associated with this function.
 
-    To customize the Status Messages, change the strings on lines 84, 87, and 90.
+    To customize the Status Messages, change the strings of the $gitStatusMark variable.
 
 .EXAMPLE
     Get-GitInfoForDirectory 
@@ -62,7 +60,48 @@
 .OUTPUTS
     Message String
 #>
-    
+
+<#PSScriptInfo
+
+.VERSION 1.0
+
+.GUID fe3b786e-6bcb-409b-8f37-d1297bf2dd35
+
+.AUTHOR JayDeuce
+
+.COMPANYNAME 
+
+.COPYRIGHT 
+
+.TAGS git
+
+.LICENSEURI 
+
+.PROJECTURI 
+
+.ICONURI 
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS 
+
+.EXTERNALSCRIPTDEPENDENCIES 
+
+.RELEASENOTES
+Requires "Git For Windows" -> https://git-scm.com/download/win
+
+#>
+
+
+<# 
+
+.DESCRIPTION 
+ Uses Git for windows to gather info about the current directory and updates the prompt function with visual 'Status' and 'Branch Name' indicators. 
+
+#>
+
+function Get-GitInfoForDirectory {
+
     param (
     )
 
