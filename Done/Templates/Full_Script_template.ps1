@@ -5,9 +5,12 @@
 .DESCRIPTION
     Full Description
 
-    !! THIS SCRIPT MUST BE RUN WITH ADMINISTRATOR RIGHTS !!
-
 .PARAMETER  Param1
+    (Required, Default)
+
+    Description
+
+.PARAMETER  Param2
     (Required, Default)
 
     Description
@@ -37,30 +40,35 @@
 #region === Initialization ===
 
 
-#region --- Dot Source Libraries ---
-
-. "c:\temp\script.ps1"
-
-#endregion --- Dot Source Libraries ---
-
-#region --- Error Action Setting ---
-
-$ErrorActionPreference = "continue"
-
-#endregion --- Error Action Setting ---
-
-#region --- Global Variables ---
-
-$Var1 = ""
-$Var2 = ""
-
-#endregion --- Global Variables ---
-
 #region --- Advanced Binding ---
 
 [cmdletbinding()]
 
 #endregion --- Advanced Binding ---
+
+#region --- Global Parameters From Command Line ---
+
+Param (
+    [Parameter(mandatory=$true,Position=0)]
+        [string]$GlblParam1 = '',
+    [Parameter(mandatory=$false,Position=1)]
+        [string]$GlblParam2 = ''
+)
+
+#endregion --- Global Parameters From Command Line ---
+
+#region --- Error Action Setting ---
+
+$ErrorActionPreference = 'continue'
+
+#endregion --- Error Action Setting ---
+
+#region --- Global Variables ---
+
+$Var1 = 'var1'
+$Var2 = 'var2'
+
+#endregion --- Global Variables ---
 
 
 #endregion === Initialization ===
@@ -70,29 +78,48 @@ $Var2 = ""
 #region === Internal Functions ===
 
 function Verb-Noun {
-    # Function Description
+# Internal Function One Description - Used internal to script only
     Param (
         [Parameter(mandatory=$true,Position=0)]
-            [string]$PARAM1 = ""
+            [string]$F1Param1 = ''
     )
 
     Begin {
-
+        
     }
-
     Process {
-
         Try {
-
+            
         }
-
         Catch {
-
+            
         }   
     }
-
     End {
+        
+    }
+}
 
+function Verb-Noun2 {
+# Internal Function Two Description - Used internal to script only
+    Param (
+        [Parameter(mandatory=$true,Position=0)]
+            [string]$F2Param1 = ''
+    )
+
+    Begin {
+        
+    }
+    Process {
+        Try {
+                        
+        }
+        Catch {
+            
+        }   
+    }
+    End {
+        
     }
 }
 
@@ -102,31 +129,7 @@ function Verb-Noun {
 
 #region === Main Execution ====
 
-Param (
-    [Parameter(mandatory=$true,Position=0)]
-        [string]$PARAM1 = "",
-    [Parameter(mandatory=$true,Position=1)]
-        [string]$PARAM2 = ""
-)
-
-Begin {
-
-}
-
-Process {
-
-    Try {
-
-    }
-
-    Catch {
-
-    }   
-}
-
-End {
-
-}
+Verb-Noun $GlblParam1
+Verb-Noun2 $GlblParam2
 
 #endregion === Main Execution ====
-
