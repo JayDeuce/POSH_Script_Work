@@ -209,3 +209,15 @@ Get-ChildItem -Recurse -Force $filePath -ErrorAction SilentlyContinue | Where-Ob
 (get-help %SCRIPT/CMDLETNAME%).Syntax | SELECT-OBJECT –ExpandProperty SyntaxItem | SELECT-OBJECT –ExpandProperty parameter
 
 #-----------------
+
+# ====================================================================================
+#  Replace-Character
+#  Func: oneliner with scriptblock
+#  Desc: Get all objects (Folders/Files) in a folder and replace any Character 
+#  found with another character
+# ====================================================================================
+
+Get-ChildItem -recurse | Where-Object {$_.name -match " "} | ForEach-Object {
+$New=$_.name.Replace(" ","_")
+Rename-Item -path $_.Fullname -newname $New -passthru
+}

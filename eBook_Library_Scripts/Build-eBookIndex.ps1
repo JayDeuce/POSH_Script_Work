@@ -13,7 +13,8 @@ function Show-TreeItems{
         [string]$root
     )
 
-    $Children = Get-ChildItem $location | Sort Name
+    $Children = Get-ChildItem $location
+
     ForEach ($child in $children){
         Indent $i
         If ($child.PSIsContainer){
@@ -27,7 +28,16 @@ function Show-TreeItems{
         }
         else{
             $childPath = $child.FullName.Remove(0, $root.Length + 1)
-            Write-Output "$indent<a href=`"$childPath`">$child</a><br />"
+
+            if ($childpath.EndsWith('pdf')){
+                Write-Output "$indent<a href=`"$childPath`">eBook PDF File</a><br />"
+            }
+            elseif ($childpath.EndsWith('opf')){
+                Write-Output "$indent<a href=`"$childPath`">Metadata File</a><br />"
+            }
+            elseif ($childpath.EndsWith('jpg')){
+                Write-Output "$indent<a href=`"$childPath`">Cover Art</a><br />"
+            }
         }
     }
 
@@ -42,6 +52,6 @@ function New-TableOfContents($path)
     Write-Output "</body></html>"
 }
 
-New-TableOfContents "F:\Dropbox\eBooks\eBook_Library" | Out-File "C:\Users\jwdur_000\Desktop\ebook_Index.html"
+New-TableOfContents "F:\Dropbox\eBooks\eBook_Library" | Out-File "F:\Dropbox\eBooks\eBook_Library\ebook_Index.html"
 #New-TableOfContents "F:\Dropbox\Jon\eBooks\eBook_Unsorted" | Out-File "F:\Dropbox\Jon\eBooks\eBook_Unsorted\eBook_Unsorted.html"
 
