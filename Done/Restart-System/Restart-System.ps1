@@ -89,7 +89,7 @@ Param (
 )
 process {    
     foreach ($computer in $computers) {
-        & 'C:\Windows\System32\SHUTDOWN.exe' -m \\$computer -r -c $userMsg -t $delayTime
+        & 'C:\Windows\System32\SHUTDOWN.exe' -m \\$computer -r -f -c $userMsg -t $delayTime
         write-host "`n$computer has started shutdown`n"
     }
 }
