@@ -64,62 +64,57 @@ $Var2 = ""
 #region === Internal Functions ===
 
 function New-ZipFile {
-
     # Creates a new Zip File with the passed parameter as the filename
     Param (
         [Parameter(mandatory=$true,Position=0)]
-            [string]$ZipFileName
+        [string]$zipFileName
     )
-
     Begin {
     }
-
     Process {
-
         Try {
-            set-content $ZipFileName ("PK" + [char]5 + [char]6 + ("$([char]0)" * 18))
-            (dir $ZipFileName).IsReadOnly = $false
+            set-content $zipFileName ("PK" + [char]5 + [char]6 + ("$([char]0)" * 18))
+            (dir $zipFileName).IsReadOnly = $false
         }
         Catch {
         }   
     }
-
     End {
+        return
     }
 }
 
-function Add-ZipFile {
-
-    # Creates a new Zip File with the passed parameter as the filename
+function Add-ZipFile {    
     Param (
         [Parameter(mandatory=$true,Position=0)]
-            [string]$ZipFileName
+        [string]$zipFileName,
+        [Parameter(mandatory=$true,Position=1)]
+        [array]$fileName
     )
 
-    Begin {
-        if(-not (test-path($zipfilename))) {
-            New-ZipFile $ZipfFileName
+    Begin { 
+        if(-not (test-path $zipfilename)) {
+            New-ZipFile $zipFileName
         }
-
+        $zipFilename = Resolve-Path $zipFilename
+        $fileName = Resolve-Path $fileName    
     }
 
     Process {
-
         Try {
+            
             $shellApplication = new-object -com shell.application
-
-            $zipPackage = $shellApplication.NameSpace($zipfilename)
-      
-            foreach($file in $input)
-            {
-                $zipPackage.CopyHere($file.FullName)
-                Start-Sleep -milliseconds 500
+            $zipPackage = $shellApplication.NameSpace($zipFilename)
+            
+            foreach($file in $fileName){
+                Write-Host $file
+                $zipPackage.CopyHere($file)
+                Start-sleep -milliseconds 500
             }
         }
         Catch {
         }   
     }
-
     End {
     }
 }
