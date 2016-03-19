@@ -1,0 +1,12 @@
+Escape/Error Codes Explanations:
+--------------------------------
+
+#0 = the operation Completed Succesfully, no reboot necessary.
+
+#1642 = Patch uneeded on System or Wrong System Type (x64, x86)
+
+#3010 = Update succesfully installed, it will take effect on next reboot.
+
+#2359302 = Update is Already installed, needs reboot.
+
+#-2145124329 = Update not applicable. Could be a 64 bit System, try 64 bit update.
