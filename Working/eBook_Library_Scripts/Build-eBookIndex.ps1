@@ -53,5 +53,4 @@ function New-TableOfContents($path)
 }
 
 New-TableOfContents "F:\Dropbox\eBooks\eBook_Library" | Out-File "F:\Dropbox\eBooks\eBook_Library\ebook_Index.html"
-#New-TableOfContents "F:\Dropbox\Jon\eBooks\eBook_Unsorted" | Out-File "F:\Dropbox\Jon\eBooks\eBook_Unsorted\eBook_Unsorted.html"
 
