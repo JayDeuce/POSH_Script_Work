@@ -38,12 +38,8 @@ $colors.ErrorBackgroundColor = 'red'
 #region Set PSDrives
 
 # Checks paths to my Coding folders, and sets 'Coding' PSDrive to them if found
-If (Test-Path -Path 'Z:\Deuce\Dropbox\Jon\Coding') {
-    new-psdrive -name Coding -psprovider FileSystem -root 'Z:\Deuce\Dropbox\Jon\Coding' | Out-Null
-    Set-Location Coding:
-}
-ElseIf (Test-Path -Path 'F:\dropbox\jon\coding') {
-    new-psdrive -name Coding -psprovider FileSystem -root 'F:\dropbox\jon\coding' | Out-Null
+If (Test-Path -Path '\\vmware-host\Shared Folders\Deuce\Dropbox\Jon\Coding') {
+    new-psdrive -name Coding -psprovider FileSystem -root '\\vmware-host\Shared Folders\Deuce\Dropbox\Jon\Coding' | Out-Null
     Set-Location Coding:
 }
 Else {
@@ -287,24 +283,6 @@ function prompt {
 
 #=======================================================================
 
-#region ISE Addon Configurations
-
-# Script Browser Setup
-if ($host.Name -eq 'Windows PowerShell ISE Host') {
-    #Version: 1.3.2
-    Add-Type -Path 'C:\Program Files (x86)\Microsoft Corporation\Microsoft Script Browser\System.Windows.Interactivity.dll'
-    Add-Type -Path 'C:\Program Files (x86)\Microsoft Corporation\Microsoft Script Browser\ScriptBrowser.dll'
-    Add-Type -Path 'C:\Program Files (x86)\Microsoft Corporation\Microsoft Script Browser\BestPractices.dll'
-    $scriptBrowser = $psISE.CurrentPowerShellTab.VerticalAddOnTools.Add('Script Browser', [ScriptExplorer.Views.MainView], $true)
-    $scriptAnalyzer = $psISE.CurrentPowerShellTab.VerticalAddOnTools.Add('Script Analyzer', [BestPractices.Views.BestPracticesView], $true)
-    $psISE.CurrentPowerShellTab.VisibleVerticalAddOnTools.SelectedAddOnTool = $scriptBrowser
-}
-# End Script Browser Setup
-
-#endregion
-
-#=======================================================================
-
 #region Set Aliases
 
 Set-Alias chrome Start-Chrome
@@ -324,7 +302,6 @@ Set-Alias st Stop-Transcript
 #region Command/Function Call
 
 if ($host.Name -eq 'ConsoleHost') {
-    Start-ConsoleTranscript
     Show-MyAliasList
 }
 

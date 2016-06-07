@@ -21,29 +21,29 @@ $Form.Controls.Add($label)
 $dButton = New-Object System.Windows.Forms.Button
 $dButton.Location = New-Object System.Drawing.Size(20,30)
 $dButton.Size = New-Object System.Drawing.Size(100,30)
-$dButton.Text = "Option1"
-$dButton.Add_Click({$Script:printerName = 'option1'; $form.Close()})
+$dButton.Text = "Location1"
+$dButton.Add_Click({$Script:printerName = 'Location1'; $form.Close()})
 $Form.Controls.Add($dButton)
 
 $lButton = New-Object System.Windows.Forms.Button
 $lButton.Location = New-Object System.Drawing.Size(120,30)
 $lButton.Size = New-Object System.Drawing.Size(100,30)
-$lButton.Text = "Option2"
-$lButton.Add_Click({$Script:printerName = 'option2'; $form.Close()})
+$lButton.Text = "Location2"
+$lButton.Add_Click({$Script:printerName = 'Location2'; $form.Close()})
 $Form.Controls.Add($lButton)
 
 $iButton = New-Object System.Windows.Forms.Button
 $iButton.Location = New-Object System.Drawing.Size(20,60)
 $iButton.Size = New-Object System.Drawing.Size(100,30)
-$iButton.Text = "Option3"
-$iButton.Add_Click({$Script:printerName = 'option3'; $form.Close()})
+$iButton.Text = "Indiantown"
+$iButton.Add_Click({$Script:printerName = 'Indiantown'; $form.Close()})
 $Form.Controls.Add($iButton)
 
 $fButton = New-Object System.Windows.Forms.Button
 $fButton.Location = New-Object System.Drawing.Size(120,60)
 $fButton.Size = New-Object System.Drawing.Size(100,30)
-$fButton.Text = "Option4"
-$fButton.Add_Click({$Script:printerName = 'option4'; $form.Close()})
+$fButton.Text = "Location3"
+$fButton.Add_Click({$Script:printerName = 'Location3'; $form.Close()})
 $Form.Controls.Add($fButton)
 
 $Form.Topmost = $True
@@ -55,4 +55,4 @@ $credentials = Get-Credential
 $net = New-Object -com WScript.Network
 $user = $credentials.UserName
 $pass = $credentials.GetNetworkCredential().Password
-$net.mapnetworkdrive("Z:", "\\192.168.2.13\$Script:printerName", "true", $user, $pass)
+$net.mapnetworkdrive("Z:", "\\192.168.1.24\$Script:printerName", "true", $user, $pass)

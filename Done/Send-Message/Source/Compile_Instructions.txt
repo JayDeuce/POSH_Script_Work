@@ -1,0 +1,7 @@
+1. Copy ".\PS2EXE\PS2EXE.ps1" to your desktop
+
+2. Copy ".\Source\Compile.cmd" to your desktop
+
+3. Run Compile.cmd
+
+4. The exe will be created in the ".\Source" Folder

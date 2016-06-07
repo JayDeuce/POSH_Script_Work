@@ -17,7 +17,7 @@ $zipPackage = $shellApplication.NameSpace($zipFile.Path)
 
 foreach($file in $fAdd) {       
 
-        $zipPackage.CopyHere($file.FullName)
+        $zipPackage.CopyHere($file.FullName, 16)
         Start-sleep -milliseconds 500
 
 }

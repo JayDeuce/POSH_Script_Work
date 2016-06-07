@@ -142,7 +142,7 @@ BEGIN {
     # INTERNAL FUNCTIONS
 
     function Check-IfNotPathCreate([string]$FolderPath) {
-        # Check the passsed folder path, if it does not exist create it.
+        # Check the past folder path, if is does not exist create it.
         if (!(Test-Path -Path $FolderPath)) {
             New-Item -Path $FolderPath -ItemType directory | Out-Null
         }
