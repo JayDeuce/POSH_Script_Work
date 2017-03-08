@@ -4,45 +4,45 @@ $dateTime = Get-Date -format MM-dd-yyyy_HH-mm
 $seperationText = " ********************************** "
 
 function Check-IfNotPathCreate([string]$FolderPath) {
-    if (!(Test-Path -Path $FolderPath)) {
-        new-item -Path $FolderPath -ItemType directory | Out-Null
-    }
-} 
+     if (!(Test-Path -Path $FolderPath)) {
+          new-item -Path $FolderPath -ItemType directory | Out-Null
+     }
+}
 
 foreach ($computer in $computers) {
-    try {
-	
-	$progressLog = "C:\Admin_Scripts\TaskProgressLog.txt"               
-	$startText = "Start $computer $dateTime..."
-	$endText = "...Finished $computer."
+     try {
 
-	$startText | Out-File $progressLog -Append -Force
+          $progressLog = "C:\Admin_Scripts\TaskProgressLog.txt"
+          $startText = "Start $computer $dateTime..."
+          $endText = "...Finished $computer."
 
-        $logs = Get-WmiObject -EnableAllPrivileges -Class Win32_NTEventLogFile -ComputerName $computer -ErrorAction stop
-        $logTemp = "\\$computer\c$\Logtemp"
-        $folder = "$dateTime-$computer"
-        $dataStore = "\\dahcbueventlog\e$\$computer"   
+          $startText | Out-File $progressLog -Append -Force
 
-        foreach ($log in $logs) {
+          $logs = Get-WmiObject -EnableAllPrivileges -Class Win32_NTEventLogFile -ComputerName $computer -ErrorAction stop
+          $logTemp = "\\$computer\c$\Logtemp"
+          $folder = "$dateTime-$computer"
+          $dataStore = "\\bueventlog\e$\$computer"
 
-            $logTempFolder = "$logTemp\$folder"
-            $dataStoreFolder = "$dataStore\$folder"
-            Check-IfNotPathCreate($logTempFolder)
-            Check-IfNotPathCreate($dataStoreFolder)
+          foreach ($log in $logs) {
 
-            $path = "{0}\{1}.evtx" -f $logTempFolder,$log.LogFileName
+               $logTempFolder = "$logTemp\$folder"
+               $dataStoreFolder = "$dataStore\$folder"
+               Check-IfNotPathCreate($logTempFolder)
+               Check-IfNotPathCreate($dataStoreFolder)
 
-            $log.BackupEventLog($path) | Out-Null
+               $path = "{0}\{1}.evtx" -f $logTempFolder,$log.LogFileName
 
-            Copy-Item $path $dataStoreFolder -force         
-        }
+               $log.BackupEventLog($path) | Out-Null
 
-        $endText | Out-File $progressLog -Append -Force
+               Copy-Item $path $dataStoreFolder -force
+          }
 
-        Remove-Item $logTemp -Recurse -Force
-    }
-    catch {
-	$error | Out-File $progressLog -Append -Force
-    }
+          $endText | Out-File $progressLog -Append -Force
+
+          Remove-Item $logTemp -Recurse -Force
+     }
+     catch {
+          $error | Out-File $progressLog -Append -Force
+     }
 }
 $seperationText | Out-File $progressLog -Append -Force

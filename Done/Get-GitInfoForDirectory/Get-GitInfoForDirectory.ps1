@@ -3,14 +3,14 @@
     Uses Git for windows to gather info about the current directory and updates the prompt function with visual 'Status' and 'Branch Name' indicators.
 
 .DESCRIPTION
-    The function will use the installed Git For Windows application to 
+    The function will use the installed Git For Windows application to
     gather repository data about the current directory and update the Prompt
     function to include visual "Status" and "Branch" indicators. If the current
     is not a Git Repository, nothing will change on the prompt, as it will run
     checks to see if it is a repository or not before changing the prompt.
 
     Installation and Requirements:
-        The function requires Git For Windows to be installed and its install 
+        The function requires Git For Windows to be installed and its install
         directory added to the PATH Variable. To use the function, it can be added
         to your PowerShell profile script directly or dot sourced.
 
@@ -26,10 +26,10 @@
             Write-Host "`n=======================================================================" -ForegroundColor Blue
             Write-Host " ($dateFormat)" -ForegroundColor Yellow
             if ($principal.IsInRole('Administrators')) {
-                Write-Host " {#}-{$($(Get-Location).Path)}" -NoNewline -ForegroundColor Red        
+                Write-Host " {#}-{$($(Get-Location).Path)}" -NoNewline -ForegroundColor Red
             }
             else {
-                Write-Host " {$}-{$($(Get-Location).Path.replace($HOME,'~'))}" -NoNewline -ForegroundColor Green        
+                Write-Host " {$}-{$($(Get-Location).Path.replace($HOME,'~'))}" -NoNewline -ForegroundColor Green
             }
             write-Host $(Get-GitInfoForDirectory) -ForegroundColor Magenta
             Write-Host $(if ($nestedpromptlevel -ge 1) { '>>' }) -NoNewline
@@ -43,7 +43,7 @@
     To customize the Status Messages, change the strings of the $gitStatusMark variable.
 
 .EXAMPLE
-    Get-GitInfoForDirectory 
+    Get-GitInfoForDirectory
 
     Description:
 
@@ -69,23 +69,23 @@
 
 .AUTHOR JayDeuce
 
-.COMPANYNAME 
+.COMPANYNAME
 
-.COPYRIGHT 
+.COPYRIGHT
 
 .TAGS git
 
-.LICENSEURI 
+.LICENSEURI
 
-.PROJECTURI 
+.PROJECTURI
 
-.ICONURI 
+.ICONURI
 
-.EXTERNALMODULEDEPENDENCIES 
+.EXTERNALMODULEDEPENDENCIES
 
-.REQUIREDSCRIPTS 
+.REQUIREDSCRIPTS
 
-.EXTERNALSCRIPTDEPENDENCIES 
+.EXTERNALSCRIPTDEPENDENCIES
 
 .RELEASENOTES
 Requires "Git For Windows" -> https://git-scm.com/download/win
@@ -93,50 +93,51 @@ Requires "Git For Windows" -> https://git-scm.com/download/win
 #>
 
 
-<# 
+<#
 
-.DESCRIPTION 
- Uses Git for windows to gather info about the current directory and updates the prompt function with visual 'Status' and 'Branch Name' indicators. 
+.DESCRIPTION
+ Uses Git for windows to gather info about the current directory and updates the prompt function with visual 'Status' and 'Branch Name' indicators.
 
 #>
 
 function Get-GitInfoForDirectory {
 
-    param (
-    )
+     param (
+     )
 
-    begin {
-        $gitBranch = (git branch)
-        $gitStatus = (git status)
-        $gitTextLine = ""
-    }
+     begin {
+          $gitBranch = (git branch)
+          $gitStatus = (git status)
+          $gitTextLine = ""
+     }
 
-    process {
-        try {
-            foreach ($branch in $gitBranch) {
-                if ($branch -match '^\* (.*)') { # Funds the current Branch Name by looking for the asterix character
-                    $gitBranchName = 'Git Repo - Branch: ' + $matches[1].ToUpper()
-    	        }
-            }
-    
-            if (!($gitStatus -like '*working directory clean*')) {
-                $gitStatusMark = ' ' + '/' + ' Status: ' + 'NEEDS UPDATING'
-            }
-            elseif ($gitStatus -like '*Your branch is ahead*') {
-                $gitStatusMark = ' ' + '/' + ' Status: ' + 'PUBLISH COMMITS'
-            }
-            else {
-                $gitStatusMark = ' ' + '/' + ' Status: ' + 'UP TO DATE'
-            }
-        }
-        catch {
-        }
-    }
+     process {
+          try {
+               foreach ($branch in $gitBranch) {
+                    if ($branch -match '^\* (.*)') {
+                         # Funds the current Branch Name by looking for the asterix character
+                         $gitBranchName = 'Git Repo - Branch: ' + $matches[1].ToUpper()
+                    }
+               }
 
-    end {
-        if ($gitBranch) { 
-            $gitTextLine = ' {' + $gitBranchName + $gitStatusMark + '}'            
-        }
-        return $gitTextLine       
-    }    
+               if (!($gitStatus -like '*working tree clean*')) {
+                    $gitStatusMark = ' ' + '/' + ' Status: ' + 'NEEDS UPDATING'
+               }
+               elseif ($gitStatus -like '*Your branch is ahead*') {
+                    $gitStatusMark = ' ' + '/' + ' Status: ' + 'PUBLISH COMMITS'
+               }
+               else {
+                    $gitStatusMark = ' ' + '/' + ' Status: ' + 'UP TO DATE'
+               }
+          }
+          catch {
+          }
+     }
+
+     end {
+          if ($gitBranch) {
+               $gitTextLine = ' {' + $gitBranchName + $gitStatusMark + '}'
+          }
+          return $gitTextLine
+     }
 }

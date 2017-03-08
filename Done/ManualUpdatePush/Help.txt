@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Pushes provided update to listed machines useing PSExec remote administration tool.
+    Pushes provided update to listed machines using PSExec remote administration tool.
 
 .DESCRIPTION
     Using passed parameters for the Computer name and and Hotfix Name; this script
@@ -15,8 +15,8 @@
     This parameter is the active directory/workstation name or IP Address of the Computer that will receive the update. This designation
     can be a single Computer name, IP Address, or a function to read in a listing of Computers names, such as
 
-    EX: "Computer1"  
-        "192.168.111.111"  
+    EX: "Computer1"
+        "192.168.111.111"
         "(Get-Content "Computers.txt")" //File is located in same directory as the script//
         "(Get-Content "C:\Temp\List\Computers.txt")"
 
@@ -31,9 +31,9 @@
 .PARAMETER hotFixPath
     (Not Required, Defaulted)
 
-    This parameter is the directory location of the Hotfix file, exlcuding the filename and extension. (Just the file path
-    up to the folder the file is located in.) This parameter is defaulted to the standard DAHC sys admin folder for
-    manual patch installs. No entry is required unless you are loading an update from a seperate folder location
+    This parameter is the directory location of the Hotfix file, excluding the filename and extension. (Just the file path
+    up to the folder the file is located in.) This parameter is defaulted to the standard sys admin folder for
+    manual patch installs. No entry is required unless you are loading an update from a separate folder location
     than the default.
 
     Default Path: "C:\Patches"
@@ -41,9 +41,9 @@
 .PARAMETER psexecFilePath
     (Not Required, Defaulted)
 
-    This parameter is the directory location of the PSExec.exe file, exlcuding the filename and extension. (Just the file path
-    up to the folder the file is located in.) This parameter is defaulted to the standard DAHC sys admin folder for
-    the PSExec.exe file. No entry is required unless you are loading the PSExec.exe file from a seperate folder location
+    This parameter is the directory location of the PSExec.exe file, excluding the filename and extension. (Just the file path
+    up to the folder the file is located in.) This parameter is defaulted to the standard sys admin folder for
+    the PSExec.exe file. No entry is required unless you are loading the PSExec.exe file from a separate folder location
     than the default.
 
     Default Path: "C:\PSExec\PSExec.exe"
@@ -78,7 +78,7 @@
     Description:
         Using the powershell cmdlet "Get-Content" this example is reading a list of computers
         from the "computers.txt" file located in the c:\temp folder and loading them into a
-        Powershell Object Array for processing. This will use the hotfix located in the 
+        Powershell Object Array for processing. This will use the hotfix located in the
         c:\patches\ms\windows\version\7 folder, and use the PSExec.exe
         file located in the c:\psexecfolder Folder.
 
@@ -86,7 +86,7 @@
     Name: Install-Update
     Author: Jonathan Durant
     Version: 1.5
-    DateUpdated: 2016-01-26        
+    DateUpdated: 2016-01-26
 
 .INPUTS
     Computer names, Hotfix Names, file paths

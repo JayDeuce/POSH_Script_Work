@@ -35,8 +35,8 @@ $Form.Controls.Add($lButton)
 $iButton = New-Object System.Windows.Forms.Button
 $iButton.Location = New-Object System.Drawing.Size(20,60)
 $iButton.Size = New-Object System.Drawing.Size(100,30)
-$iButton.Text = "Indiantown"
-$iButton.Add_Click({$Script:printerName = 'Indiantown'; $form.Close()})
+$iButton.Text = "location4"
+$iButton.Add_Click({$Script:printerName = 'location4'; $form.Close()})
 $Form.Controls.Add($iButton)
 
 $fButton = New-Object System.Windows.Forms.Button

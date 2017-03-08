@@ -16,7 +16,7 @@
     Description
 
 .EXAMPLE
-    .\SCRIPTNAME 
+    .\SCRIPTNAME
 
     Description:
 
@@ -26,7 +26,7 @@
     Name: SCRIPTNAME
     Author: Jonathan Durant
     Version: 1.0
-    DateUpdated: DATE      
+    DateUpdated: DATE
 
 .INPUTS
     NONE
@@ -49,10 +49,10 @@
 #region --- Global Parameters From Command Line ---
 
 Param (
-    [Parameter(mandatory=$true,Position=0)]
-        [string]$GlblParam1 = '',
-    [Parameter(mandatory=$false,Position=1)]
-        [string]$GlblParam2 = ''
+     [Parameter(mandatory=$true,Position=0)]
+     [string]$GlblParam1 = '',
+     [Parameter(mandatory=$false,Position=1)]
+     [string]$GlblParam2 = ''
 )
 
 #endregion --- Global Parameters From Command Line ---
@@ -78,49 +78,49 @@ $Var2 = 'var2'
 #region === Internal Functions ===
 
 function Verb-Noun {
-# Internal Function One Description - Used internal to script only
-    Param (
-        [Parameter(mandatory=$true,Position=0)]
-            [string]$F1Param1 = ''
-    )
+     # Internal Function One Description - Used internal to script only
+     Param (
+          [Parameter(mandatory=$true,Position=0)]
+          [string]$F1Param1 = ''
+     )
 
-    Begin {
-        
-    }
-    Process {
-        Try {
-            
-        }
-        Catch {
-            
-        }   
-    }
-    End {
-        
-    }
+     Begin {
+
+     }
+     Process {
+          Try {
+
+          }
+          Catch {
+
+          }
+     }
+     End {
+
+     }
 }
 
 function Verb-Noun2 {
-# Internal Function Two Description - Used internal to script only
-    Param (
-        [Parameter(mandatory=$true,Position=0)]
-            [string]$F2Param1 = ''
-    )
+     # Internal Function Two Description - Used internal to script only
+     Param (
+          [Parameter(mandatory=$true,Position=0)]
+          [string]$F2Param1 = ''
+     )
 
-    Begin {
-        
-    }
-    Process {
-        Try {
-                        
-        }
-        Catch {
-            
-        }   
-    }
-    End {
-        
-    }
+     Begin {
+
+     }
+     Process {
+          Try {
+
+          }
+          Catch {
+
+          }
+     }
+     End {
+
+     }
 }
 
 #endregion === Internal Functions ===

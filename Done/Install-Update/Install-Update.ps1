@@ -15,8 +15,8 @@
     This parameter is the active directory/workstation name or IP Address of the Computer that will receive the update. This designation
     can be a single Computer name, IP Address, or a function to read in a listing of Computers names, such as
 
-    EX: "AMEDDAHCNB16576"  
-        "160.151.111.111"  
+    EX: "Server1"
+        "1.15.111.111"
         "(Get-Content "Computers.txt")" //File is located in same directory as the script//
         "(Get-Content "C:\Temp\List\Computers.txt")"
 
@@ -36,7 +36,7 @@
     manual patch installs. No entry is required unless you are loading an update from a seperate folder location
     than the default.
 
-    Default Path: "\\ameddahcfs02\imd$\~SysAdminFiles\ManualUpdatePush\Patches"
+    Default Path: "\\server2\~SysAdminFiles\ManualUpdatePush\Patches"
 
 .PARAMETER psexecFilePath
     (Not Required, Defaulted)
@@ -46,21 +46,21 @@
     the PSExec.exe file. No entry is required unless you are loading the PSExec.exe file from a seperate folder location
     than the default.
 
-    Default Path: "\\ameddahcfs02\imd$\~SysAdminFiles\PSExec\PSExec.exe"
+    Default Path: "\\server2\~SysAdminFiles\PSExec\PSExec.exe"
 
 .EXAMPLE
-    .\Install-Update.ps1 -computers AMEDDAHCWK19278 -hotFixName "ms15-067-x86.msu"
+    .\Install-Update.ps1 -computers server2 -hotFixName "ms15-067-x86.msu"
 
     Description:
 
-        Installs HotFix "ms15-067-x86.msu" to the computer named "AMEDDAHCWK19278"
+        Installs HotFix "ms15-067-x86.msu" to the computer named "server2"
 
 .EXAMPLE
-    .\Install-Update.ps1 -computers 160.151.112.125 -hotFixName "ms15-067-x86.msu"
+    .\Install-Update.ps1 -computers 1.1.1.1 -hotFixName "ms15-067-x86.msu"
 
     Description:
 
-        Installs HotFix "ms15-067-x86.msu" to the computer with IP "160.151.112.125"
+        Installs HotFix "ms15-067-x86.msu" to the computer with IP "1.1.1.1"
 
 .EXAMPLE
     .\Install-Update.ps1 -computers (Get-Content "Computers.txt") -hotFixName "ms15-067-x64.msu"
@@ -78,7 +78,7 @@
     Description:
         Using the powershell cmdlet "Get-Content" this example is reading a list of computers
         from the "computers.txt" file located in the c:\temp folder and loading them into a
-        Powershell Object Array for processing. This will use the hotfix located in the 
+        Powershell Object Array for processing. This will use the hotfix located in the
         c:\patches\ms\windows\version\7 folder, and use the PSExec.exe
         file located in the c:\psexecfolder Folder.
 
@@ -86,7 +86,7 @@
     Name: Install-Update
     Author: Jonathan Durant
     Version: 1.5
-    DateUpdated: 2016-01-26        
+    DateUpdated: 2016-01-26
 
 .INPUTS
     Computer names, Hotfix Names, file paths
@@ -98,48 +98,48 @@
 [cmdletbinding()]
 
 Param (
-    [Parameter(mandatory=$true,Position=0)]
-    [array]$computers = "",
-    [Parameter(mandatory=$true,Position=1)]
-    [string]$hotFixName = "",
-    [Parameter(mandatory=$false,Position=2)]
-    [string]$hotFixPath = "\\ameddahcfs02\imd$\~SysAdminFiles\ManualUpdatePush\Patches",
-    [Parameter(mandatory=$false,Position=3)]
-    [String]$psexecFilePath = "\\ameddahcfs02\imd$\~SysAdminFiles\PSExec\PSExec.exe"
+     [Parameter(mandatory=$true,Position=0)]
+     [array]$computers = "",
+     [Parameter(mandatory=$true,Position=1)]
+     [string]$hotFixName = "",
+     [Parameter(mandatory=$false,Position=2)]
+     [string]$hotFixPath = "\\server1\~SysAdminFiles\ManualUpdatePush\Patches",
+     [Parameter(mandatory=$false,Position=3)]
+     [String]$psexecFilePath = "\\server1\~SysAdminFiles\PSExec\PSExec.exe"
 )
 process {
 
-    $hotFixFileExt = $hotFixName.substring($hotFixName.length-3, 3)
+     $hotFixFileExt = $hotFixName.substring($hotFixName.length-3, 3)
 
-    if ($hotFixFileExt -eq "exe" -or $hotFixFileExt -eq "msu") {
-        foreach ($computer in $computers) {
-            Write-Host "`nProcessing $computer..."
-            if (!(test-connection -count 1 -Quiet -ComputerName $computer)) {
-                Write-Host "`n$computer could not be contacted, please check make sure its online. Moving on...`n"
-                Write-Host "+++++++++++++++++++"
-            }
-            else {            
-                if (!(Test-Path -Path "\\$computer\c$\Temp")) {
-                        new-item -Path "\\$computer\c$\Temp" -ItemType directory | Out-Null
-                }
-                Copy-Item $hotFixPath\$hotFixName "\\$computer\c$\Temp"                
-                switch ($hotFixFileExt) {
-                    exe {
-                        & $psexecFilePath -s \\$computer "C:\Temp\$hotFixName" /q /norestart
-                    }
-                    msu {
-                        & $psexecFilepath -s \\$computer wusa "C:\Temp\$hotFixName" /quiet /norestart
-                    }             
-                }
-                # Delete local copy of update package
-                Remove-Item "\\$computer\c$\Temp\$hotFixName"
-                Write-Host "`n$computer Complete, Check error code file for explanation of results...`n"
+     if ($hotFixFileExt -eq "exe" -or $hotFixFileExt -eq "msu") {
+          foreach ($computer in $computers) {
+               Write-Host "`nProcessing $computer..."
+               if (!(test-connection -count 1 -Quiet -ComputerName $computer)) {
+                    Write-Host "`n$computer could not be contacted, please check make sure its online. Moving on...`n"
                     Write-Host "+++++++++++++++++++"
-            }
-        }
-    }
-    else {
-        Write-Host "`n$hotFixName is of a unknown update filetype, please run manually on each computer. Moving on...."
-        break
-    }
+               }
+               else {
+                    if (!(Test-Path -Path "\\$computer\c$\Temp")) {
+                         new-item -Path "\\$computer\c$\Temp" -ItemType directory | Out-Null
+                    }
+                    Copy-Item $hotFixPath\$hotFixName "\\$computer\c$\Temp"
+                    switch ($hotFixFileExt) {
+                         exe {
+                              & $psexecFilePath -s \\$computer "C:\Temp\$hotFixName" /q /norestart
+                         }
+                         msu {
+                              & $psexecFilepath -s \\$computer wusa "C:\Temp\$hotFixName" /quiet /norestart
+                         }
+                    }
+                    # Delete local copy of update package
+                    Remove-Item "\\$computer\c$\Temp\$hotFixName"
+                    Write-Host "`n$computer Complete, Check error code file for explanation of results...`n"
+                    Write-Host "+++++++++++++++++++"
+               }
+          }
+     }
+     else {
+          Write-Host "`n$hotFixName is of a unknown update filetype, please run manually on each computer. Moving on...."
+          break
+     }
 }

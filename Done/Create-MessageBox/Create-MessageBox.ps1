@@ -27,7 +27,7 @@
     Name: Create-MessageBox
     Author: Jonathan Durant
     Version: 1.0
-    DateUpdated: 2016-06/06        
+    DateUpdated: 2016-06/06
 
 .INPUTS
     Message text, Title Text
@@ -38,16 +38,16 @@
 [cmdletbinding()]
 
 Param (
-    [Parameter(Mandatory=$true)][string]$message,
-    [Parameter(Mandatory=$true)][string]$title    
-)      
+     [Parameter(Mandatory=$true)][string]$message,
+     [Parameter(Mandatory=$true)][string]$title
+)
 
 Process {
-    [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
-    [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
+     [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
+     [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
 
-    [System.Windows.Forms.MessageBoxButtons]$buttons="OK"
-    [System.Windows.Forms.MessageBoxIcon]$icon="Information"
+     [System.Windows.Forms.MessageBoxButtons]$buttons="OK"
+     [System.Windows.Forms.MessageBoxIcon]$icon="Information"
 
-    [System.Windows.Forms.MessageBox]::Show($message, $title, $buttons, $icon)
+     [System.Windows.Forms.MessageBox]::Show($message, $title, $buttons, $icon)
 }

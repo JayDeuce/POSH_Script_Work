@@ -1,5 +1,7 @@
-1. Right-Click Send-Message.exe and "Run as Administrator"
+1. Copy Send-Message.exe to your desktop
 
-2. Log in with your Admin Account
+2. Right-Click Send-Message.exe and "Run as Administrator"
 
-3. Click on "Help > Send message Help" in the menu bar for further instructions
+3. Log in with your Admin Card
+
+4. Click on "Help > Send message Help" in the menu bar for further instructions

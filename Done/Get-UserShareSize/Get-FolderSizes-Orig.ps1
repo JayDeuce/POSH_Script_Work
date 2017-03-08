@@ -1,19 +1,19 @@
 <#
 .SYNOPSIS
-	Get folder sizes in specified tree.  
+	Get folder sizes in specified tree.
 .DESCRIPTION
-	Script creates an HTML report with owner information, when created, 
+	Script creates an HTML report with owner information, when created,
 	when last updated and folder size.  By default script will only do 1
     level of folders.  Use Recurse to do all sub-folders.
-	
+
 	Update the PARAM section to match your environment.
 .PARAMETER Path
 	Specify the path you wish to report on
 .PARAMETER ReportPath
 	Specify where you want the HTML report to be saved
 .PARAMETER Sort
-    Specify which column you want the script to sort by.  
-    
+    Specify which column you want the script to sort by.
+
     Valid colums are:
         Folder                  Sort by folder name
         Size                    Sort by folder size, largest to smallest
@@ -43,7 +43,7 @@
 	Twitter:        @thesurlyadm1n
 	Spiceworks:     Martin9700
 	Blog:           www.thesurlyadmin.com
-	
+
 	Changelog:
         1.41        @SPadminWV found a bug in the Total Size reporting.  Corrected.
         1.4         Add Sort and descending parameter
@@ -60,105 +60,113 @@
 	http://community.spiceworks.com/topic/286820-how-to-export-list-all-folders-from-drive-the-list-should-include
 .LINK
 	http://blogs.technet.com/b/heyscriptingguy/archive/2013/01/05/weekend-scripter-sorting-folders-by-size.aspx
-#>	
+#>
 Param (
-	[string]$Path = "c:\dropbox\test",
-	[string]$ReportPath = "c:\dropbox\test",
-    [ValidateSet("Folder","Folders","Size","Created","Changed","Owner")]
-    [string]$Sort = "Folder",
-    [switch]$Descending,
-    [switch]$Recurse
+     [string]$Path = "c:\dropbox\test",
+     [string]$ReportPath = "c:\dropbox\test",
+     [ValidateSet("Folder","Folders","Size","Created","Changed","Owner")]
+     [string]$Sort = "Folder",
+     [switch]$Descending,
+     [switch]$Recurse
 )
 
 Function AddObject {
-	Param ( 
-		$FileObject
-	)
-	$Size = [double]($FSO.GetFolder($FileObject.FullName).Size)
-	$Script:TotSize += $Size
-	If ($Size)
-	{	$Size = CalculateSize $Size
-	}
-	Else
-	{	$Size = "0.00 MB"
-	}
-	$Script:Report += New-Object PSObject -Property @{
-		'Folder Name' = $FileObject.FullName
-		'Created on' = $FileObject.CreationTime
-		'Last Updated' = $FileObject.LastWriteTime
-		Size = $Size
-		Owner = (Get-Acl $FileObject.FullName).Owner
-	}
+     Param (
+          $FileObject
+     )
+     $Size = [double]($FSO.GetFolder($FileObject.FullName).Size)
+     $Script:TotSize += $Size
+     If ($Size) {
+          $Size = CalculateSize $Size
+     }
+     Else {
+          $Size = "0.00 MB"
+     }
+     $Script:Report += New-Object PSObject -Property @{
+          'Folder Name' = $FileObject.FullName
+          'Created on' = $FileObject.CreationTime
+          'Last Updated' = $FileObject.LastWriteTime
+          Size = $Size
+          Owner = (Get-Acl $FileObject.FullName).Owner
+     }
 }
 
 Function CalculateSize {
-	Param (
-		[double]$Size
-	)
-	If ($Size -gt 1000000000)
-	{	$ReturnSize = "{0:N2} GB" -f ($Size / 1GB)
-	}
-	Else
-	{	$ReturnSize = "{0:N2} MB" -f ($Size / 1MB)
-	}
-	Return $ReturnSize
+     Param (
+          [double]$Size
+     )
+     If ($Size -gt 1000000000) {
+          $ReturnSize = "{0:N2} GB" -f ($Size / 1GB)
+     }
+     Else {
+          $ReturnSize = "{0:N2} MB" -f ($Size / 1MB)
+     }
+     Return $ReturnSize
 }
 
 Function Set-AlternatingRows {
-    [CmdletBinding()]
-   	Param(
-       	[Parameter(Mandatory=$True,ValueFromPipeline=$True)]
-        [object[]]$Lines,
-       
-   	    [Parameter(Mandatory=$True)]
-       	[string]$CSSEvenClass,
-       
-        [Parameter(Mandatory=$True)]
-   	    [string]$CSSOddClass
-   	)
-	Begin {
-		$ClassName = $CSSEvenClass
-	}
-	Process {
-        ForEach ($Line in $Lines)
-        {	$Line = $Line.Replace("<tr>","<tr class=""$ClassName"">")
-    		If ($ClassName -eq $CSSEvenClass)
-    		{	$ClassName = $CSSOddClass
-    		}
-    		Else
-    		{	$ClassName = $CSSEvenClass
-    		}
-    		Return $Line
-        }
-	}
+     [CmdletBinding()]
+     Param(
+          [Parameter(Mandatory=$True,ValueFromPipeline=$True)]
+          [object[]]$Lines,
+
+          [Parameter(Mandatory=$True)]
+          [string]$CSSEvenClass,
+
+          [Parameter(Mandatory=$True)]
+          [string]$CSSOddClass
+     )
+     Begin {
+          $ClassName = $CSSEvenClass
+     }
+     Process {
+          ForEach ($Line in $Lines) {
+               $Line = $Line.Replace("<tr>","<tr class=""$ClassName"">")
+               If ($ClassName -eq $CSSEvenClass) {
+                    $ClassName = $CSSOddClass
+               }
+               Else {
+                    $ClassName = $CSSEvenClass
+               }
+               Return $Line
+          }
+     }
 }
 
-cls
+Clear-Host
 
 #Validate sort parameter
-Switch -regex ($Sort)
-{   "^folder.?$" { $SortBy = "Folder Name";Break }
-    "created" { $SortBy = "Created On";Break }
-    "changed" { $SortBy = "Last Updated";Break }
-    default { $SortBy = $Sort }
+Switch -regex ($Sort) {
+     "^folder.?$" {
+          $SortBy = "Folder Name";Break
+     }
+     "created" {
+          $SortBy = "Created On";Break
+     }
+     "changed" {
+          $SortBy = "Last Updated";Break
+     }
+     default {
+          $SortBy = $Sort
+     }
 }
-        
+
 $Report = @()
 $TotSize = 0
 $FSO = New-Object -ComObject Scripting.FileSystemObject
 
 #First get the properties of the starting path
-$Root = Get-Item -Path $Path 
+$Root = Get-Item -Path $Path
 AddObject $Root
 $TotalSize = CalculateSize $TotSize
 
 #Now loop through all the subfolders
 $ParamSplat = @{
-    Path = $Path
-    Recurse = $Recurse
+     Path = $Path
+     Recurse = $Recurse
 }
-ForEach ($Folder in (Get-ChildItem @ParamSplat | Where { $_.PSisContainer }))
-{	AddObject $Folder
+ForEach ($Folder in (Get-ChildItem @ParamSplat | Where { $_.PSisContainer })) {
+     AddObject $Folder
 }
 
 #Create the HTML for our report
