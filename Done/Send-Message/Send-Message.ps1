@@ -97,6 +97,7 @@ richtextBoxMsg = The rich text box in the type your Message Section
 openFileDialog1 = The open file dialog window and its options
 InitialForWindowState = the initial settings of the form window when it opens
 #>
+
 $tabControl = New-Object System.Windows.Forms.TabControl
 $MsgTab = New-Object System.Windows.Forms.TabPage
 $buttonClose = New-Object System.Windows.Forms.Button
@@ -126,14 +127,14 @@ $initialFormWindowState = New-Object System.Windows.Forms.FormWindowState
 #region IP Lists
 
 # Single IP Ranges used to create the DunhamIPs Variable
-[array]$198IPlist = 30..254 | ForEach-Object{"192.168.198.$_"}
-[array]$199IPlist = 1..254 | ForEach-Object{"192.161.199.$_"}
-[array]$205IPlist = 129..190 | ForEach-Object{"192.171.205.$_"}
+[array]$198IPlist = 30..254 | ForEach-Object {"192.168.198.$_"}
+[array]$199IPlist = 1..254 | ForEach-Object {"192.161.199.$_"}
+[array]$205IPlist = 129..190 | ForEach-Object {"192.171.205.$_"}
 # Build DunhamIPs Variable
 [array]$dunhamIPs = $198IPlist + $199IPlist + $205IPlist
-[array]$figIPs = 129..254 | ForEach-Object{"192.168.203.$_"}
-[array]$fillmoreIPs = 129..191 | ForEach-Object{"192.168.202.$_"}
-[array]$leadIPs = 193..254 | ForEach-Object{"192.168.202.$_"}
+[array]$figIPs = 129..254 | ForEach-Object {"192.168.203.$_"}
+[array]$fillmoreIPs = 129..191 | ForEach-Object {"192.168.202.$_"}
+[array]$leadIPs = 193..254 | ForEach-Object {"192.168.202.$_"}
 [array]$targetList
 
 #endregion IP Lists
@@ -145,10 +146,10 @@ $initialFormWindowState = New-Object System.Windows.Forms.FormWindowState
 Function Create-MessageBox {
      # Creates Pop-Up Message Boxes to Inform Users of Output
      Param (
-          [Parameter(Mandatory=$true)][string]$message,
-          [Parameter(Mandatory=$true)][string]$title,
-          [Parameter(Mandatory=$false)][System.Windows.Forms.MessageBoxButtons]$buttons="OK",
-          [Parameter(Mandatory=$false)][System.Windows.Forms.MessageBoxIcon]$icon="Information"
+          [Parameter(Mandatory = $true)][string]$message,
+          [Parameter(Mandatory = $true)][string]$title,
+          [Parameter(Mandatory = $false)][System.Windows.Forms.MessageBoxButtons]$buttons = "OK",
+          [Parameter(Mandatory = $false)][System.Windows.Forms.MessageBoxIcon]$icon = "Information"
      )
      [System.Windows.Forms.MessageBox]::Show($message, $title, $buttons, $icon)
 }
@@ -179,11 +180,11 @@ Function Parse-Input ([string]$workstations) {
 }
 
 Function Set-TargetVariable ([array]$ipList, [System.Windows.Forms.CheckBox]$CheckBox) {
-     if($CheckBox.Checked) {
+     if ($CheckBox.Checked) {
           $Script:targetList += $ipList
      }
      else {
-          foreach($ip in $ipList) {
+          foreach ($ip in $ipList) {
                $targetListNew = $Script:targetList -ne $ip
                $Script:targetList = $targetListNew
           }
@@ -192,10 +193,10 @@ Function Set-TargetVariable ([array]$ipList, [System.Windows.Forms.CheckBox]$Che
 
 Function Check-WMIStatus($workstation) {
      $wmiNameCheck = (Get-WmiObject Win32_OperatingSystem -ComputerName $workstation -ErrorVariable wmiErr).name
-     if($wmiErr -like "*Access is Denied*") {
+     if ($wmiErr -like "*Access is Denied*") {
           return "adminError"
      }
-     elseif($wmiNameCheck -eq $null) {
+     elseif ($wmiNameCheck -eq $null) {
           return "null"
      }
 }
@@ -292,7 +293,7 @@ Function Send-Message ([string]$message, [array]$workstations) {
                     }
 
                     # Set Positive Singular or Plural Message
-                    if($posSendCount -eq 1) {
+                    if ($posSendCount -eq 1) {
                          $posResultsMsgBegin = "A Message was"
                     }
                     else {
@@ -368,7 +369,7 @@ $failSendNames
 "@
 
                     # Contruct Results Message
-                    If($errCount -ge 1) {
+                    If ($errCount -ge 1) {
                          $resultMessage = $infoResultsMessage + $posResultsMessage + $errResultsMessage
                     }
                     else {
@@ -432,7 +433,7 @@ Function Create-ViewSourceForm {
     $formSourceCode.Show() | Out-Null
 }#>
 
-Function Create-ResultsForm($resultsMsg){
+Function Create-ResultsForm($resultsMsg) {
      # Form for viewing the Results information
      # Add objects for Results Form
      $formResults = New-Object System.Windows.Forms.Form
@@ -457,7 +458,7 @@ Function Create-ResultsForm($resultsMsg){
      $System_Drawing_Point.Y = 5
      $richTextBoxResults.Location = $System_Drawing_Point
      $richTextBoxResults.Name = "richTextBoxError"
-     $richTextBoxResults.Font = New-Object System.Drawing.Font("Courier New",10)
+     $richTextBoxResults.Font = New-Object System.Drawing.Font("Courier New", 10)
      $System_Drawing_Size = New-Object System.Drawing.Size
      # Set Rich Text Box Size
      $System_Drawing_Size.Height = 590
@@ -503,7 +504,7 @@ Function Create-HelpForm {
      $formDirections.MaximizeBox = $False
      # Add Rich Text Box for the Help Text to display in
      $richTextBoxHelp.Anchor = 15
-     $richTextBoxHelp.BackColor = [System.Drawing.Color]::FromArgb(255,240,240,240)
+     $richTextBoxHelp.BackColor = [System.Drawing.Color]::FromArgb(255, 240, 240, 240)
      $richTextBoxHelp.BorderStyle = 0
      $richTextBoxHelp.DataBindings.DefaultDataSourceUpdateMode = 0
      $System_Drawing_Point = New-Object System.Drawing.Point
@@ -512,7 +513,7 @@ Function Create-HelpForm {
      $System_Drawing_Point.Y = 13
      $richTextBoxHelp.Location = $System_Drawing_Point
      $richTextBoxHelp.Name = "richTextBoxHelp"
-     $richTextBoxHelp.Font = New-Object System.Drawing.Font("Courier New",10)
+     $richTextBoxHelp.Font = New-Object System.Drawing.Font("Courier New", 10)
      $richTextBoxHelp.ReadOnly = $True
      $richTextBoxHelp.SelectionProtected = $True
      $richTextBoxHelp.Cursor = [System.Windows.Forms.Cursors]::Default
@@ -596,7 +597,7 @@ Add-Type -TypeDefinition $codeIconExtract -ReferencedAssemblies System.Drawing
 
 #endregion ICONExtractor (ThirdParty Code)
 
-$OnLoadForm_StateCorrection= {
+$OnLoadForm_StateCorrection = {
      # Correct the initial state of the form to prevent the .Net maximized form issue
      $sendForm.WindowState = $initialFormWindowState
 }
@@ -659,7 +660,7 @@ $sendForm.Controls.Add($processingLabel)
 
 # Add a MenuStrip object for Quitting the form
 $menuFileQuit.Text = "&Quit"
-$menuFileQuit.ShortcutKeys ="Control, Q"
+$menuFileQuit.ShortcutKeys = "Control, Q"
 $menuFileQuit.add_Click( {
           $sendForm.Close()
      }
@@ -755,7 +756,7 @@ $MsgTab.Padding = $System_Windows_Forms_Padding
 $System_Drawing_Size = New-Object System.Drawing.Size
 # Sets size of Area
 $System_Drawing_Size.Height = 422
-$System_Drawing_Size.Width =400
+$System_Drawing_Size.Width = 400
 $MsgTab.Size = $System_Drawing_Size
 $MsgTab.TabIndex = 0
 $MsgTab.Text = "Send A Message"
@@ -815,7 +816,7 @@ $buttonSend.UseVisualStyleBackColor = $True
 # Actions for the "Send" button
 $buttonSend.add_Click( {
           #Sends the contents of the text box to be stripped and turned into an array and then sent
-          if($textBoxManEntListComp.TextLength -eq 0){
+          if ($textBoxManEntListComp.TextLength -eq 0) {
                Send-Message -message $richTextBoxMsg.Text -workstations $Script:targetList
                $Script:targetList = @()
                $checkBoxDunhamIP.Checked = $False
@@ -964,7 +965,7 @@ $checkBoxDunhamIP.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Point = New-Object System.Drawing.Point
 # Sets location of Checkbox
 $System_Drawing_Point.X = 14
-$System_Drawing_Point.Y = 92
+$System_Drawing_Point.Y = 60
 $checkBoxDunhamIP.Location = $System_Drawing_Point
 $checkBoxDunhamIP.Name = "checkBoxDunhamIP"
 $System_Drawing_Size = New-Object System.Drawing.Size
@@ -975,7 +976,7 @@ $checkBoxDunhamIP.TabIndex = 9
 # Sets Text of Checkbox
 $checkBoxDunhamIP.Text = "Dunham Workstations"
 $checkBoxDunhamIP.UseVisualStyleBackColor = $True
-$checkBoxDunhamIP.Add_Click({
+$checkBoxDunhamIP.Add_Click( {
           Set-TargetVariable -ipList $dunhamIPs -CheckBox $checkBoxDunhamIP
      })
 
@@ -1001,7 +1002,7 @@ $checkBoxFillmoreIP.TabIndex = 9
 # Sets Text of Checkbox
 $checkBoxFillmoreIP.Text = "Fillmore Workstations"
 $checkBoxFillmoreIP.UseVisualStyleBackColor = $True
-$checkBoxFillmoreIP.Add_Click({
+$checkBoxFillmoreIP.Add_Click( {
           Set-TargetVariable -ipList $fillmoreIPs -CheckBox $checkBoxFillmoreIP
      })
 # Adds Checkbox to Area
@@ -1026,7 +1027,7 @@ $checkBoxFIGIP.TabIndex = 9
 # Sets Text of Checkbox
 $checkBoxFIGIP.Text = "FIG Workstations"
 $checkBoxFIGIP.UseVisualStyleBackColor = $True
-$checkBoxFIGIP.Add_Click({
+$checkBoxFIGIP.Add_Click( {
           Set-TargetVariable -ipList $figIPs -CheckBox $checkBoxFIGIP
      })
 # Adds Checkbox to Area
@@ -1040,7 +1041,7 @@ $checkBoxLEADIP.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Point = New-Object System.Drawing.Point
 # Sets location of Checkbox
 $System_Drawing_Point.X = 194
-$System_Drawing_Point.Y = 90
+$System_Drawing_Point.Y = 60
 $checkBoxLEADIP.Location = $System_Drawing_Point
 $checkBoxLEADIP.Name = "checkBoxLEADIP"
 $System_Drawing_Size = New-Object System.Drawing.Size
@@ -1051,7 +1052,7 @@ $checkBoxLEADIP.TabIndex = 9
 # Sets Text of Checkbox
 $checkBoxLEADIP.Text = "Letterkenny Workstations"
 $checkBoxLEADIP.UseVisualStyleBackColor = $True
-$checkBoxLEADIP.Add_Click({
+$checkBoxLEADIP.Add_Click( {
           Set-TargetVariable -ipList $leadIPs -CheckBox $checkBoxLEADIP
      })
 # Adds Checkbox to Area
@@ -1211,7 +1212,7 @@ $sendForm.add_Load($OnLoadForm_StateCorrection)
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 # Show the Form
-$sendForm.Add_Shown({$sendForm.Activate()})
+$sendForm.Add_Shown( {$sendForm.Activate()})
 $sendForm.ShowDialog($this) | Out-Null
 
 #endregion Form Actions
