@@ -60,7 +60,6 @@ $ErrorActionPreference = "SilentlyContinue"
 
 # Main Form Object creation
 $sendForm = New-Object System.Windows.Forms.Form
-$progressForm = New-Object System.Windows.Forms.Form
 
 # Objects for Menu Bar
 # Each object below builds the menu at the top of the form
@@ -70,7 +69,7 @@ $menuHelp = New-Object System.Windows.Forms.ToolStripMenuItem # Root Help Menu t
 $menuFileOpen = New-Object System.Windows.Forms.ToolStripMenuItem # Open File Menu Option
 $menuFileQuit = New-Object System.Windows.Forms.ToolStripMenuItem # Quit Menu Option
 $menuHelpDirect = New-Object System.Windows.Forms.ToolStripMenuItem # Main Script Help Menu Option
-#$menuHelpView = New-Object System.Windows.Forms.ToolStripMenuItem # View Script Source Menu option (DISABLED AS IT FAILS TO LOAD SCRIPT WHEN IN EXECUTABLE FORM)
+$menuHelpView = New-Object System.Windows.Forms.ToolStripMenuItem # View Script Source Menu option
 $separatorF = New-Object System.Windows.Forms.ToolStripSeparator # Seperator Line in the File Menu
 
 # Add Other Objects to Form
@@ -311,21 +310,21 @@ Function Send-Message ([string]$message, [array]$workstations) {
                     # Generate Information Portion of Results Form
                     $infoResultsMessage = @"
 
-               - SEND-MESSAGE RESULTS -
+                        - SEND-MESSAGE RESULTS -
 
 The following are the results of sending the message to $($Script:targetlist.count) $workGramNoun`:
 
 (If successful, the message pop-up will stay on the $workGramNoun screen for at least 24 hours or until read and clicked away by the user.)
 
-               *************************
+                        *************************
 
 "@
 
                     # Generate Positive portion of Results Form
                     $posResultsMessage = @"
 
-                     - SUCCESSES -
-                     -------------
+                              - SUCCESSES -
+                              -------------
 $posResultsMsgBegin successfully sent to the $posSendCount $workGramNoun.
 
 "@
@@ -333,10 +332,10 @@ $posResultsMsgBegin successfully sent to the $posSendCount $workGramNoun.
                     # Generate Error portion of Results Form
                     $errResultsMessage = @"
 
-               *************************
+                        *************************
 
-                       - ERRORS -
-                       ----------
+                               - ERRORS -
+                               ----------
 $errResultsMsgBegin unable to be sent to the below $workGramNoun.
 
 Please reveiw the below listing for the reason(s) for failure and the associated $workGramNoun
@@ -347,25 +346,22 @@ Failures List:
 $errConnectCount $workGramNoun $workGramVerb not online and could not be connected to:
 
 $failConnectNames
-
-               =========================
+                        =========================
 
 $errWinCount $workGramNoun $workGramVerb not Microsoft Windows, so the message was not sent:
 
 $failWinNames
-
-               =========================
+                        =========================
 
 $errAdminWinCount $workGramNoun failed due to the account used not having Admin Access to the machine, so the message was not sent:
 
 $failAdminWinNames
-
-               =========================
+                        =========================
 
 $errSendCount $workGramNoun failed to receive the message due to another issue:
 
 $failSendNames
-               =========================
+                         =========================
 "@
 
                     # Contruct Results Message
@@ -391,7 +387,6 @@ $failSendNames
      }
 }
 
-<# Disabled due to not functoning when script is compiled to executable by PS2EXE (Working)
 Function Create-ViewSourceForm {
     # Add objects for Source Viewer
     $formSourceCode = New-Object System.Windows.Forms.Form
@@ -399,8 +394,7 @@ Function Create-ViewSourceForm {
     # Form for viewing source code
     $System_Drawing_Size = New-Object System.Drawing.Size
     # Set Size of View Source Form
-    $System_Drawing_Size.Height = 426
-    $System_Drawing_Size.Width = 663
+    $formSourceCode.WindowState = "Maximized"
     $formSourceCode.ClientSize = $System_Drawing_Size
     $formSourceCode.DataBindings.DefaultDataSourceUpdateMode = 0
     $formSourceCode.StartPosition = "CenterScreen"
@@ -431,7 +425,7 @@ Function Create-ViewSourceForm {
     $formSourceCode.Controls.Add($richTextBoxSource)
     # Show View Source Form
     $formSourceCode.Show() | Out-Null
-}#>
+}
 
 Function Create-ResultsForm($resultsMsg) {
      # Form for viewing the Results information
@@ -440,7 +434,7 @@ Function Create-ResultsForm($resultsMsg) {
      $richTextBoxResults = New-Object System.Windows.Forms.RichTextBox
      $System_Drawing_Size = New-Object System.Drawing.Size
      # Set Size of Reuslts Form
-     $System_Drawing_Size.Height = 920
+     $System_Drawing_Size.Height = 600
      $System_Drawing_Size.Width = 620
      $formResults.ClientSize = $System_Drawing_Size
      $formResults.DataBindings.DefaultDataSourceUpdateMode = 0
@@ -478,7 +472,6 @@ Function Create-HelpForm {
      # Build Help Form
      $formDirections = New-Object System.Windows.Forms.Form
      $richTextBoxHelp = New-Object System.Windows.Forms.RichTextBox
-     $initialFormWindowState = New-Object System.Windows.Forms.FormWindowState
      # Add Objects to Help form
      $formDirections.AutoScroll = $True
      $System_Drawing_Size = New-Object System.Drawing.Size
@@ -543,12 +536,12 @@ VIEWING SCRIPT SOURCE CODE
 
 You may pull up the source code of the script by choosing Help -> View Script from the menu or by pressing Ctrl + E.'
 
-     # Actions when clicking of links in help document (NOT USED)
-     <#$richTextBoxHelp.add_LinkClicked(
+     <# Actions when clicking of links in help document (NOT USED)
+     $richTextBoxHelp.add_LinkClicked(
         {
             Invoke-Expression "start $($_.LinkText)"
         }
-    ) #>
+     ) #>
      # Add Rich Text box to Help Form
      $formDirections.Controls.Add($richTextBoxHelp)
      # Show Help Form
@@ -618,7 +611,7 @@ $System_Drawing_Size.Width = 453
 $sendForm.ClientSize = $System_Drawing_Size
 $sendForm.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Size = New-Object System.Drawing.Size
-# Sets minimumm Size of form (Cannto be  resize lower than this)
+# Sets minimumm Size of form (Cannot be resized lower than this)
 $System_Drawing_Size.Height = 530
 $System_Drawing_Size.Width = 469
 $sendForm.MinimumSize = $System_Drawing_Size
@@ -630,6 +623,9 @@ $sendForm.Text = "Workstation Messaging System"
 $sendForm.AcceptButton = $buttonSend
 $sendForm.CancelButton = $buttonClose
 
+#-------------------------------------------
+
+# Build Processing Bar, placed next to tab name label
 $processingLabel.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Point = New-Object System.Drawing.Point
 # Sets Location of Text
@@ -693,7 +689,7 @@ $menuHelpDirect.add_Click( {
           Create-HelpForm
      }
 )
-<# Disabled due to not functoning when script is compiled to executable by PS2EXE (Working)
+# Disabled due to not functoning when script is compiled to executable by PS2EXE (Working)
 # Builds the View Script Source menu option and its action to open the View Source window
 $menuHelpView.Text = "Vi&ew Script"
 $menuHelpView.ShortcutKeys = "Control, E"
@@ -702,7 +698,7 @@ $menuHelpView.add_Click(
     {
         Create-ViewSourceForm
     }
-)#>
+)
 # Builds the Help Menu Dropdown
 $menuHelp.Text = "&Help"
 $menuHelp.DropDownItems.AddRange(@($menuHelpDirect, $menuHelpView))
@@ -1016,7 +1012,7 @@ $checkBoxFIGIP.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Point = New-Object System.Drawing.Point
 # Sets location of Checkbox
 $System_Drawing_Point.X = 194
-$System_Drawing_Point.Y = 92
+$System_Drawing_Point.Y = 60
 $checkBoxFIGIP.Location = $System_Drawing_Point
 $checkBoxFIGIP.Name = "checkBoxFIGIP"
 $System_Drawing_Size = New-Object System.Drawing.Size
@@ -1041,7 +1037,7 @@ $checkBoxLEADIP.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Point = New-Object System.Drawing.Point
 # Sets location of Checkbox
 $System_Drawing_Point.X = 194
-$System_Drawing_Point.Y = 60
+$System_Drawing_Point.Y = 90
 $checkBoxLEADIP.Location = $System_Drawing_Point
 $checkBoxLEADIP.Name = "checkBoxLEADIP"
 $System_Drawing_Size = New-Object System.Drawing.Size
@@ -1199,7 +1195,6 @@ $grpListComp.Controls.Add($buttonManEntClearComp)
 Check-IfAdmin
 
 # Settings for the Open File Dialog when opening a text file
-#$openFileDialog1.InitialDirectory = "$env:userprofile\Documents"
 $openFileDialog1.Filter = "Text Files (*.txt) | *.txt"
 $openFileDialog1.ShowHelp = $True
 
