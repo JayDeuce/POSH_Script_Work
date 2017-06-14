@@ -93,8 +93,8 @@ function checkfolderPath([string]$FolderPath) {
 # Build a FileName out of Now Date and Time. Vatiable Build
 # ====================================================================================
 
-[string]$Date = [dateTime]::now.toshortdatestring().Replace("/","-")
-[string]$Time = [dateTime]::now.toshorttimestring().Replace(":","-").Replace(" ","-")
+[string]$Date = [dateTime]::now.toshortdatestring().Replace("/", "-")
+[string]$Time = [dateTime]::now.toshorttimestring().Replace(":", "-").Replace(" ", "-")
 [string]$DateTime = $Date + "_" + $Time
 
 # OR
@@ -110,12 +110,12 @@ Get-Date -Format "dd-mm-2014_HH-mm"
 function Start-ConsoleTranscript() {
      # Check if I want to start a Transcript, Used if I am trying out commands
      [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
-     [string]$TranYN = [Microsoft.VisualBasic.Interaction]::MsgBox("Would you Like to Start a Transcript?", "YesNo, DefaultButton2",  "Start Transcript?")
+     [string]$TranYN = [Microsoft.VisualBasic.Interaction]::MsgBox("Would you Like to Start a Transcript?", "YesNo, DefaultButton2", "Start Transcript?")
      # Check the answer for "Yes" or "No" and act upon the choice
      switch ($TranYN) {
           Yes {
-               [string]$Date = [dateTime]::now.toshortdatestring().Replace("/","-")
-               [string]$Time = [dateTime]::now.toshorttimestring().Replace(":","-").Replace(" ","-")
+               [string]$Date = [dateTime]::now.toshortdatestring().Replace("/", "-")
+               [string]$Time = [dateTime]::now.toshorttimestring().Replace(":", "-").Replace(" ", "-")
                [string]$DateTime = $Date + "_" + $Time
 
                # Check for my Standard Scripts Folder, and act accordingly to its presence or not
@@ -129,7 +129,7 @@ function Start-ConsoleTranscript() {
                          # Error handling is answer is blank or I hit cancel
                          Write-Warning "HEY!!!, No transcript save file location set, defaulting to Transcript Off!!"
                          Write-host "`n"
-                         [Microsoft.VisualBasic.Interaction]::MsgBox("Transcript is off!", "OKOnly, Exclamation",  "Transcript Status") | Out-Null
+                         [Microsoft.VisualBasic.Interaction]::MsgBox("Transcript is off!", "OKOnly, Exclamation", "Transcript Status") | Out-Null
                     }
                     else {
                          $LogPath = $LogPath.TrimEnd("\")
@@ -151,7 +151,7 @@ function Start-ConsoleTranscript() {
 #  Email Variable Creation and Code to Send
 # ====================================================================================
 
-$Recipients = '"User1 <user1@web.com>"','"User1 <user1@web.com>"','"User1 <user1@web.com>"'
+$Recipients = '"User1 <user1@web.com>"', '"User1 <user1@web.com>"', '"User1 <user1@web.com>"'
 $Sender = '"Sender1 <Sender1@web.com>"'
 $SMTPServer = "000.000.000.000 <ServerAddress>"
 $Subject = "Subject"
@@ -174,7 +174,7 @@ Send-MailMessage -To $Recipients -From $Sender -Subject $Subject -Body $Body -Sm
 #  From: https://gallery.technet.microsoft.com/scriptcenter/Search-for-Files-Using-340397aa
 # ====================================================================================
 
-Get-ChildItem -Recurse -Force $filePath -ErrorAction SilentlyContinue | Where-Object { ($_.PSIsContainer -eq $false) -and  ( $_.Name -like "*$fileName*") } | Select-Object Name,Directory| Format-Table -AutoSize *
+Get-ChildItem -Recurse -Force $filePath -ErrorAction SilentlyContinue | Where-Object { ($_.PSIsContainer -eq $false) -and ( $_.Name -like "*$fileName*") } | Select-Object Name, Directory| Format-Table -AutoSize *
 
 #-----------------
 
@@ -200,7 +200,7 @@ Get-ChildItem -Recurse -Force $filePath -ErrorAction SilentlyContinue | Where-Ob
 # ====================================================================================
 
 Get-ChildItem -recurse | Where-Object {$_.name -match " "} | ForEach-Object {
-     $New=$_.name.Replace(" ","_")
+     $New = $_.name.Replace(" ", "_")
      Rename-Item -path $_.Fullname -newname $New -passthru
 }
 
@@ -209,14 +209,14 @@ Get-ChildItem -recurse | Where-Object {$_.name -match " "} | ForEach-Object {
 # ====================================================================================
 #  Copy-HistoryToISE
 #  Func: ISE Function to add command to copy history to a new ISE tab
-#  Desc: Get all commands in the history of the powershell ISE and anythign that
+#  Desc: Get all commands in the history of the powershell ISE and anything that
 #        completed succesfully copy to a new ISE tab
 # ====================================================================================
 
 function Copy-HistoryToISE {
      $file = $psise.CurrentPowerShellTab.Files.Add()
      $file.Editor.Text = (Get-History | Where-Object ExecutionStatus -eq Completed).CommandLine
-     $file.Editor.SetCaretPosition(1,1)
+     $file.Editor.SetCaretPosition(1, 1)
 }
 
 $psise.CurrentPowerShellTab.AddOnsMenu.Submenus.Add('Copy History', { Copy-HistoryToISE }, 'CTRL+ALT+H')
@@ -232,10 +232,10 @@ $psise.CurrentPowerShellTab.AddOnsMenu.Submenus.Add('Copy History', { Copy-Histo
 
 Function Relaunch-AsAdmin {
      # Get the ID and security principal of the current user account
-     $myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
-     $myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
+     $myWindowsID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+     $myWindowsPrincipal = new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
      # Get the security principal for the Administrator role
-     $adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator
+     $adminRole = [System.Security.Principal.WindowsBuiltInRole]::Administrator
      # Check to see if we are currently running "as Administrator"
      if (!($myWindowsPrincipal.IsInRole($adminRole))) {
           Start-Process -FilePath PowerShell.exe -Verb RunAs -ArgumentList "-NonInteractive", "-WindowStyle Hidden", "-File $PSCommandPath"\
@@ -251,11 +251,11 @@ Function Relaunch-AsAdmin {
 # ====================================================================================
 
 Get-WmiObject Win32_PerfFormattedData_PerfProc_Process -ComputerName localhost |
-Where-Object {
+     Where-Object {
      $_.name -inotmatch '_total|idle'
 } |
-ForEach-Object {
-     "Process={0,-25} CPU_Usage={1,-12} Memory_Usage_(MB)={2,-16}" -f $_.Name,$_.PercentProcessorTime,([math]::Round($_.WorkingSetPrivate/1Mb,2))
+     ForEach-Object {
+     "Process={0,-25} CPU_Usage={1,-12} Memory_Usage_(MB)={2,-16}" -f $_.Name, $_.PercentProcessorTime, ([math]::Round($_.WorkingSetPrivate / 1Mb, 2))
 }
 
 # ====================================================================================
@@ -265,14 +265,14 @@ ForEach-Object {
 #        to CSV Report
 # ====================================================================================
 
-foreach($ip in $iplist) {
+foreach ($ip in $iplist) {
      Write-Host "Processing: $ip`n"
      Get-WMIObject Win32_NetworkAdapterConfiguration -ErrorAction SilentlyContinue -computername $ip |
-     Where-Object{
+          Where-Object {
           $_.IPEnabled -eq $true -and $_.DHCPEnabled -eq $false
      } |
-     Select-Object @{
-          Name='IpAddress';Expression={$_.IpAddress -join '; '}
+          Select-Object @{
+          Name = 'IpAddress'; Expression = {$_.IpAddress -join '; '}
      }, DNSHostname |
-     Export-Csv "list.csv" -Append -NoTypeInformation
+          Export-Csv "list.csv" -Append -NoTypeInformation
 }
