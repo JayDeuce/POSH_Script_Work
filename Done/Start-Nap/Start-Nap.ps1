@@ -1,44 +1,44 @@
 
 <#
-     .SYNOPSIS
-          Start a PowerShell napping session.
-     .DESCRIPTION
-          Use this command to start a short napping session. The command will alert you when you nap is up with a chime and a message. You have an option of displaying the message on the screen or having it spoken.
-     .PARAMETER Minutes
-          The number of minutes for your nap. This command has aliases of: nap,time
-     .PARAMETER ProgressBar
-          Indicate if you want to show a progress bar which includes a number of messages.
-     .PARAMETER Message
-          The text of the message to be displayed or spoken at the end of your nap.
-     .PARAMETER Voice
-          Specify the name of the installed voice to use. More most US desktops this will be David, Zira and perhaps Hazel. If you use this parameter the message will not be written to host.
-     .PARAMETER Rate
-          The voice speaking rate
-     .EXAMPLE
-          PS C:\> Start-PSNap 10 -ProgressBar -message "Get back to work you lazy bum!"
+.SYNOPSIS
+     Start a PowerShell napping session.
+.DESCRIPTION
+     Use this command to start a short napping session. The command will alert you when you nap is up with a chime and a message. You have an option of displaying the message on the screen or having it spoken.
+.PARAMETER Minutes
+     The number of minutes for your nap. This command has aliases of: nap,time
+.PARAMETER ProgressBar
+     Indicate if you want to show a progress bar which includes a number of messages.
+.PARAMETER Message
+     The text of the message to be displayed or spoken at the end of your nap.
+.PARAMETER Voice
+     Specify the name of the installed voice to use. More most US desktops this will be David, Zira and perhaps Hazel. If you use this parameter the message will not be written to host.
+.PARAMETER Rate
+     The voice speaking rate
+.EXAMPLE
+     PS C:\> Start-PSNap 10 -ProgressBar -message "Get back to work you lazy bum!"
 
-          Start a 10 minute nap with the progress bar and display the given message in the console host.
-     .EXAMPLE
-          PS C:\> Start-PSNap 15 -message "Wake up you fool and get back to work." -voice Zira
+     Start a 10 minute nap with the progress bar and display the given message in the console host.
+.EXAMPLE
+     PS C:\> Start-PSNap 15 -message "Wake up you fool and get back to work." -voice Zira
 
-          Start a 15 minute nap and use the computer voice Zira to speak the wake up message.
-     .NOTES
-          NAME        :  Start-Nap
-          VERSION     :  1.1
-          LAST UPDATED:  29 January 2016
-          AUTHOR      :  Jeff Hicks (@jeffhicks)
-          TAILORED BY :  Jonathan Durant
-          TAILORED On :  13 June 2017
+     Start a 15 minute nap and use the computer voice Zira to speak the wake up message.
+.NOTES
+     NAME        :  Start-Nap
+     VERSION     :  1.1
+     LAST UPDATED:  29 January 2016
+     AUTHOR      :  Jeff Hicks (@jeffhicks)
+     TAILORED BY :  Jonathan Durant
+     TAILORED On :  13 June 2017
 
-          Learn more about PowerShell:
-          http://jdhitsolutions.com/blog/essential-powershell-resources/
+     Learn more about PowerShell:
+     http://jdhitsolutions.com/blog/essential-powershell-resources/
 
-     .LINK
-          Start-Sleep
-     .INPUTS
-          none
-     .OUTPUTS
-          none
+.LINK
+     Start-Sleep
+.INPUTS
+     none
+.OUTPUTS
+     none
 #>
 
 [cmdletbinding(DefaultParameterSetName = "host")]

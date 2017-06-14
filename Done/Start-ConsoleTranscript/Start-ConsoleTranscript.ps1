@@ -1,41 +1,40 @@
 ﻿<#
-	.SYNOPSIS
-		Starts the Transcript cmdlet and sets logging to a chosen Logfile
+.SYNOPSIS
+     Starts the Transcript cmdlet and sets logging to a chosen Logfile
 
-	.DESCRIPTION
-		The Script will check if a LogFile Path was passed into it, if not
-		it will ask the location and run start-transcript with a logfile
-		name using a Date-Time Stamp for the filename.
+.DESCRIPTION
+     The Script will check if a LogFile Path was passed into it, if not
+     it will ask the location and run start-transcript with a logfile
+     name using a Date-Time Stamp for the filename.
 
-	.PARAMETER  -LogPath
-		The location to save the logfile.
+.PARAMETER  -LogPath
+     The location to save the logfile.
 
-	.EXAMPLE
-		Start-ConsoleTranscript
+.EXAMPLE
+     Start-ConsoleTranscript
 
-		Description:
-			Script will run and ask for a path to save the logfile
+     Description:
+          Script will run and ask for a path to save the logfile
 
-	.EXAMPLE
-		Start-ConsoleTranscript -LogPath "C:\Log"
+.EXAMPLE
+     Start-ConsoleTranscript -LogPath "C:\Log"
 
-		Description:
-			Script will run and start the Transcript saving the File
-			to the C:\Log Directory.
+     Description:
+          Script will run and start the Transcript saving the File
+          to the C:\Log Directory.
 
-	.INPUTS
-		System.String
+.INPUTS
+     System.String
 
-	.OUTPUTS
-		Logfile Named As: %(Current)Date-Time%.txt
+.OUTPUTS
+     Logfile Named As: %(Current)Date-Time%.txt
 
-	.NOTES
-		Based on the Start-Trans Function Created by Ed Wilson, The Scripting Guy over at the
-		Hey, Scripting Guy! Blog http://blogs.technet.com/b/heyscriptingguy/
+.NOTES
+     Based on the Start-Trans Function Created by Ed Wilson, The Scripting Guy over at the
+     Hey, Scripting Guy! Blog http://blogs.technet.com/b/heyscriptingguy/
 
-		Link to Specific Post:
-		http://blogs.technet.com/b/heyscriptingguy/archive/2010/09/25/create-a-transcript-of-commands-from-the-windows-powershell-ise.aspx
-
+     Link to Specific Post:
+     http://blogs.technet.com/b/heyscriptingguy/archive/2010/09/25/create-a-transcript-of-commands-from-the-windows-powershell-ise.aspx
 #>
 [cmdletbinding()]
 Param
