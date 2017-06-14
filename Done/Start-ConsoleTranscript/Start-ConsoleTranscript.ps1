@@ -45,8 +45,8 @@ Param
 
 # Set the ComputerName+Date-Time $LogFileName variable for the Log File Name
 [string]$ComputerName = get-content env:computername
-[string]$Date = [dateTime]::now.toshortdatestring().Replace("/","-")
-[string]$Time = [dateTime]::now.toshorttimestring().Replace(":","-").Replace(" ","-")
+[string]$Date = [dateTime]::now.toshortdatestring().Replace("/", "-")
+[string]$Time = [dateTime]::now.toshorttimestring().Replace(":", "-").Replace(" ", "-")
 [string]$DateTime = $Date + "_" + $Time
 [string]$LogFileName = $ComputerName + "_" + $DateTime + ".txt"
 
@@ -56,22 +56,23 @@ function checkfolderPath([string]$FolderPath) {
      }
 }
 
-If($LogFilePath -eq "") {
+If ($LogFilePath -eq "") {
      # Ask Where to Save
      [string]$LogFilePath = [Microsoft.VisualBasic.Interaction]::InputBox("Where would you like to save the transcript file?", "Trascript Path")
-     If ($LogFilePath -eq "")# Error handling if answer is blank or Cancel is clicked {
-     Write-Host "`n"
-     Write-Host "HEY!!! No transcript save file location set. Exiting!!" -BackgroundColor "darkgreen" -ForegroundColor "yellow"
-     Write-Host "`n"
-     [Microsoft.VisualBasic.Interaction]::MsgBox("No transcript save file location set. Exiting!", "OKOnly, Exclamation",  "Transcript Status") | Out-Null
-}
-Else {
-     $LogFilePath = $LogFilePath.TrimEnd("\")
-     checkfolderPath($LogFilePath)
-     Write-Host "`n"
-     start-transcript -path "$LogFilePath\$LogFileName" | Write-Host -BackgroundColor "darkgreen" -ForegroundColor "yellow"
-     Write-Host "`n"
-}
+     If ($LogFilePath -eq "") {
+          # Error handling if answer is blank or Cancel is clicked
+          Write-Host "`n"
+          Write-Host "HEY!!! No transcript save file location set. Exiting!!" -BackgroundColor "darkgreen" -ForegroundColor "yellow"
+          Write-Host "`n"
+          [Microsoft.VisualBasic.Interaction]::MsgBox("No transcript save file location set. Exiting!", "OKOnly, Exclamation", "Transcript Status") | Out-Null
+     }
+     Else {
+          $LogFilePath = $LogFilePath.TrimEnd("\")
+          checkfolderPath($LogFilePath)
+          Write-Host "`n"
+          start-transcript -path "$LogFilePath\$LogFileName" | Write-Host -BackgroundColor "darkgreen" -ForegroundColor "yellow"
+          Write-Host "`n"
+     }
 }
 Else {
      checkfolderPath($LogFilePath)
