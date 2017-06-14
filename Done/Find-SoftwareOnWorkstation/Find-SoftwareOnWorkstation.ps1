@@ -85,11 +85,11 @@
 [cmdletbinding()]
 
 Param (
-     [Parameter(mandatory=$true,Position=0)]
+     [Parameter(mandatory = $true, Position = 0)]
      [array]$computers = "",
-     [Parameter(mandatory=$false,Position=1)]
+     [Parameter(mandatory = $false, Position = 1)]
      [string]$softwareName = "*",
-     [Parameter(Mandatory=$false,Position=2)]
+     [Parameter(Mandatory = $false, Position = 2)]
      [string]$resultsFileOutPath = "c:\temp\"
 )
 
@@ -116,15 +116,15 @@ Process {
                          $resultsFileOutPath = "c:\temp\$computer-All-Software-Search-Results.csv"
 
                          Write-Host "Checking $computer"
-                         Get-WmiObject -Class Win32_Product -ComputerName $computer -ErrorAction Stop | Select-Object @{N="ComputerName";E={$computer}},Vendor,Name | Export-Csv $resultsFileOutPath -Append -NoTypeInformation
+                         Get-WmiObject -Class Win32_Product -ComputerName $computer -ErrorAction Stop | Select-Object @{N = "ComputerName"; E = {$computer}}, Vendor, Name | Export-Csv $resultsFileOutPath -Append -NoTypeInformation
                     }
                     else {
 
-                         $outputFileName = $softwareName -replace '\s','_'
+                         $outputFileName = $softwareName -replace '\s', '_'
                          $resultsFileOutPath = "c:\temp\$computer-$outputFileName-Software-Search-Results.csv"
 
                          Write-Host "Checking $computer"
-                         Get-WmiObject -Class Win32_Product -ComputerName $computer -filter "Name = '$softwareName'" -ErrorAction Stop | Select-Object @{N="ComputerName";E={$computer}},Vendor,Name | Export-Csv $resultsFileOutPath -Append -NoTypeInformation
+                         Get-WmiObject -Class Win32_Product -ComputerName $computer -filter "Name = '$softwareName'" -ErrorAction Stop | Select-Object @{N = "ComputerName"; E = {$computer}}, Vendor, Name | Export-Csv $resultsFileOutPath -Append -NoTypeInformation
                     }
                }
                Catch {

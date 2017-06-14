@@ -1,140 +1,141 @@
 ﻿<#
 .SYNOPSIS
-    Get information about the stated computer(s)
+     Get information about the stated computer(s)
 
 .DESCRIPTION
-    Using WMI this script will query the stated computer(s) and gather the following
-    Information:
+     Using WMI this script will query the stated computer(s) and gather the following
+     Information:
 
-        - PC Name
-        - PC Model
-        - PC Manufacturer
-        - PC Type (Virtual/Physical)
-        - PC Serial #
-        - Active Domain or Workgroup Name
-        - Operating System Name
-        - Operating System Version
-        - Operating System Architecture
-        - Operating System Service Pack
-        - CPU Type
-        - Total Memory in GB
-        - Active Ip Addresses
-        - Active Network Card MAC Addresses
-        - All Network Card MAC Addresses
+          - PC Name
+          - PC Model
+          - PC Manufacturer
+          - PC Type (Virtual/Physical)
+          - PC Serial #
+          - Active Domain or Workgroup Name
+          - Operating System Name
+          - Operating System Version
+          - Operating System Architecture
+          - Operating System Service Pack
+          - CPU Type
+          - Total Memory in GB
+          - Active Ip Addresses
+          - Active Network Card MAC Addresses
+          - All Network Card MAC Addresses
 
-    This information will then be exported to a CSV file with the name supplied or
-    using the default name (See parameters)
+     This information will then be exported to a CSV file with the name supplied or
+     using the default name (See parameters)
 
 .PARAMETER  computerName
-    (Default = $env:Computername)
+     (Default = $env:Computername)
 
-    The name of the computer you want the script to gather information about.
-    This is defaulted to the local computer it is running on. This parameter can
-    import more than one computer using the 'Get-Content' CMDLET.
+     The name of the computer you want the script to gather information about.
+     This is defaulted to the local computer it is running on. This parameter can
+     import more than one computer inline with the command seperated by commas or by
+     using the 'Get-Content' CMDLET.
 
 .PARAMETER  csvReportPath
-    (Default = 'C:Temp')
+     (Default = 'C:\Temp')
 
-    The path to the folder you want to save the CSV report to. Defaults to the
-    'C:\Temp' folder.
+     The path to the folder you want to save the CSV report to. Defaults to the
+     'C:\Temp' folder.
 
 .PARAMETER  csvReportName
-    (Default = 'Get-ComputerInfo.csv')
+     (Default = 'Get-ComputerInfo.csv')
 
-    The name you want the csv report to be called. Defaults to 'Get-ComputerInfo.csv'
+     The name you want the csv report to be called. Defaults to 'Get-ComputerInfo.csv'
 
 .PARAMETER errorLogPath
-    (Default = 'C:Temp')
+     (Default = 'C:Temp')
 
-    The path to the folder you want to save the error log to. Defaults to the
-    'C:\Temp' folder.
+     The path to the folder you want to save the error log to. Defaults to the
+     'C:\Temp' folder.
 
 .PARAMETER  errorLogName
-    (Default = 'Get-ComputerInfo-ErrorLog.log')
+     (Default = 'Get-ComputerInfo-ErrorLog.log')
 
-    The name you want the error log to be called. Defaults to 'Get-ComputerInfo-ErrorLog.log'
-
-.EXAMPLE
-    .\Get-ComputerInfo.ps1
-
-    Description:
-
-        Gathers info on the local machine and reports to the standard folder locations. The
-        error log is also created at the default location.
+     The name you want the error log to be called. Defaults to 'Get-ComputerInfo-ErrorLog.log'
 
 .EXAMPLE
-    .\Get-ComputerInfo.ps1 computer1, server2, server3
+     .\Get-ComputerInfo.ps1
 
-    Description:
+     Description:
 
-        Gathers info on computer1, server2, and server3 and reports to the standard folder locations. The
-        error log is also created at the default location.
-
-.EXAMPLE
-    .\Get-ComputerInfo.ps1 (Get-Content "computers.txt")
-
-    Description:
-
-        Gathers info on all computers listed in the computers.txt file, reading one line at a time,
-        and reports to the standard folder locations. The error log is also created at the default location.
+          Gathers info on the local machine and reports to the standard folder locations. The
+          error log is also created at the default location.
 
 .EXAMPLE
-    .\Get-ComputerInfo.ps1 -computerName Server1 -csvReportPath 'C:\Reports'
+     .\Get-ComputerInfo.ps1 computer1, server2, server3
 
-    Description:
+     Description:
 
-        Gathers info on Server1 and reports to the C:\Reports folder location. The
-        error log is created at the default location.
-
-.EXAMPLE
-    .\Get-ComputerInfo.ps1 -computerName Server1 -csvReportPath 'C:\Reports' -csvReportName "Server1_Report.csv"
-
-    Description:
-
-        Gathers info on Server1 and reports to the C:\Reports folder location with the report name of Server1_Report.csv. The
-        error log is created at the default location.
+          Gathers info on computer1, server2, and server3 and reports to the standard folder locations. The
+          error log is also created at the default location.
 
 .EXAMPLE
-    .\Get-ComputerInfo.ps1 -computerName Server1 -csvReportPath 'C:\Reports' -csvReportName "Server1_Report.csv" -errorLogPath 'C:\Logs'
+     .\Get-ComputerInfo.ps1 (Get-Content "computers.txt")
 
-    Description:
+     Description:
 
-        Gathers info on Server1 and reports to the C:\Reports folder location with the report name of Server1_Report.csv. The
-        error log is created at the C:\Logs folder location with the standard name.
+          Gathers info on all computers listed in the computers.txt file, reading one line at a time,
+          and reports to the standard folder locations. The error log is also created at the default location.
 
 .EXAMPLE
-    .\Get-ComputerInfo.ps1 -computerName Server1 -csvReportPath 'C:\Reports' -csvReportName "Server1_Report.csv" -errorLogPath 'C:\Logs' -errorLogName 'GC_Error_Log.log'
+     .\Get-ComputerInfo.ps1 -computerName Server1 -csvReportPath 'C:\Reports'
 
-    Description:
+     Description:
 
-        Gathers info on Server1 and reports to the C:\Reports folder location with the report name of Server1_Report.csv. The
-        error log is created at the C:\Logs folder location with the GC_Error_Log.log name.
+          Gathers info on Server1 and reports to the C:\Reports folder location. The
+          error log is created at the default location.
+
+.EXAMPLE
+     .\Get-ComputerInfo.ps1 -computerName Server1 -csvReportPath 'C:\Reports' -csvReportName "Server1_Report.csv"
+
+     Description:
+
+          Gathers info on Server1 and reports to the C:\Reports folder location with the report name of Server1_Report.csv. The
+          error log is created at the default location.
+
+.EXAMPLE
+     .\Get-ComputerInfo.ps1 -computerName Server1 -csvReportPath 'C:\Reports' -csvReportName "Server1_Report.csv" -errorLogPath 'C:\Logs'
+
+     Description:
+
+          Gathers info on Server1 and reports to the C:\Reports folder location with the report name of Server1_Report.csv. The
+          error log is created at the C:\Logs folder location with the standard name.
+
+.EXAMPLE
+     .\Get-ComputerInfo.ps1 -computerName Server1 -csvReportPath 'C:\Reports' -csvReportName "Server1_Report.csv" -errorLogPath 'C:\Logs' -errorLogName 'GC_Error_Log.log'
+
+     Description:
+
+          Gathers info on Server1 and reports to the C:\Reports folder location with the report name of Server1_Report.csv. The
+          error log is created at the C:\Logs folder location with the GC_Error_Log.log name.
 
 .NOTES
-    Name: Get-ComputerInfo.ps1
-    Author: Jonathan Durant
-    Version: 1.0
-    DateUpdated: 14 March 2016
+     Name: Get-ComputerInfo.ps1
+     Author: Jonathan Durant
+     Version: 1.0
+     DateUpdated: 14 June 2016
 
 .INPUTS
-    Single object or Array of objects
+     Single object or Array of objects
 
 .OUTPUTS
-    CSV File, TXT File
+     CSV File, TXT File
 #>
 
 [CmdletBinding()]
 param
 (
-     [Parameter(Mandatory=$false,ValueFromPipeline=$true)]
+     [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
      [string[]]$computerName = $env:COMPUTERNAME,
-     [Parameter(Mandatory=$false,ValueFromPipeline=$true)]
+     [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
      [string[]]$csvReportPath = 'C:\Temp',
-     [Parameter(Mandatory=$false,ValueFromPipeline=$true)]
+     [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
      [string[]]$csvReportName = 'Get-ComputerInfo.csv',
-     [Parameter(Mandatory=$false,ValueFromPipeline=$true)]
+     [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
      [string[]]$errorLogPath = 'C:\Temp',
-     [Parameter(Mandatory=$false,ValueFromPipeline=$true)]
+     [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
      [string[]]$errorLogName = 'Get-ComputerInfo-ErrorLog.log'
 )
 
@@ -175,7 +176,7 @@ PROCESS {
 
           # Test connections to IP address and to WMI to see if the computer is online and can communicate
           try {
-               if (Test-Connection -ComputerName $pc -quiet -Count 1){
+               if (Test-Connection -ComputerName $pc -quiet -Count 1) {
                     $pingCheck = $true # Change to True if computer responds
                }
                # Check WMI, Stop and go to Catch if there is an error
@@ -186,7 +187,7 @@ PROCESS {
                $wmiCheck = $false # Change to False if WMI fails
           }
 
-          # Main program procedure - Check both Ping and WMI Checks is passes moves to gather all data.
+          # Main program procedure - Check both Ping and WMI Checks passed an then moves to gather all data.
           if ($pingCheck -eq $false) {
                # Check Ping test variable and write log entry if matches False
                "$formattedDate - $($pc.ToUpper()): Not online" | Out-File -FilePath $errorLog -Append
