@@ -34,12 +34,12 @@
 
 # Initialize Variables
 $limit = (Get-Date).AddDays(-15)
-$pathAFN = "\\server1\folder\1_Conf"
-$pathAFS = "\\server1\folder\2_Conf"
-$pathBDE = "\\server1\folder\2_Conf"
-$AFNLog = "1_Delete_Log.txt"
-$AFSLog	= "2_Delete_Log.txt"
-$BDELog	= "3_Delete_Log.txt"
+$path1 = "\\server1\folder\1_Conf"
+$path2 = "\\server1\folder\2_Conf"
+$path3 = "\\server1\folder\2_Conf"
+$1Log = "1_Delete_Log.txt"
+$2Log = "2_Delete_Log.txt"
+$3Log = "3_Delete_Log.txt"
 
 
 function deleteOldFiles {
@@ -48,35 +48,35 @@ function deleteOldFiles {
           [string]$logFileName
      )
 
-     Write-Output (Get-Date) | Out-File -Append "\\server1\folder\development\Scripts\Script_Logs\$logFileName"
+     Write-Output (Get-Date) | Out-File -Append "\\server1\folder\$logFileName"
 
      # Delete files older than the $limit.
-     Write-Output "**** Removed Files ****" | Out-File -Append "\\server1\folder\development\Scripts\Script_Logs\$logFileName"
+     Write-Output "**** Removed Files ****" | Out-File -Append "\\server1\folder\$logFileName"
 
      Get-ChildItem -Path $pathRoot -Recurse -Force |
-     Where-Object { !$_.PSIsContainer -and $_.LastAccessTime -lt $limit -and $_.Name -ne "Readme.txt" } |
-     ForEach-Object {
-          Write-Output "Deleted $($_.FullName)"
-          Remove-Item $_.FullName -Force
-          Start-Sleep -Seconds 1
-     } |
-     Out-File -Append "\\server1\folder\development\Scripts\Script_Logs\$logFileName"
+          Where-Object { !$_.PSIsContainer -and $_.LastAccessTime -lt $limit -and $_.Name -ne "Readme.txt" } |
+          ForEach-Object {
+               Write-Output "Deleted $($_.FullName)"
+               Remove-Item $_.FullName -Force
+               Start-Sleep -Seconds 1
+          } |
+          Out-File -Append "\\server1\folder\$logFileName"
 
      # Delete any empty directories left behind after deleting the old files.
-     Write-Output "**** Removed Folders ****" | Out-File -Append "\\server1\folder\development\Scripts\Script_Logs\$logFileName"
+     Write-Output "**** Removed Folders ****" | Out-File -Append "\\server1\folder\$logFileName"
 
      Get-ChildItem -Path $pathRoot -Recurse -Force |
-     Select-Object FullName,PSISContainer |
-     Sort-Object -descending -property FullName |
-     Where-Object { $_.PSIsContainer -and (Get-ChildItem -Path $_.FullName -Recurse -Force |	Where-Object { !$_.PSIsContainer }) -eq $null } |
-     ForEach-Object {
-          Write-Output "Deleted $($_.FullName)"
-          Remove-Item $_.FullName -Force -Recurse
-          Start-Sleep -Seconds 1
-     } |
-     Out-File -Append "\\server1\folder\development\Scripts\Script_Logs\$logFileName"
+          Select-Object FullName, PSISContainer |
+          Sort-Object -descending -property FullName |
+          Where-Object { $_.PSIsContainer -and (Get-ChildItem -Path $_.FullName -Recurse -Force | Where-Object { !$_.PSIsContainer }) -eq $null } |
+          ForEach-Object {
+               Write-Output "Deleted $($_.FullName)"
+               Remove-Item $_.FullName -Force -Recurse
+               Start-Sleep -Seconds 1
+          } |
+          Out-File -Append "\\server1\folder\$logFileName"
 
-     Write-Output "----------------------------------------------------" | Out-File -Append "\\server1\folder\development\Scripts\Script_Logs\$logFileName"
+     Write-Output "----------------------------------------------------" | Out-File -Append "\\server1\folder\$logFileName"
 }
 
 # Main Call to all delete functions

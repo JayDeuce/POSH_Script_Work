@@ -1,11 +1,11 @@
 [cmdletbinding()]
 
 Param (
-     [Parameter(mandatory=$true,Position=0)]
+     [Parameter(mandatory = $true, Position = 0)]
      [array]$computers = "",
-     [Parameter(mandatory=$true,Position=1)]
+     [Parameter(mandatory = $true, Position = 1)]
      [string]$ShortcutName = "",
-     [Parameter(mandatory=$false,Position=2)]
+     [Parameter(mandatory = $false, Position = 2)]
      [string]$ShortcutPath = "C:\Scripts"
 )
 process {
