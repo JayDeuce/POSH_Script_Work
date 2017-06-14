@@ -1,99 +1,99 @@
 ﻿<#
 .SYNOPSIS
-    Resolve IPs given to Hostnames.
+     Resolve IPs given to Hostnames.
 
 .DESCRIPTION
-    This will take the IPs passed and resolve them to their Hostnames, as well
-    as check if they are pingable, and write that information to a CSV file in the C:\Temp
-    directory by default. The report can also be a created in TXT format by passing the
-    the textReport switch (add -textReport to the end of the command)
+     This will take the IPs passed and resolve them to their Hostnames, as well
+     as check if they are pingable, and write that information to a CSV file in the C:\Temp
+     directory by default. The report can also be a created in TXT format by passing the
+     the textReport switch (add -textReport to the end of the command)
 
 .PARAMETER  ipList
-    (Mandatory, No Default)
+     (Mandatory, No Default)
 
-    The IP list you want to resolve to hostnames. This can be a single IP, comma seperated
-    list of IPs, or a list of IPs in a text file read in using the Get-Content cmdlet.
+     The IP list you want to resolve to hostnames. This can be a single IP, comma seperated
+     list of IPs, or a list of IPs in a text file read in using the Get-Content cmdlet.
 
 .PARAMETER  reportPath
-    (Default = 'C:Temp')
+     (Default = 'C:Temp')
 
-    The path to the folder you want to save the report to. Defaults to the
-    'C:\Temp' folder.
+     The path to the folder you want to save the report to. Defaults to the
+     'C:\Temp' folder.
 
 .PARAMETER  reportName
-    (Default = 'Resolve-IPToHostname_Report')
+     (Default = 'Resolve-IPToHostname_Report')
 
-    The name you want the report to be called minus the extension.
+     The name you want the report to be called minus the extension.
 
 .PARAMETER textReport
-    (Default = False)
+     (Default = False)
 
-    This is a switch to create the output report as a TXT file instead of CSV, It will default
-    to False, and will turn True when added to the end of the command (add -textReport)
-
-.EXAMPLE
-    .\Resolve-IPToHostname.ps1 -ipList 192.168.1.1
-
-    Description:
-
-        Resolves the IP 192.168.1.1 to its hostname and checks if it can be pinged. Outputs results to
-        C:\Temp\Resolve-IPToHostname_Report.csv file
+     This is a switch to create the output report as a TXT file instead of CSV, It will default
+     to False, and will turn True when added to the end of the command (add -textReport)
 
 .EXAMPLE
-    .\Resolve-IPToHostname.ps1 -ipList 192.168.1.1, 192.168.1.2, 192.168.1.3 -reportPath "C:\IPCheck"
+     .\Resolve-IPToHostname.ps1 -ipList 192.168.1.1
 
-    Description:
+     Description:
 
-        Resolves the IP 192.168.1.1, 192.168.1.2, and 192.168.1.3 to their hostnames and checks if
-        they can be pinged. Outputs results to C:\IPCheck\Resolve-IPToHostname_Report.csv file
-
-.EXAMPLE
-    .\Resolve-IPToHostname.ps1 -ipList 192.168.1.1, 192.168.1.2, 192.168.1.3 -reportPath "C:\IPCheck" -reportName "My-IP-Check-List"
-
-    Description:
-
-        Resolves the IP 192.168.1.1, 192.168.1.2, and 192.168.1.3 to their hostnames and checks if
-        they can be pinged. Outputs results to C:\IPCheck\My-IP-Check-List.csv file
+          Resolves the IP 192.168.1.1 to its hostname and checks if it can be pinged. Outputs results to
+          C:\Temp\Resolve-IPToHostname_Report.csv file
 
 .EXAMPLE
-    .\Resolve-IPToHostname.ps1 -ipList (Get-Content 'iplist.txt') -reportPath "C:\IPCheck" -reportName "My-IP-Check-List"
+     .\Resolve-IPToHostname.ps1 -ipList 192.168.1.1, 192.168.1.2, 192.168.1.3 -reportPath "C:\IPCheck"
 
-    Description:
+     Description:
 
-        Resolves all IPs listed in the iplist.txt file to their hostnames and checks if
-        they can be pinged. Outputs results to C:\IPCheck\My-IP-Check-List.csv file
+          Resolves the IP 192.168.1.1, 192.168.1.2, and 192.168.1.3 to their hostnames and checks if
+          they can be pinged. Outputs results to C:\IPCheck\Resolve-IPToHostname_Report.csv file
 
 .EXAMPLE
-    .\Resolve-IPToHostname.ps1 -ipList (Get-Content 'iplist.txt') -reportPath "C:\IPCheck" -reportName "My-IP-Check-List" -textReport
+     .\Resolve-IPToHostname.ps1 -ipList 192.168.1.1, 192.168.1.2, 192.168.1.3 -reportPath "C:\IPCheck" -reportName "My-IP-Check-List"
 
-    Description:
+     Description:
 
-        Resolves all IPs listed in the iplist.txt file to their hostnames and checks if
-        they can be pinged. Outputs results to C:\IPCheck\My-IP-Check-List.txt file
+          Resolves the IP 192.168.1.1, 192.168.1.2, and 192.168.1.3 to their hostnames and checks if
+          they can be pinged. Outputs results to C:\IPCheck\My-IP-Check-List.csv file
+
+.EXAMPLE
+     .\Resolve-IPToHostname.ps1 -ipList (Get-Content 'iplist.txt') -reportPath "C:\IPCheck" -reportName "My-IP-Check-List"
+
+     Description:
+
+          Resolves all IPs listed in the iplist.txt file to their hostnames and checks if
+          they can be pinged. Outputs results to C:\IPCheck\My-IP-Check-List.csv file
+
+.EXAMPLE
+     .\Resolve-IPToHostname.ps1 -ipList (Get-Content 'iplist.txt') -reportPath "C:\IPCheck" -reportName "My-IP-Check-List" -textReport
+
+     Description:
+
+          Resolves all IPs listed in the iplist.txt file to their hostnames and checks if
+          they can be pinged. Outputs results to C:\IPCheck\My-IP-Check-List.txt file
 
 .NOTES
-    Name: Resolve-IPToHostname.ps1
-    Author: Jonathan Durant
-    Version: 1.0
-    DateUpdated: 17 March 2016
+     Name: Resolve-IPToHostname.ps1
+     Author: Jonathan Durant
+     Version: 1.0
+     DateUpdated: 17 March 2016
 
 .INPUTS
-    Single object or Array of objects
+     Single object or Array of objects
 
 .OUTPUTS
-    CSV File, TXT File
+     CSV File, TXT File
 #>
 
 [CmdletBinding()]
 param
 (
-     [Parameter(Mandatory=$true,ValueFromPipelineByPropertyName=$true)]
+     [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
      [string[]]$ipList,
-     [Parameter(Mandatory=$false)]
+     [Parameter(Mandatory = $false)]
      [string[]]$reportPath = 'C:\Temp',
-     [Parameter(Mandatory=$false)]
+     [Parameter(Mandatory = $false)]
      [string[]]$reportName = 'Resolve-IPToHostname_Report',
-     [Parameter(Mandatory=$false)]
+     [Parameter(Mandatory = $false)]
      [switch]$textReport # Should the report be TXT or the standard CSV
 )
 
@@ -124,7 +124,7 @@ Process {
           $ipAnswerList = New-Object -TypeName PSObject
 
           # Check to see if the IP is pingable, if so set $pingCheck to Yes
-          if (Test-Connection -ComputerName $ip -quiet -Count 1){
+          if (Test-Connection -ComputerName $ip -quiet -Count 1) {
                $pingCheck = "Yes"
           }
           Try {
