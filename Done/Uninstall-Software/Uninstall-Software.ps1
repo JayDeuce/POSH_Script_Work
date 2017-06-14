@@ -67,9 +67,9 @@
 [cmdletbinding()]
 
 Param (
-     [Parameter(mandatory=$true,Position=0)]
+     [Parameter(mandatory = $true, Position = 0)]
      [array]$computers = "",
-     [Parameter(mandatory=$false,Position=1)]
+     [Parameter(mandatory = $false, Position = 1)]
      [string]$softwareName = ""
 )
 

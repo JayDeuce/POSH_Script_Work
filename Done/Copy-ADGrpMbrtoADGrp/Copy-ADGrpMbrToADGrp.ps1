@@ -53,12 +53,14 @@
 [cmdletbinding()]
 # Initialize Parameters
 Param (
-     [parameter(Mandatory=$true)][string]$srcGrpIn = "",
-     [parameter(Mandatory=$true)][string]$destGrpIn = ""
+     [parameter(Mandatory = $true)]
+     [string]$srcGrpIn = "",
+     [parameter(Mandatory = $true)]
+     [string]$destGrpIn = ""
 )
 
 #----Functions----
-# function to find the Distiguished Name of an AD Object. Pass the Object type (Group, User, etc) and the Name of the Object
+# Function to find the Distiguished Name of an AD Object. Pass the Object type (Group, User, etc) and the Name of the Object
 function Find-DN {
      [cmdletbinding()]
      Param
@@ -70,20 +72,18 @@ function Find-DN {
      $searchObject = New-Object System.DirectoryServices.DirectorySearcher($root)
      $searchObject.filter = "(&(objectClass=$type) (CN=$name))"
      $adFind = $searchObject.findall()
-
-     # just in case it finds 2 or more items it will ask which one first
+     #just in case it finds 2 or more items it will ask which one first
      if ($adFind.count -gt 1) {
           $count = 0
-          foreach	($i in $adFind) {
+          foreach ($i in $adFind) {
                Write-Host $count ": " $i.path
                $count += 1
           }
           $selection = Read-Host "Please select the correct group: "
-
-          $result = $adFind[0].Path.Replace("LDAP://","")
+          $result = $selection[0].Path.Replace("LDAP://", "")
           return $result
      }
-     $result = $adFind[0].Path.Replace("LDAP://","")
+     $result = $adFind[0].Path.Replace("LDAP://", "")
      return $result
 }
 
