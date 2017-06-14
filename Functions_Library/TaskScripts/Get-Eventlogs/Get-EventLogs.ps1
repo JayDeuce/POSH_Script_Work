@@ -1,4 +1,4 @@
-﻿$computers = (Get-Content "C:\Admin_Scripts\servers.txt")
+﻿$computers = (Get-Content "C:\servers.txt")
 $dateTime = Get-Date -format MM-dd-yyyy_HH-mm
 
 $seperationText = " ********************************** "
@@ -12,7 +12,7 @@ function Check-IfNotPathCreate([string]$FolderPath) {
 foreach ($computer in $computers) {
      try {
 
-          $progressLog = "C:\Admin_Scripts\TaskProgressLog.txt"
+          $progressLog = "C:\TaskProgressLog.txt"
           $startText = "Start $computer $dateTime..."
           $endText = "...Finished $computer."
 
@@ -21,7 +21,7 @@ foreach ($computer in $computers) {
           $logs = Get-WmiObject -EnableAllPrivileges -Class Win32_NTEventLogFile -ComputerName $computer -ErrorAction stop
           $logTemp = "\\$computer\c$\Logtemp"
           $folder = "$dateTime-$computer"
-          $dataStore = "\\bueventlog\e$\$computer"
+          $dataStore = "\\bueventlogserver\e$\$computer"
 
           foreach ($log in $logs) {
 
@@ -30,7 +30,7 @@ foreach ($computer in $computers) {
                Check-IfNotPathCreate($logTempFolder)
                Check-IfNotPathCreate($dataStoreFolder)
 
-               $path = "{0}\{1}.evtx" -f $logTempFolder,$log.LogFileName
+               $path = "{0}\{1}.evtx" -f $logTempFolder, $log.LogFileName
 
                $log.BackupEventLog($path) | Out-Null
 

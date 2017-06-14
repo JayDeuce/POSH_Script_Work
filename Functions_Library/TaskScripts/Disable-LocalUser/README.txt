@@ -1,3 +1,3 @@
-Not Fully Functioning Script ..... Built Specifically to disable dod_admin.
+Not Fully Functioning Script ..... Built Specifically to disable local admin.
 
-Script will need to be rewritten fro any other use.
+Script will need to be rewritten for any other use.
