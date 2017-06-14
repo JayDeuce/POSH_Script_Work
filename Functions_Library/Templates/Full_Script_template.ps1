@@ -1,38 +1,38 @@
 ﻿<#
 .SYNOPSIS
-    Simple one line Description
+     Simple one line Description
 
 .DESCRIPTION
-    Full Description
+     Full Description
 
 .PARAMETER  Param1
-    (Required, Default)
+     (Required, Default)
 
-    Description
+     Description
 
 .PARAMETER  Param2
-    (Required, Default)
+     (Required, Default)
 
-    Description
+     Description
 
 .EXAMPLE
-    .\SCRIPTNAME 
+     .\SCRIPTNAME
 
-    Description:
+     Description:
 
-        Example description
+          Example description
 
 .NOTES
-    Name: SCRIPTNAME
-    Author: Jonathan Durant
-    Version: 1.0
-    DateUpdated: DATE      
+     Name: SCRIPTNAME
+     Author: Jonathan Durant
+     Version: 1.0
+     DateUpdated: DATE
 
 .INPUTS
-    NONE
+     NONE
 
 .OUTPUTS
-    NONE
+     NONE
 #>
 
 #======================================================
@@ -49,10 +49,10 @@
 #region --- Global Parameters From Command Line ---
 
 Param (
-    [Parameter(mandatory=$true,Position=0)]
-        [string]$GlblParam1 = '',
-    [Parameter(mandatory=$false,Position=1)]
-        [string]$GlblParam2 = ''
+     [Parameter(mandatory = $true, Position = 0)]
+     [string]$GlblParam1 = '',
+     [Parameter(mandatory = $false, Position = 1)]
+     [string]$GlblParam2 = ''
 )
 
 #endregion --- Global Parameters From Command Line ---
@@ -78,49 +78,49 @@ $Var2 = 'var2'
 #region === Internal Functions ===
 
 function Verb-Noun {
-# Internal Function One Description - Used internal to script only
-    Param (
-        [Parameter(mandatory=$true,Position=0)]
-            [string]$F1Param1 = ''
-    )
+     # Internal Function One Description - Used internal to script only
+     Param (
+          [Parameter(mandatory = $true, Position = 0)]
+          [string]$F1Param1 = ''
+     )
 
-    Begin {
-        
-    }
-    Process {
-        Try {
-            
-        }
-        Catch {
-            
-        }   
-    }
-    End {
-        
-    }
+     Begin {
+
+     }
+     Process {
+          Try {
+            Write-Host "Function1"
+          }
+          Catch {
+
+          }
+     }
+     End {
+
+     }
 }
 
 function Verb-Noun2 {
-# Internal Function Two Description - Used internal to script only
-    Param (
-        [Parameter(mandatory=$true,Position=0)]
-            [string]$F2Param1 = ''
-    )
+     # Internal Function Two Description - Used internal to script only
+     Param (
+          [Parameter(mandatory = $true, Position = 0)]
+          [string]$F2Param1 = ''
+     )
 
-    Begin {
-        
-    }
-    Process {
-        Try {
-                        
-        }
-        Catch {
-            
-        }   
-    }
-    End {
-        
-    }
+     Begin {
+
+     }
+     Process {
+          Try {
+                Write-Host "Function2"
+          }
+          Catch {
+
+          }
+     }
+     End {
+
+     }
 }
 
 #endregion === Internal Functions ===
@@ -129,7 +129,11 @@ function Verb-Noun2 {
 
 #region === Main Execution ====
 
-Verb-Noun $GlblParam1
-Verb-Noun2 $GlblParam2
+If($GlblParam1 -eq $true -or $GlblParam2 -eq $false){
+     Verb-Noun -F1Param1 $Var1
+}
+Else {
+     Verb-Noun2 -F2Param1 $Var2
+}
 
 #endregion === Main Execution ====
