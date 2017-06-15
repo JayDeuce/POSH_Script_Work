@@ -124,19 +124,12 @@ Function Create-HelpForm {
      $richTextBoxHelp = New-Object System.Windows.Forms.RichTextBox
      # Add Objects to Help form
      $formHelp.AutoScroll = $True
-     $System_Drawing_Size = New-Object System.Drawing.Size
      # SetHelp Size of help Form
-     $System_Drawing_Size.Height = 670
-     $System_Drawing_Size.Width = 494
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 600
+     $System_Drawing_Size.Width = 500
      $formHelp.ClientSize = $System_Drawing_Size
      $formHelp.DataBindings.DefaultDataSourceUpdateMode = 0
-     $System_Drawing_Size = New-Object System.Drawing.Size
-     $System_Drawing_Size.Height = 700
-     $System_Drawing_Size.Width = 680
-     $formHelp.MaximumSize = $System_Drawing_Size
-     $System_Drawing_Size = New-Object System.Drawing.Size
-     $System_Drawing_SiHelpze.Height = 700
-     $System_Drawing_Size.Width = 680
      $formHelp.MinimumSize = $System_Drawing_Size
      $formHelp.Name = "helpForm"
      $formHelp.StartPosition = 1
@@ -150,8 +143,8 @@ Function Create-HelpForm {
      $richTextBoxHelp.BackColor = [System.Drawing.Color]::FromArgb(255, 240, 240, 240)
      $richTextBoxHelp.BorderStyle = 0
      $richTextBoxHelp.DataBindings.DefaultDataSourceUpdateMode = 0
-     $System_Drawing_Point = New-Object System.Drawing.Point
      # Set Loctation for Rich Text Box
+     $System_Drawing_Point = New-Object System.Drawing.Point
      $System_Drawing_Point.X = 13
      $System_Drawing_Point.Y = 13
      $richTextBoxHelp.Location = $System_Drawing_Point
@@ -160,9 +153,9 @@ Function Create-HelpForm {
      $richTextBoxHelp.ReadOnly = $True
      $richTextBoxHelp.SelectionProtected = $True
      $richTextBoxHelp.Cursor = [System.Windows.Forms.Cursors]::Default
-     $System_Drawing_Size = New-Object System.Drawing.Size
      # Set Size for Rich Text
-     $System_Drawing_Size.Height = 670
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 570
      $System_Drawing_Size.Width = 469
      $richTextBoxHelp.Size = $System_Drawing_Size
      $richTextBoxHelp.TabIndex = 0
@@ -249,8 +242,8 @@ $System_Drawing_Size.Height = 500
 $System_Drawing_Size.Width = 453
 $functionForm.ClientSize = $System_Drawing_Size
 $functionForm.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets minimumm Size of form (Cannot be resized lower than this)
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 530
 $System_Drawing_Size.Width = 469
 $functionForm.MinimumSize = $System_Drawing_Size
@@ -266,14 +259,14 @@ $functionForm.CancelButton = $buttonClose
 
 # Build Processing Bar, placed next to tab name label
 $processingLabel.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Point = New-Object System.Drawing.Point
 # Sets Location of Text
+$System_Drawing_Point = New-Object System.Drawing.Point
 $System_Drawing_Point.X = 120
 $System_Drawing_Point.Y = 22
 $processingLabel.Location = $System_Drawing_Point
 $processingLabel.Name = "processingLabel"
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets Size of Text Area where text will be
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 18
 $System_Drawing_Size.Width = 319
 $processingLabel.Size = $System_Drawing_Size
@@ -359,8 +352,8 @@ $System_Drawing_Point.Y = 27
 $tabControl.Location = $System_Drawing_Point
 $tabControl.Name = "tabControl"
 $tabControl.SelectedIndex = 0
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets size of Tab Anchor
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 468
 $System_Drawing_Size.Width = 440
 $tabControl.Size = $System_Drawing_Size
@@ -383,9 +376,9 @@ $System_Windows_Forms_Padding.Bottom = 3
 $System_Windows_Forms_Padding.Left = 3
 $System_Windows_Forms_Padding.Right = 3
 $System_Windows_Forms_Padding.Top = 3
+# Sets size of Area
 $firstTab.Padding = $System_Windows_Forms_Padding
 $System_Drawing_Size = New-Object System.Drawing.Size
-# Sets size of Area
 $System_Drawing_Size.Height = 422
 $System_Drawing_Size.Width = 400
 $firstTab.Size = $System_Drawing_Size
@@ -400,14 +393,14 @@ $tabControl.Controls.Add($firstTab)
 # Builds Close Button and Adds to the Main tab
 $buttonClose.Anchor = 2
 $buttonClose.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Point = New-Object System.Drawing.Point
 # Sets Location of Button on the Form
+$System_Drawing_Point = New-Object System.Drawing.Point
 $System_Drawing_Point.X = 198
 $System_Drawing_Point.Y = 395
 $buttonClose.Location = $System_Drawing_Point
 $buttonClose.Name = "buttonClose"
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets Size of Button
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 23
 $System_Drawing_Size.Width = 75
 $buttonClose.Size = $System_Drawing_Size
@@ -428,14 +421,14 @@ $firstTab.Controls.Add($buttonClose)
 # Builds Send Button and adds to Main Tab
 $buttonSend.Anchor = 2
 $buttonSend.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Point = New-Object System.Drawing.Point
 # Sets Location of Button on the Form
+$System_Drawing_Point = New-Object System.Drawing.Point
 $System_Drawing_Point.X = 117
 $System_Drawing_Point.Y = 395
 $buttonSend.Location = $System_Drawing_Point
 $buttonSend.Name = "buttonSend"
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets Size of Button
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 23
 $System_Drawing_Size.Width = 75
 $buttonSend.Size = $System_Drawing_Size
@@ -463,14 +456,14 @@ $firstTab.Controls.Add($buttonSend)
 $labelManEntListComp.Anchor = 13
 $labelManEntListComp.DataBindings.DefaultDataSourceUpdateMode = 0
 $Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 8, [System.Drawing.FontStyle]::Underline)
-$System_Drawing_Point = New-Object System.Drawing.Point
 # Sets Location of Text
+$System_Drawing_Point = New-Object System.Drawing.Point
 $System_Drawing_Point.X = 6
 $System_Drawing_Point.Y = 20
 $labelManEntListComp.Location = $System_Drawing_Point
 $labelManEntListComp.Name = "labelListComp"
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets Size of Text Area where text will be
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 14
 $System_Drawing_Size.Width = 366
 $labelManEntListComp.Size = $System_Drawing_Size
@@ -486,14 +479,14 @@ $firstTab.Controls.Add($labelManEntListComp)
 # Adds Text instructions to the Computers Manual Device Name/IP Area
 $descrLablManEntListComp.Anchor = 13
 $descrLablManEntListComp.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Point = New-Object System.Drawing.Point
 # Sets Location of Text
+$System_Drawing_Point = New-Object System.Drawing.Point
 $System_Drawing_Point.X = 6
 $System_Drawing_Point.Y = 40
 $descrLablManEntListComp.Location = $System_Drawing_Point
 $descrLablManEntListComp.Name = "descrLablManEntListComp"
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets Size of Text Area where text will be
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 28
 $System_Drawing_Size.Width = 366
 $descrLablManEntListComp.Size = $System_Drawing_Size
@@ -508,14 +501,14 @@ $firstTab.Controls.Add($descrLablManEntListComp)
 # Add Text Box to the Manual Entry Computers Manual Device Name/IP Area
 $textBoxManEntListComp.Anchor = 13
 $textBoxManEntListComp.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Point = New-Object System.Drawing.Point
 # Sets Location of Text Box
+$System_Drawing_Point = New-Object System.Drawing.Point
 $System_Drawing_Point.X = 6
 $System_Drawing_Point.Y = 70
 $textBoxManEntListComp.Location = $System_Drawing_Point
 $textBoxManEntListComp.Name = "textBoxManEntListComp"
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets Size of Text Box
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 20
 $System_Drawing_Size.Width = 366
 $textBoxManEntListComp.Size = $System_Drawing_Size
@@ -527,14 +520,14 @@ $firstTab.Controls.Add($textBoxManEntListComp)
 
 # Add Import File Button to Computers Manual Device Name/IP Area
 $buttonManEntImportComp.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Point = New-Object System.Drawing.Point
 # Sets Location of Button
+$System_Drawing_Point = New-Object System.Drawing.Point
 $System_Drawing_Point.X = 7
 $System_Drawing_Point.Y = 95
 $buttonManEntImportComp.Location = $System_Drawing_Point
 $buttonManEntImportComp.Name = "buttonManEntImportComp"
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets Size of Button
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 23
 $System_Drawing_Size.Width = 75
 $buttonManEntImportComp.Size = $System_Drawing_Size
@@ -558,14 +551,14 @@ $firstTab.Controls.Add($buttonManEntImportComp)
 
 # Build Clear Text Box Button to the Computers Manual Device Name/IP Area
 $buttonManEntClearComp.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Point = New-Object System.Drawing.Point
 # Sets Location of Button
+$System_Drawing_Point = New-Object System.Drawing.Point
 $System_Drawing_Point.X = 89
 $System_Drawing_Point.Y = 95
 $buttonManEntClearComp.Location = $System_Drawing_Point
 $buttonManEntClearComp.Name = "buttonManEntClearComp"
-$System_Drawing_Size = New-Object System.Drawing.Size
 # Sets Size of Buttons
+$System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 23
 $System_Drawing_Size.Width = 75
 $buttonManEntClearComp.Size = $System_Drawing_Size
