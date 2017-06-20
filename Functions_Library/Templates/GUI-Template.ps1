@@ -1,30 +1,25 @@
-#----------------------------
-#    Form Initialization
-#----------------------------
+#-----------------------------
+#       Main Form Setup
+#-----------------------------
 
-#region Set Error Action Preference
-
+#--> Set Error Action Preference
 $ErrorActionPreference = "SilentlyContinue"
 
-#endregion $ErrorActionPreference = "SilentlyContinue"
+#--> Global Variables
+[array]$targetList # Initialize Target List variable
+$OnLoadForm_StateCorrection = {$functionForm.WindowState = $initialFormWindowState} # Correct the initial state of the form to prevent the .Net maximized form issue
+$openFileDialog.Filter = "Text Files (*.txt) | *.txt" # Settings for the Open File Dialog when opening a text file
 
-#region Import the necessary Assemblies
-
+#--> Import the necessary Assemblies
 [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
 [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
 
-#endregion Import the necessary Assemblies
-
-#region Generate Main Form Objects
-
-# Main Form Object creation
+#--> Set Form Objects Variables
 # Look here for all objects that windows forms can create here:
 # https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/windows-forms-controls-by-function
 # Add variable equal to a new object creation for the form object you are creating
-$functionForm = New-Object System.Windows.Forms.Form
-
-# Objects for Menu Bar
-# Each object below builds the menu at the top of the form
+$functionForm = New-Object System.Windows.Forms.Form # Main Form Variable
+# Objects for Menu Bar - Each object below builds the menu at the top of the form
 $menu = New-Object System.Windows.Forms.MenuStrip # Creates the Menu Strip the menu items sit in
 $menuFile = New-Object System.Windows.Forms.ToolStripMenuItem # Root File Menu Text
 $menuHelp = New-Object System.Windows.Forms.ToolStripMenuItem # Root Help Menu text
@@ -33,30 +28,24 @@ $menuFileQuit = New-Object System.Windows.Forms.ToolStripMenuItem # Quit Menu Op
 $menuHelpInfo = New-Object System.Windows.Forms.ToolStripMenuItem # Main Script Help Menu Option
 $menuHelpView = New-Object System.Windows.Forms.ToolStripMenuItem # View Script Source Menu option
 $separatorF = New-Object System.Windows.Forms.ToolStripSeparator # Seperator Line in the File Menu
-
 # Add Other Objects to Form
 $tabControl = New-Object System.Windows.Forms.TabControl # Initialize Tab Area
 $firstTab = New-Object System.Windows.Forms.TabPage # Initialize  First Tab in the Tab Area, More can be added and then define in a new section below
-$buttonClose = New-Object System.Windows.Forms.Button # Initialize Close Button
-$buttonSend = New-Object System.Windows.Forms.Button # Initialize Send Button
+$buttonClose = New-Object System.Windows.Forms.Button # Initialize Main Form Close Button
+$buttonSend = New-Object System.Windows.Forms.Button # Initialize Main Form Send Button (Name shoudl be change to whatever the button text is named to)
 $processingLabel = New-Object System.Windows.Forms.Label # Initialize Processing Label (Task Processing bar)
-$buttonManEntClearComp = New-Object System.Windows.Forms.Button # Initialize Manual Entry Text Clear Button
-$buttonManEntImportComp = New-Object System.Windows.Forms.Button # Initialize
-$textBoxManEntListComp = New-Object System.Windows.Forms.RichTextBox # Initialize Computer Manual Entry Area
-$labelManEntListComp = New-Object System.Windows.Forms.Label # Initialize Label for Manual entry text box
-$descrLablManEntListComp = New-Object System.Windows.Forms.Label # Initialize Description for manual entry text box
+$textBoxManEntListComp = New-Object System.Windows.Forms.RichTextBox # Initialize Computer Manual Entry Text Box
+$buttonManEntClearComp = New-Object System.Windows.Forms.Button # Initialize Computer Manual Entry Clear Button
+$buttonManEntImportComp = New-Object System.Windows.Forms.Button # Initialize Computer Manual Entry Import Button
+$labelManEntListComp = New-Object System.Windows.Forms.Label # Initialize Label for Computer Manual Entry text box
+$descrLablManEntListComp = New-Object System.Windows.Forms.Label # Initialize Description for Computer manual Entry text box
 $openFileDialog = New-Object System.Windows.Forms.OpenFileDialog # Initialize Open File Dialog
 $initialFormWindowState = New-Object System.Windows.Forms.FormWindowState # Initialize Form Window State (Must be present)
 
-#endregion Generate Main Form Objects
+#---------------------------------
+#       Main Function Setup
+#---------------------------------
 
-#region Global Variables
-
-[array]$targetList # Initialize Target List variable
-
-#endregion Global Variables
-
-#region Script Functions
 Function Check-IfAdmin {
      # Check if the active user is an admin or not, Post requirements message if not and closes script
      $myWindowsID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
@@ -77,6 +66,341 @@ Function Parse-Input ([string]$workstations) {
      # Split inputed text into array of single entries delimiting on whitespace, commas, and semicolons
      [array]$arrComp = (($workstations -replace '[,;\s]', ' ').Trim()) -split '\s+'
      $Script:targetList += $arrComp
+}
+function Create-MainForm {
+     #--> Build Main Form
+     # Build Main Background and base properties of the Form
+      # Sets Size of form
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 500
+     $System_Drawing_Size.Width = 453
+     $functionForm.ClientSize = $System_Drawing_Size
+     $functionForm.DataBindings.DefaultDataSourceUpdateMode = 0
+     # Sets minimumm Size of form (Cannot be resized lower than this)
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 530
+     $System_Drawing_Size.Width = 469
+     $functionForm.MinimumSize = $System_Drawing_Size
+     # Form Setttings
+     $functionForm.Icon = [System.IconExtractor]::Extract("imageres.dll", 63, $False)
+     $functionForm.StartPosition = "CenterScreen"
+     $functionForm.Name = "functionForm"
+     $functionForm.Text = "Function Form Title"
+     $functionForm.AcceptButton = $buttonSend
+     $functionForm.CancelButton = $buttonClose
+
+     #-------------------------------------------
+
+     # Build Processing Bar, placed next to tab name label
+     $processingLabel.DataBindings.DefaultDataSourceUpdateMode = 0
+     # Sets Location of Text
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 120
+     $System_Drawing_Point.Y = 22
+     $processingLabel.Location = $System_Drawing_Point
+     $processingLabel.Name = "processingLabel"
+     # Sets Size of Text Area where text will be
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 18
+     $System_Drawing_Size.Width = 319
+     $processingLabel.Size = $System_Drawing_Size
+     $processingLabel.BackColor = "Green"
+     $processingLabel.ForeColor = "White"
+     $processingLabel.TextAlign = "MiddleLeft"
+     $processingLabel.TabIndex = 0
+     # Sets Text to Show
+     $processingLabel.Text = ""
+     # Add text to Area
+     $processingLabel.Hide()
+     $functionForm.Controls.Add($processingLabel)
+
+     #--> Build Top Menu
+
+     #    --> Build File Menu
+
+     # Add a MenuStrip object for Quitting the form
+     $menuFileQuit.Text = "&Quit"
+     $menuFileQuit.ShortcutKeys = "Control, Q"
+     $menuFileQuit.add_Click( {
+               $functionForm.Close()
+          }
+     )
+     # Add a MenuStrip object for Importing a text file to import computers names from
+     $menuFileOpen.Text = "&Import List"
+     $menuFileOpen.ShortcutKeys = [System.Windows.Forms.Keys]::Control, [System.Windows.Forms.Keys]::O
+     # Actions for the Import Menu
+     $menuFileOpen.add_Click( {
+               $btnChosen = $openFileDialog.ShowDialog()
+               # Sends the chosen text file to be converted to a string
+               if ($btnChosen -eq "OK") {
+                    Parse-TextFile -Path $openFileDialog.FileName -TextBox $textBoxManEntListComp
+               }
+          }
+     )
+     # Builds File Menu Dropdown
+     $menuFile.Text = "&File"
+     $menuFile.DropDownItems.AddRange(@($menuFileOpen, $separatorF, $menuFileQuit))
+
+     #    --> Build Help Menu
+
+     # Builds Help Menu Option and its actions to open the Help window
+     $menuHelpInfo.Text = "Function &Help"
+     $menuHelpInfo.ShortcutKeys = "F1"
+     # Action for the help directions Menu
+     $menuHelpInfo.add_Click( {
+               Create-HelpForm
+          }
+     )
+     # Builds the View Script Source menu option and its action to open the View Source window
+     $menuHelpView.Text = "Vi&ew Script"
+     $menuHelpView.ShortcutKeys = "Control, E"
+     # Actions for the View Script Menu
+     $menuHelpView.add_Click( {
+               Create-ViewSourceForm
+          }
+     )
+     # Builds the Help Menu Dropdown
+     $menuHelp.Text = "&Help"
+     $menuHelp.DropDownItems.AddRange(@($menuHelpInfo, $menuHelpView))
+     # Add both Menus to to the form
+     $menu.Items.AddRange(@($menuFile, $menuHelp))
+     $functionForm.Controls.Add($menu)
+
+     #--> Build Main Tab Area
+
+     # Build Tab Anchor base
+     $tabControl.Anchor = 15
+     $tabControl.DataBindings.DefaultDataSourceUpdateMode = 0
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 7
+     $System_Drawing_Point.Y = 27
+     $tabControl.Location = $System_Drawing_Point
+     $tabControl.Name = "tabControl"
+     $tabControl.SelectedIndex = 0
+     # Sets size of Tab Anchor
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 468
+     $System_Drawing_Size.Width = 440
+     $tabControl.Size = $System_Drawing_Size
+     $tabControl.TabIndex = 4
+     # Add Anchor to Form
+     $functionForm.Controls.Add($tabControl)
+
+     #-------------------------------------------
+
+     # Build Tab area to hold objects
+     $firstTab.DataBindings.DefaultDataSourceUpdateMode = 0
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 4
+     $System_Drawing_Point.Y = 22
+     $firstTab.Location = $System_Drawing_Point
+     $firstTab.Name = "firstTab"
+     $System_Windows_Forms_Padding = New-Object System.Windows.Forms.Padding
+     $System_Windows_Forms_Padding.All = 3
+     $System_Windows_Forms_Padding.Bottom = 3
+     $System_Windows_Forms_Padding.Left = 3
+     $System_Windows_Forms_Padding.Right = 3
+     $System_Windows_Forms_Padding.Top = 3
+     $firstTab.Padding = $System_Windows_Forms_Padding
+     # Sets size of Area
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 422
+     $System_Drawing_Size.Width = 400
+     $firstTab.Size = $System_Drawing_Size
+     $firstTab.TabIndex = 0
+     $firstTab.Text = "Function Name"
+     $firstTab.UseVisualStyleBackColor = $True
+     # Add tab to Form
+     $tabControl.Controls.Add($firstTab)
+
+     # Builds Close Button and Adds to the Main tab
+     $buttonClose.Anchor = 2
+     $buttonClose.DataBindings.DefaultDataSourceUpdateMode = 0
+     # Sets Location of Button on the Form
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 198
+     $System_Drawing_Point.Y = 395
+     $buttonClose.Location = $System_Drawing_Point
+     $buttonClose.Name = "buttonClose"
+     # Sets Size of Button
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 23
+     $System_Drawing_Size.Width = 75
+     $buttonClose.Size = $System_Drawing_Size
+     $buttonClose.TabIndex = 8
+     # Sets Text of Button
+     $buttonClose.Text = "Close"
+     $buttonClose.UseVisualStyleBackColor = $True
+     # Sets action on click (Can be any function, cmdlet, .NET Method, logic control, etc.)
+     $buttonClose.add_Click( {
+               $functionForm.Close()
+          }
+     )
+     # Add Close button to Form
+     $firstTab.Controls.Add($buttonClose)
+
+     #-------------------------------------------
+
+     # Builds Send Button and adds to Main Tab
+     $buttonSend.Anchor = 2
+     $buttonSend.DataBindings.DefaultDataSourceUpdateMode = 0
+     # Sets Location of Button on the Form
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 117
+     $System_Drawing_Point.Y = 395
+     $buttonSend.Location = $System_Drawing_Point
+     $buttonSend.Name = "buttonSend"
+     # Sets Size of Button
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 23
+     $System_Drawing_Size.Width = 75
+     $buttonSend.Size = $System_Drawing_Size
+     $buttonSend.TabIndex = 7
+     # Sets Text of Button
+     $buttonSend.Text = "rename"
+     $buttonSend.UseVisualStyleBackColor = $True
+     # Actions for the "Send" button
+     $buttonSend.add_Click( {
+               #Sends the contents of the text box to be stripped and turned into an array
+               Parse-Input $textBoxManEntListComp.Text
+               $Script:targetList = @()
+               $textBoxManEntListComp.clear()
+               $processingLabel.hide()
+          }
+     )
+     # Add Send button to Form
+     $firstTab.Controls.Add($buttonSend)
+
+     #--> Computers Manual Device Name/IP Area
+
+     # Adds Manual Entry Label to the Computers Manual Device Name/IP Area
+     $labelManEntListComp.Anchor = 13
+     $labelManEntListComp.DataBindings.DefaultDataSourceUpdateMode = 0
+     $Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 8, [System.Drawing.FontStyle]::Underline)
+     # Sets Location of Text
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 6
+     $System_Drawing_Point.Y = 20
+     $labelManEntListComp.Location = $System_Drawing_Point
+     $labelManEntListComp.Name = "labelListComp"
+     # Sets Size of Text Area where text will be
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 14
+     $System_Drawing_Size.Width = 366
+     $labelManEntListComp.Size = $System_Drawing_Size
+     $labelManEntListComp.TabIndex = 0
+     $labelManEntListComp.Font = $Font
+     # Sets Text to show
+     $labelManEntListComp.Text = "Device Name/IP Entry"
+     # Add Text to Area
+     $firstTab.Controls.Add($labelManEntListComp)
+
+     #-------------------------------------------
+
+     # Adds Text instructions to the Computers Manual Device Name/IP Area
+     $descrLablManEntListComp.Anchor = 13
+     $descrLablManEntListComp.DataBindings.DefaultDataSourceUpdateMode = 0
+     # Sets Location of Text
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 6
+     $System_Drawing_Point.Y = 40
+     $descrLablManEntListComp.Location = $System_Drawing_Point
+     $descrLablManEntListComp.Name = "descrLablManEntListComp"
+     # Sets Size of Text Area where text will be
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 28
+     $System_Drawing_Size.Width = 366
+     $descrLablManEntListComp.Size = $System_Drawing_Size
+     $descrLablManEntListComp.TabIndex = 0
+     # Sets Text to show
+     $descrLablManEntListComp.Text = "Type the workstation name(s)/IP(s) separated by spaces, commas, semi-colons, or import a list of names from a text file:"
+     # Add Text to Area
+     $firstTab.Controls.Add($descrLablManEntListComp)
+
+     #-------------------------------------------
+
+     # Add Text Box to the Manual Entry Computers Manual Device Name/IP Area
+     $textBoxManEntListComp.Anchor = 13
+     $textBoxManEntListComp.DataBindings.DefaultDataSourceUpdateMode = 0
+     # Sets Location of Text Box
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 6
+     $System_Drawing_Point.Y = 70
+     $textBoxManEntListComp.Location = $System_Drawing_Point
+     $textBoxManEntListComp.Name = "textBoxManEntListComp"
+     # Sets Size of Text Box
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 20
+     $System_Drawing_Size.Width = 366
+     $textBoxManEntListComp.Size = $System_Drawing_Size
+     $textBoxManEntListComp.TabIndex = 1
+     # Adds Text Box to Area
+     $firstTab.Controls.Add($textBoxManEntListComp)
+
+     #-------------------------------------------
+
+     # Add Import File Button to Computers Manual Device Name/IP Area
+     $buttonManEntImportComp.DataBindings.DefaultDataSourceUpdateMode = 0
+     # Sets Location of Button
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 7
+     $System_Drawing_Point.Y = 95
+     $buttonManEntImportComp.Location = $System_Drawing_Point
+     $buttonManEntImportComp.Name = "buttonManEntImportComp"
+     # Sets Size of Button
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 23
+     $System_Drawing_Size.Width = 75
+     $buttonManEntImportComp.Size = $System_Drawing_Size
+     $buttonManEntImportComp.TabIndex = 2
+     # Sets Title of Button
+     $buttonManEntImportComp.Text = "Import List"
+     $buttonManEntImportComp.UseVisualStyleBackColor = $True
+     # Actions for the "Import File" Button
+     $buttonManEntImportComp.add_Click( {
+               $btnChosen = $openFileDialog.ShowDialog()
+               #Sends the chosen text file to be converted to a string
+               if ($btnChosen -eq "OK") {
+                    Parse-TextFile -Path $openFileDialog.FileName -TextBox $textBoxManEntListComp
+               }
+          }
+     )
+     # Adds Import File Button to Area
+     $firstTab.Controls.Add($buttonManEntImportComp)
+
+     #-------------------------------------------
+
+     # Build Clear Text Box Button to the Computers Manual Device Name/IP Area
+     $buttonManEntClearComp.DataBindings.DefaultDataSourceUpdateMode = 0
+     # Sets Location of Button
+     $System_Drawing_Point = New-Object System.Drawing.Point
+     $System_Drawing_Point.X = 89
+     $System_Drawing_Point.Y = 95
+     $buttonManEntClearComp.Location = $System_Drawing_Point
+     $buttonManEntClearComp.Name = "buttonManEntClearComp"
+     # Sets Size of Buttons
+     $System_Drawing_Size = New-Object System.Drawing.Size
+     $System_Drawing_Size.Height = 23
+     $System_Drawing_Size.Width = 75
+     $buttonManEntClearComp.Size = $System_Drawing_Size
+     $buttonManEntClearComp.TabIndex = 3
+     # Sets Button Text
+     $buttonManEntClearComp.Text = "Clear Text"
+     $buttonManEntClearComp.UseVisualStyleBackColor = $True
+     # Actions for the Clear Button (Removes all text from the text box)
+     $buttonManEntClearComp.add_Click( {
+               $textBoxManEntListComp.Clear()
+          }
+     )
+     # Add Clear Button to Area
+     $firstTab.Controls.Add($buttonManEntClearComp)
+
+     #--> Additonal Objects
+
+     # Add Additiontal objects you wish to add to the form, usually based on script parameters
+
+     $functionForm.Add_Shown( {$functionForm.Activate()})
+     $functionForm.ShowDialog($this) | Out-Null
 }
 Function Create-ViewSourceForm {
      # Builds View Source Form from the help menu "View Source"
@@ -183,7 +507,7 @@ You may pull up the source code of the script by choosing Help -> View Script fr
      $formHelp.Show() | Out-Null
 }
 
-#region ICONExtractor (ThirdParty Code)
+#--> ICONExtractor (ThirdParty Code)
 # Wrapper for VB code calling the ExtractIconEX function from the Windows API
 # for extracting icons from .dll, .exe, etc.
 # Obtained verbatim from Kazun's post at -
@@ -221,379 +545,15 @@ namespace System
 	}
 }
 "@
-
 #Add Type to use wrapped Static function for icon extraction
 Add-Type -TypeDefinition $codeIconExtract -ReferencedAssemblies System.Drawing
 
-
-$OnLoadForm_StateCorrection = {
-     # Correct the initial state of the form to prevent the .Net maximized form issue
-     $functionForm.WindowState = $initialFormWindowState
-}
-
-#endregion Script Functions
-
-#region Build Main Form
-
-# Build Main Background and base properties of the Form
-$System_Drawing_Size = New-Object System.Drawing.Size
-# Sets Size of form
-$System_Drawing_Size.Height = 500
-$System_Drawing_Size.Width = 453
-$functionForm.ClientSize = $System_Drawing_Size
-$functionForm.DataBindings.DefaultDataSourceUpdateMode = 0
-# Sets minimumm Size of form (Cannot be resized lower than this)
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 530
-$System_Drawing_Size.Width = 469
-$functionForm.MinimumSize = $System_Drawing_Size
-# Form Setttings
-$functionForm.Icon = [System.IconExtractor]::Extract("imageres.dll", 63, $False)
-$functionForm.StartPosition = "CenterScreen"
-$functionForm.Name = "functionForm"
-$functionForm.Text = "Function Form Title"
-$functionForm.AcceptButton = $buttonSend
-$functionForm.CancelButton = $buttonClose
-
-#-------------------------------------------
-
-# Build Processing Bar, placed next to tab name label
-$processingLabel.DataBindings.DefaultDataSourceUpdateMode = 0
-# Sets Location of Text
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 120
-$System_Drawing_Point.Y = 22
-$processingLabel.Location = $System_Drawing_Point
-$processingLabel.Name = "processingLabel"
-# Sets Size of Text Area where text will be
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 18
-$System_Drawing_Size.Width = 319
-$processingLabel.Size = $System_Drawing_Size
-$processingLabel.BackColor = "Green"
-$processingLabel.ForeColor = "White"
-$processingLabel.TextAlign = "MiddleLeft"
-$processingLabel.TabIndex = 0
-# Sets Text to Show
-$processingLabel.Text = ""
-# Add text to Area
-$processingLabel.Hide()
-$functionForm.Controls.Add($processingLabel)
-
-#endregion Build Main Form
-
-#region Build Top Menu
-
-#region Build File Menu
-
-# Add a MenuStrip object for Quitting the form
-$menuFileQuit.Text = "&Quit"
-$menuFileQuit.ShortcutKeys = "Control, Q"
-$menuFileQuit.add_Click( {
-          $functionForm.Close()
-     }
-)
-# Add a MenuStrip object for Importing a text file to import computers names from
-$menuFileOpen.Text = "&Import List"
-$menuFileOpen.ShortcutKeys = [System.Windows.Forms.Keys]::Control, [System.Windows.Forms.Keys]::O
-# Actions for the Import Menu
-$menuFileOpen.add_Click( {
-          $btnChosen = $openFileDialog.ShowDialog()
-          # Sends the chosen text file to be converted to a string
-          if ($btnChosen -eq "OK") {
-               Parse-TextFile -Path $openFileDialog.FileName -TextBox $textBoxManEntListComp
-          }
-     }
-)
-# Builds File Menu Dropdown
-$menuFile.Text = "&File"
-$menuFile.DropDownItems.AddRange(@($menuFileOpen, $separatorF, $menuFileQuit))
-
-#endregion Build File Menu
-
-#region Build Help Menu
-
-# Builds Help Menu Option and its actions to open the Help window
-$menuHelpInfo.Text = "Function &Help"
-$menuHelpInfo.ShortcutKeys = "F1"
-# Action for the help directions Menu
-$menuHelpInfo.add_Click( {
-          Create-HelpForm
-     }
-)
-# Builds the View Script Source menu option and its action to open the View Source window
-$menuHelpView.Text = "Vi&ew Script"
-$menuHelpView.ShortcutKeys = "Control, E"
-# Actions for the View Script Menu
-$menuHelpView.add_Click( {
-          Create-ViewSourceForm
-     }
-)
-# Builds the Help Menu Dropdown
-$menuHelp.Text = "&Help"
-$menuHelp.DropDownItems.AddRange(@($menuHelpInfo, $menuHelpView))
-
-#endregion Build Help Menu
-
-# Add both Menus to to the form
-$menu.Items.AddRange(@($menuFile, $menuHelp))
-$functionForm.Controls.Add($menu)
-
-#endregion Build Top Menu
-
-#region Build Main Tab Area
-
-# Build Tab Anchor base
-$tabControl.Anchor = 15
-$tabControl.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 7
-$System_Drawing_Point.Y = 27
-$tabControl.Location = $System_Drawing_Point
-$tabControl.Name = "tabControl"
-$tabControl.SelectedIndex = 0
-# Sets size of Tab Anchor
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 468
-$System_Drawing_Size.Width = 440
-$tabControl.Size = $System_Drawing_Size
-$tabControl.TabIndex = 4
-# Add Anchor to Form
-$functionForm.Controls.Add($tabControl)
-
-#-------------------------------------------
-
-# Build Tab area to hold objects
-$firstTab.DataBindings.DefaultDataSourceUpdateMode = 0
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 4
-$System_Drawing_Point.Y = 22
-$firstTab.Location = $System_Drawing_Point
-$firstTab.Name = "firstTab"
-$System_Windows_Forms_Padding = New-Object System.Windows.Forms.Padding
-$System_Windows_Forms_Padding.All = 3
-$System_Windows_Forms_Padding.Bottom = 3
-$System_Windows_Forms_Padding.Left = 3
-$System_Windows_Forms_Padding.Right = 3
-$System_Windows_Forms_Padding.Top = 3
-# Sets size of Area
-$firstTab.Padding = $System_Windows_Forms_Padding
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 422
-$System_Drawing_Size.Width = 400
-$firstTab.Size = $System_Drawing_Size
-$firstTab.TabIndex = 0
-$firstTab.Text = "Function Name"
-$firstTab.UseVisualStyleBackColor = $True
-# Add tab to Form
-$tabControl.Controls.Add($firstTab)
-
-#endregion Build Main Tab Area
-
-# Builds Close Button and Adds to the Main tab
-$buttonClose.Anchor = 2
-$buttonClose.DataBindings.DefaultDataSourceUpdateMode = 0
-# Sets Location of Button on the Form
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 198
-$System_Drawing_Point.Y = 395
-$buttonClose.Location = $System_Drawing_Point
-$buttonClose.Name = "buttonClose"
-# Sets Size of Button
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 23
-$System_Drawing_Size.Width = 75
-$buttonClose.Size = $System_Drawing_Size
-$buttonClose.TabIndex = 8
-# Sets Text of Button
-$buttonClose.Text = "Close"
-$buttonClose.UseVisualStyleBackColor = $True
-# Sets action on click (Can be any function, cmdlet, .NET Method, logic control, etc.)
-$buttonClose.add_Click( {
-          $functionForm.Close()
-     }
-)
-# Add Close button to Form
-$firstTab.Controls.Add($buttonClose)
-
-#-------------------------------------------
-
-# Builds Send Button and adds to Main Tab
-$buttonSend.Anchor = 2
-$buttonSend.DataBindings.DefaultDataSourceUpdateMode = 0
-# Sets Location of Button on the Form
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 117
-$System_Drawing_Point.Y = 395
-$buttonSend.Location = $System_Drawing_Point
-$buttonSend.Name = "buttonSend"
-# Sets Size of Button
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 23
-$System_Drawing_Size.Width = 75
-$buttonSend.Size = $System_Drawing_Size
-$buttonSend.TabIndex = 7
-# Sets Text of Button
-$buttonSend.Text = "rename"
-$buttonSend.UseVisualStyleBackColor = $True
-# Actions for the "Send" button
-$buttonSend.add_Click( {
-          #Sends the contents of the text box to be stripped and turned into an array and then sent
-          Parse-Input $textBoxManEntListComp.Text
-          $Script:targetList = @()
-          $textBoxManEntListComp.clear()
-          $processingLabel.hide()
-     }
-)
-# Add Send button to Form
-$firstTab.Controls.Add($buttonSend)
-
-#endregion Build Main Tab Buttons
-
-#region Computers Manual Device Name/IP Area
-
-# Adds Manual Entry Label to the Computers Manual Device Name/IP Area
-$labelManEntListComp.Anchor = 13
-$labelManEntListComp.DataBindings.DefaultDataSourceUpdateMode = 0
-$Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 8, [System.Drawing.FontStyle]::Underline)
-# Sets Location of Text
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 6
-$System_Drawing_Point.Y = 20
-$labelManEntListComp.Location = $System_Drawing_Point
-$labelManEntListComp.Name = "labelListComp"
-# Sets Size of Text Area where text will be
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 14
-$System_Drawing_Size.Width = 366
-$labelManEntListComp.Size = $System_Drawing_Size
-$labelManEntListComp.TabIndex = 0
-$labelManEntListComp.Font = $Font
-# Sets Text to show
-$labelManEntListComp.Text = "Device Name/IP Entry"
-# Add Text to Area
-$firstTab.Controls.Add($labelManEntListComp)
-
-#-------------------------------------------
-
-# Adds Text instructions to the Computers Manual Device Name/IP Area
-$descrLablManEntListComp.Anchor = 13
-$descrLablManEntListComp.DataBindings.DefaultDataSourceUpdateMode = 0
-# Sets Location of Text
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 6
-$System_Drawing_Point.Y = 40
-$descrLablManEntListComp.Location = $System_Drawing_Point
-$descrLablManEntListComp.Name = "descrLablManEntListComp"
-# Sets Size of Text Area where text will be
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 28
-$System_Drawing_Size.Width = 366
-$descrLablManEntListComp.Size = $System_Drawing_Size
-$descrLablManEntListComp.TabIndex = 0
-# Sets Text to show
-$descrLablManEntListComp.Text = "Type the workstation name(s)/IP(s) separated by spaces, commas, semi-colons, or import a list of names from a text file:"
-# Add Text to Area
-$firstTab.Controls.Add($descrLablManEntListComp)
-
-#-------------------------------------------
-
-# Add Text Box to the Manual Entry Computers Manual Device Name/IP Area
-$textBoxManEntListComp.Anchor = 13
-$textBoxManEntListComp.DataBindings.DefaultDataSourceUpdateMode = 0
-# Sets Location of Text Box
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 6
-$System_Drawing_Point.Y = 70
-$textBoxManEntListComp.Location = $System_Drawing_Point
-$textBoxManEntListComp.Name = "textBoxManEntListComp"
-# Sets Size of Text Box
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 20
-$System_Drawing_Size.Width = 366
-$textBoxManEntListComp.Size = $System_Drawing_Size
-$textBoxManEntListComp.TabIndex = 1
-# Adds Text Box to Area
-$firstTab.Controls.Add($textBoxManEntListComp)
-
-#-------------------------------------------
-
-# Add Import File Button to Computers Manual Device Name/IP Area
-$buttonManEntImportComp.DataBindings.DefaultDataSourceUpdateMode = 0
-# Sets Location of Button
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 7
-$System_Drawing_Point.Y = 95
-$buttonManEntImportComp.Location = $System_Drawing_Point
-$buttonManEntImportComp.Name = "buttonManEntImportComp"
-# Sets Size of Button
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 23
-$System_Drawing_Size.Width = 75
-$buttonManEntImportComp.Size = $System_Drawing_Size
-$buttonManEntImportComp.TabIndex = 2
-# Sets Title of Button
-$buttonManEntImportComp.Text = "Import List"
-$buttonManEntImportComp.UseVisualStyleBackColor = $True
-# Actions for the "Import File" Button
-$buttonManEntImportComp.add_Click( {
-          $btnChosen = $openFileDialog.ShowDialog()
-          #Sends the chosen text file to be converted to a string
-          if ($btnChosen -eq "OK") {
-               Parse-TextFile -Path $openFileDialog.FileName -TextBox $textBoxManEntListComp
-          }
-     }
-)
-# Adds Import File Button to Area
-$firstTab.Controls.Add($buttonManEntImportComp)
-
-#-------------------------------------------
-
-# Build Clear Text Box Button to the Computers Manual Device Name/IP Area
-$buttonManEntClearComp.DataBindings.DefaultDataSourceUpdateMode = 0
-# Sets Location of Button
-$System_Drawing_Point = New-Object System.Drawing.Point
-$System_Drawing_Point.X = 89
-$System_Drawing_Point.Y = 95
-$buttonManEntClearComp.Location = $System_Drawing_Point
-$buttonManEntClearComp.Name = "buttonManEntClearComp"
-# Sets Size of Buttons
-$System_Drawing_Size = New-Object System.Drawing.Size
-$System_Drawing_Size.Height = 23
-$System_Drawing_Size.Width = 75
-$buttonManEntClearComp.Size = $System_Drawing_Size
-$buttonManEntClearComp.TabIndex = 3
-# Sets Button Text
-$buttonManEntClearComp.Text = "Clear Text"
-$buttonManEntClearComp.UseVisualStyleBackColor = $True
-# Actions for the Clear Button (Removes all text from the text box)
-$buttonManEntClearComp.add_Click( {
-          $textBoxManEntListComp.Clear()
-     }
-)
-# Add Clear Button to Area
-$firstTab.Controls.Add($buttonManEntClearComp)
-
-#endregion Computers Manual Device Name/IP Area
-
-#endregion Build Tab Within Form
-
-#region Additonal Objects
-
-# Add Additiontal objects you wish to add to the form, usually based on script parameters
-
-#endregion Additonal Objects
-
-#----------------------------
-#      Main Form Actions
-#----------------------------
-#region Form Actions
+#-------------------------------
+#       Form Main Actions
+#-------------------------------
 
 # Uncomment next line if Script must be run with Admin Rights.
 #Check-IfAdmin
-
-# Settings for the Open File Dialog when opening a text file
-$openFileDialog.Filter = "Text Files (*.txt) | *.txt"
 
 # Save the initial state of the form
 $InitialFormWindowState = $functionForm.WindowState
@@ -604,7 +564,4 @@ $functionForm.add_Load($OnLoadForm_StateCorrection)
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 # Show the Form
-$functionForm.Add_Shown( {$functionForm.Activate()})
-$functionForm.ShowDialog($this) | Out-Null
-
-#endregion Form Actions
+Create-MainForm
