@@ -52,8 +52,8 @@
 .NOTES
     Name: Get-GitInfoForDirectory
     Author: Jonathan Durant
-    Version: 1.0
-    DateUpdated: 25 February 2016
+    Version: 1.1
+    DateUpdated: 20 June 2017
 
 .INPUTS
     NONE
@@ -63,7 +63,7 @@
 
 <#PSScriptInfo
 
-.VERSION 1.0
+.VERSION 1.1
 
 .GUID fe3b786e-6bcb-409b-8f37-d1297bf2dd35
 
