@@ -1,0 +1,70 @@
+Using the Comannd Line Interface (Powershell Prompt)
+
+
+1.	Create a folder name it “C:\UpdatePush”
+2.	Create a subfolder name it “C:\UpdatePush\Patches”
+3.	Create a subfolder name it “C:\UpdatePush\PSExec”
+4.	Create a text file in “C:\UpdatePush\computers.txt”  (You will input computernames in the text file that need patching)
+5.	Place all Updates in the "C:\UpdatePush\Patches" folder
+6. 	Copy "Install-UpdateCLI.ps1" to your Desktop (WILL NOT RUN FROM SERVER AS THE SCRIPT IS NOT DIGITALLY SIGNED)
+7. 	Run PowerShell with Admin rights (Using a admin account that has rights on all machines you are updating)
+8.   	Go to the Desktop folder (Or where you saved the PS1 file) and run the "Install-UpdateCLI.ps1" command to install an update. You can use any of the methods listed in the PS1 File examples to do so. If using a share to store Updates, ensure you use set "hotfixPath" Variable to the share location.
+
+	Access Help and examples (Run at Powershell Prompt):
+	
+	Get-help .\Install-Update.ps1 -examples (For just few examples)     
+      	Get-help .\Install-Update.ps1 -full (For the full help file)
+
+
+
+Using the Graphical User Interface (Install-UpdateGUI.exe File)
+
+1.	Create a folder name it “C:\UpdatePush”
+2.	Create a subfolder name it “C:\UpdatePush\Patches”
+3.	Create a subfolder name it “C:\UpdatePush\PSExec”
+4.	Create a text file in “C:\UpdatePush\computers.txt”  (If You will input computernames in the text file that need patching) else input the computer names into the Device Name text box
+5.	Place all Updates in the "C:\UpdatePush\Patches" folder
+6. 	Copy "Install-UpdateGUI.exe" to your Desktop (WILL NOT RUN FROM SERVER AS THE SCRIPT IS NOT DIGITALLY SIGNED)
+7. 	Follow the instructions in the GUI to push your update.
+
+NOTE2: There will be a Green Progress Bar in the App showing you what machines it is currently processing.
+
+	Access Help:
+
+	Click the Help option in the Help Menu
+
+
+
+Results:
+
+CLI Process: there results will be in the powershell prompt as it processes them, reveiw the error codes with the ErrorCodes.txt file to understand the outcome.
+
+GUI Process: A Results Report screen will come up with Error Code Results when complete. Copy and paste as you will into another program to save the results, and use the ErrorCodes.txt file to understand the outcome.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

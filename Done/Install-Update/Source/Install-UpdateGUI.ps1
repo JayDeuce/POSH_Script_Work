@@ -22,8 +22,8 @@
      Error/Exit codes to show completion status.
 #>
 
-#-----------------------------
-#  Install-Update Form Setup
+#---------------------------------
+#region Install-Update Form Setup
 #-----------------------------
 #--> Set Error Action Preference
 $ErrorActionPreference = "SilentlyContinue"
@@ -33,9 +33,12 @@ $ErrorActionPreference = "SilentlyContinue"
 [array]$computers = @() # Intialize Computer Namr(s) Variable
 [string]$updatePatchName = "" # Intialize Update/Patch Name Variable
 [string]$updatePatchPath = "C:\UpdatePush\Patches" # Initialize Update/Patch Folder Path Variable
-[String]$psexecFilePath = "C:\UpdatePush\PSExec\PSExec.exe" # Initialize PSExec file path location Variable
+[string]$psexecFilePath = "C:\UpdatePush\PSExec\PSExec.exe" # Initialize PSExec file path location Variable
 [array]$exitCodeReport = @() # Initialize Exit Code Report Variable
 [array]$exitCodeInfo = @() # Initialize PSExec (After install) Exit Code Gathering Variable
+[string]$popupMessage = "" # Intialize Pop-up box Message variable
+[string]$popupTitle = "" # Intialize Pop-up box Title variable
+[string]$popupIcon = "" # Intialize Pop-up Box Icon Variable
 
 #--> Import the Necessary .NET WInforms Assemblies
 [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
@@ -88,10 +91,20 @@ namespace System
 "@
 #Add Type to use wrapped Static function for icon extraction
 Add-Type -TypeDefinition $codeIconExtract -ReferencedAssemblies System.Drawing
+#---------------------------------
+#endregion
+#---------------------------------
 
 #---------------------------------
-#  Install Update Function Setup
+#region  Install Update Function Setup
 #---------------------------------
+function Create-InfoMessageBox ([string]$message, [string]$title, [string]$icon) {
+
+     [System.Windows.Forms.MessageBoxButtons]$buttons = "OK"
+     [System.Windows.Forms.MessageBoxIcon]$icons = $icon
+
+     [System.Windows.Forms.MessageBox]::Show($message, $title, $buttons, $icons) | Out-Null
+}
 function Check-IfAdmin {
      # Check if the active user is an admin or not, Post requirements message if not and closes script
      $myWindowsID = [System.Security.Principal.WindowsIdentity]::GetCurrent()
@@ -99,7 +112,10 @@ function Check-IfAdmin {
      $adminRole = [System.Security.Principal.WindowsBuiltInRole]::Administrator
      # Check to see if we are currently running "as Administrator" and message user to relaunch as admin if not.
      if (!($myWindowsPrincipal.IsInRole($adminRole))) {
-          Create-MessageBox -message "You are not running as an administrator, please right-click Send-Message.exe and 'RUN AS ADMINISTRATOR' to send a message!" -title "ERROR: NOT AN ADMIN" -icon Error
+          $popupMessage = "You are not running as an administrator, please rerun the program as ADMINISTRATOR!"
+          $popupTitle = "ERROR: NOT AN ADMIN"
+          $popupIcon = "Error"
+          Create-InfoMessageBox -message $popupMessage -title $popupTitle -icon $popupIcon
           exit
      }
 }
@@ -132,7 +148,7 @@ function Install-Update ([array]$computers, [string]$updatePatchName, [string]$u
 
                if (!(test-connection -count 1 -Quiet -ComputerName $computer)) {
                     $Script:exitCodeInfo | Add-Member -MemberType NoteProperty -Name 'Computer Name' -Value $computer
-                    $Script:exitCodeInfo | Add-Member -MemberType NoteProperty -Name 'Exit Code' -Value "System could not be contacted, please check make sure its online."
+                    $Script:exitCodeInfo | Add-Member -MemberType NoteProperty -Name 'Exit Code' -Value "System could not be contacted."
                     $Script:exitCodeReport += $Script:exitCodeInfo # Adds Exit Code to Exit Code Report variable
                }
                else {
@@ -397,17 +413,34 @@ function Create-MainForm {
      # Actions for the "install" button
      $buttonInstall.add_Click( {
                # Pulls all info from Entry boxes, turns them in the proper output, and then runs install-update
-               Parse-Input -objects $textBoxManEntListComp.Text
-               Write-Host $textBoxManEntListPatch
-               $updatePatchName = $textBoxManEntListPatch.Text
-               if ($updatePatchPath -ne 0) {
+               if ($textBoxManEntListComp.text -eq "") {
+                    $popupMessage = "You need to input the computer names into the Device Name Entry List Box. It cannot be left blank."
+                    $popupTitle = "Device Name Entry Box is Blank!"
+                    $popupIcon = "Information"
+                    Create-InfoMessageBox -message $popupMessage -title $popupTitle -icon $popupIcon
+                    return
+               }
+               Else {
+                    Parse-Input -objects $textBoxManEntListComp.Text
+               }
+               if ($textBoxManEntListPatch.text -eq "") {
+                    $popupMessage = "You need to input the patch name into the Patch Name Entry List Box. It cannot be left blank."
+                    $popupTitle = "Patch Entry Box is Blank!"
+                    $popupIcon = "Information"
+                    Create-InfoMessageBox -message $popupMessage -title $popupTitle -icon $popupIcon
+                    return
+               }
+               Else {
+                    $updatePatchName = $textBoxManEntListPatch.Text
+               }
+               if ($updatePatchPath -ne "") {
                     $updatePatchPath = $textBoxManEntListPPath.Text
                }
-               if ($psexecFilePath -ne 0) {
+               if ($psexecFilePath -ne "") {
                     $psexecFilePath = $textBoxManEntListPsexec.Text
                }
                Install-Update -computers $computers -updatePatchName $updatePatchName -updatePatchPath $updatePatchPath -psexecFilePath $psexecFilePath
-               $exitCodeReport  | Out-Host #For testing
+               Create-ResultsForm
                # Cleanup after Intsall Update completes
                $Script:computers = @()
                $Script:updatePatchName = ""
@@ -913,6 +946,44 @@ Function Create-ViewSourceForm {
      # Show View Source Form
      $formSourceCode.Show() | Out-Null
 }
+Function Create-ResultsForm {
+     # Builds Results Form from the help menu "Results"
+     # Add objects for Results Form
+     $formResultsCode = New-Object System.Windows.Forms.Form
+     $richTextBoxResults = New-Object System.Windows.Forms.RichTextBox
+     # Form for viewing Results
+     # Set Size of Results Form
+     $System_Drawing_Size.Height = 600
+     $System_Drawing_Size.Width = 725
+     $formResultsCode.ClientSize = $System_Drawing_Size
+     #$formResultsCode.DataBindings.DefaultDataSourceUpdateMode = 0
+     $formResultsCode.StartPosition = "CenterScreen"
+     $formResultsCode.Name = "formSourceCode"
+     # Set View Results Title
+     $formResultsCode.Text = "Install Update Results"
+     $formResultsCode.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($PSCommandPath)
+     # Add Rich Text Box for the Help Text to display in
+     $richTextBoxResults.Anchor = 15
+     $richTextBoxResults.DataBindings.DefaultDataSourceUpdateMode = 0
+     # Set Location For the Rich Text Box
+     $System_Drawing_Point.X = 13
+     $System_Drawing_Point.Y = 13
+     $richTextBoxResults.Location = $System_Drawing_Point
+     $richTextBoxResults.Name = "richTextBoxResults"
+     $richTextBoxResults.Font = New-Object System.Drawing.Font("lucida console", 10)
+     # Set Rich Text Box Size
+     $System_Drawing_Size.Height = 570
+     $System_Drawing_Size.Width = 700
+     $richTextBoxResults.Size = $System_Drawing_Size
+     $richTextBoxResults.DetectUrls = $False
+     $richTextBoxResults.ReadOnly = $True
+     # Get source from script file and add newline to each array item for formatting
+     $richTextBoxResults.Text = "Results of the Patch Install:`n" + "`n" + ($exitCodeReport | Format-Table -AutoSize | Out-String)
+     # Add Rich text Box to Results Form
+     $formResultsCode.Controls.Add($richTextBoxResults)
+     # Show Results Form
+     $formResultsCode.Show() | Out-Null
+}
 Function Create-HelpForm {
      # Build Help Form
      $formHelp = New-Object System.Windows.Forms.Form
@@ -923,7 +994,7 @@ Function Create-HelpForm {
      $System_Drawing_Size.Height = 600
      $System_Drawing_Size.Width = 500
      $formHelp.ClientSize = $System_Drawing_Size
-     $formHelp.DataBindings.DefaultDataSourceUpdateMode = 0
+     #$formHelp.DataBindings.DefaultDataSourceUpdateMode = 0
      $formHelp.MinimumSize = $System_Drawing_Size
      $formHelp.Name = "helpForm"
      $formHelp.StartPosition = 1
@@ -977,8 +1048,12 @@ You may pull up the source code of the script by choosing Help -> View Script fr
      $formHelp.Show() | Out-Null
 }
 
+#---------------------------------
+#endregion
+#---------------------------------
+
 #-------------------------------
-#  Install-Update Main Actions
+#region  Install-Update Main Actions
 #-------------------------------
 
 # Uncomment next line if Script must be run with Admin Rights.
@@ -986,3 +1061,7 @@ Check-IfAdmin
 
 # Show the Form
 Create-MainForm
+
+#---------------------------------
+#endregion
+#---------------------------------
