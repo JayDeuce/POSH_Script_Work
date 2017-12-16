@@ -11,7 +11,7 @@ if ($host.Name -eq 'ConsoleHost') {
      $pswindow.buffersize = $newsize
      # Set Windows Size
      $newsize = $pswindow.windowsize
-     $newsize.height = 50
+     $newsize.height = 43
      $newsize.width = 150
      $pswindow.windowsize = $newsize
 }
@@ -78,8 +78,8 @@ function Start-ConsoleTranscript {
                [string]$dateTime = get-date -format MM-dd-yyyy_HH-mm
                [string]$logFileName = $computerName + '_' + $dateTime + '.txt'
                # Check for my Standard Coding Folder, and act accordingly to its presence or not
-               If (Test-Path -Path 'Coding:\') {
-                    start-transcript -path 'Coding:\Source_Code\PowerShell\Transcripts\$logFileName' | Write-Host -BackgroundColor 'darkgreen' -ForegroundColor 'yellow'
+               If (Test-Path -Path 'C:\Users\Deuce\Dropbox\Jon\Coding\') {
+                    start-transcript -path 'C:\Users\Deuce\Dropbox\Jon\Coding\Source_Code\PowerShell\Transcripts\$logFileName' | Write-Host -BackgroundColor 'darkgreen' -ForegroundColor 'yellow'
                }
                Else {
                     # If Standard Coding Path is not available, ask where to save
@@ -134,7 +134,7 @@ function Goto-Desktop {
 #-----------------------------------------------------------------------
 # Goto-Repos Function
 function Goto-Repos {
-     Set-Location "F:\Dropbox\Jon\Coding\Repos"
+     Set-Location "C:\Users\Deuce\Dropbox\Jon\Coding\Repos"
 }
 # End Goto-Repos Function
 #-----------------------------------------------------------------------
@@ -292,4 +292,3 @@ if ($host.Name -eq 'ConsoleHost') {
 }
 
 #endregion
-
