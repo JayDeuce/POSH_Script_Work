@@ -37,10 +37,9 @@ function Show-TreeItems{
 function New-TableOfContents($path)
 {
     $root = (Get-Item $path).FullName # Sets root of the main folder we are searching in, used to create relative paths within
-    Write-Output "<html><head><title>Table of Contents</title><style>a:link{text-decoration:none;} a:visited{text-decoration:none} a:hover{text-decoration:underline;} a:active{text-decoration:underline;}</style></head><body><h1>eBook Listing</h1>"
+    Write-Output "<html><head><title>Table of Contents</title><style>a:link{text-decoration:none;} a:visited{text-decoration:none} a:hover{text-decoration:underline;} a:active{text-decoration:underline;}</style></head><body><h1>Index</h1>"
     Show-TreeItems $path $root
     Write-Output "</body></html>"
 }
 
-New-TableOfContents "C:\Users\jwdur_000\Desktop" | Out-File "C:\Users\jwdur_000\Desktop\File_Index.html"
-#New-TableOfContents "F:\Dropbox\Jon\eBooks\eBook_Unsorted" | Out-File "F:\Dropbox\Jon\eBooks\eBook_Unsorted\eBook_Unsorted.html"
+New-TableOfContents "C:\Users\Deuce\Desktop" | Out-File "C:\Users\Deuce\Desktop\File_Index.html"
