@@ -3,13 +3,13 @@ function Indent{
     Param([Int]$i)
     $Global:indent = $null
     For ($x=1; $x -le $i; $x++){
-        $Global:indent += ”&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“
+        $Global:indent += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
     }
 }
 
 function Show-TreeItems{
     Param(
-        [string]$location = "", 
+        [string]$location = "",
         [string]$root
     )
 
@@ -18,7 +18,7 @@ function Show-TreeItems{
     ForEach ($child in $children){
         Indent $i
         If ($child.PSIsContainer){
-            
+
             Write-Output "<h3>$indent// $child \\</h3>"
             # Recurse through subdir
             $subPath = $child.FullName
@@ -45,12 +45,11 @@ function Show-TreeItems{
 
 
 function New-TableOfContents($path)
-{    
+{
     $root = (Get-Item $path).FullName # Sets root of the main folder we are searching in, used to create relative paths within
-    Write-Output "<html><head><title>Table of Contents</title><style>a:link{text-decoration:none;} a:visited{text-decoration:none} a:hover{text-decoration:underline;} a:active{text-decoration:underline;}</style></head><body><h1>eBook Listing</h1>"
+    Write-Output "<html><head><title>Table of Contents</title><style>a:link{text-decoration:none;} a:visited{text-decoration:none} a:hover{text-decoration:underline;} a:active{text-decoration:underline;}</style></head><body><h1>eBook Library</h1>"
     Show-TreeItems $path $root
     Write-Output "</body></html>"
 }
 
-New-TableOfContents "F:\Dropbox\eBooks\eBook_Library" | Out-File "F:\Dropbox\eBooks\eBook_Library\ebook_Index.html"
-
+New-TableOfContents "C:\Users\Deuce\Desktop\eBooks\eBook_Library" | Out-File "C:\Users\Deuce\Desktop\eBooks\eBook_Library\ebook_Index.html"
