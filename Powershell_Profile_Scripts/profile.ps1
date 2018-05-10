@@ -44,7 +44,7 @@ $colors.ErrorBackgroundColor = 'red'
 #region System Module Directory
 
 # Load ActiveDirectory module from system modules directory if available
-if(get-module -ListAvailable -Name 'ActiveDirectory') {
+if (get-module -ListAvailable -Name 'ActiveDirectory') {
      Import-Module ActiveDirectory
 }
 
@@ -70,7 +70,7 @@ function Start-ConsoleTranscript {
 
      # Check if I want to start a Transcript, Used if I am trying out commands
      [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
-     [string]$tranYN = [Microsoft.VisualBasic.Interaction]::MsgBox('Would you Like to Start a Transcript?', 'YesNo, DefaultButton2',  'Start Transcript?')
+     [string]$tranYN = [Microsoft.VisualBasic.Interaction]::MsgBox('Would you Like to Start a Transcript?', 'YesNo, DefaultButton2', 'Start Transcript?')
      # Check the answer for 'Yes' or 'No' and act upon the choice
      switch ($tranYN) {
           Yes {
@@ -87,7 +87,7 @@ function Start-ConsoleTranscript {
                     If ($logPath -eq '') {
                          # Error handling if answer is blank or Cancel is hit
                          Write-Warning 'HEY!!!, No transcript save file location set, defaulting to Transcript Off!!'
-                         [Microsoft.VisualBasic.Interaction]::MsgBox('Transcript is off!', 'OKOnly, Exclamation',  'Transcript Status') | Out-Null
+                         [Microsoft.VisualBasic.Interaction]::MsgBox('Transcript is off!', 'OKOnly, Exclamation', 'Transcript Status') | Out-Null
                     }
                     else {
                          $logPath = $logPath.TrimEnd('\')
@@ -141,7 +141,7 @@ function Goto-Repos {
 # Out-Notepad Function
 function Out-Notepad {
      param (
-          [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
+          [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
           [Object]
           [AllowEmptyString()]
           $Object,
@@ -159,8 +159,8 @@ function Out-Notepad {
      }
      end {
           $text = $al |
-          Format-Table -AutoSize -Wrap |
-          Out-String -Width $Width
+               Format-Table -AutoSize -Wrap |
+               Out-String -Width $Width
 
           $process = Start-Process notepad -PassThru
           $null = $process.WaitForInputIdle()
@@ -222,6 +222,22 @@ function Get-GitInfoForDirectory {
 }
 # End Get-GitInfoForDirectory Function
 #-----------------------------------------------------------------------
+# Start Get-PSVersion Function
+function Get-PSVersion {
+     Param (
+     )
+     Begin {
+          $version = $PSVersionTable
+     }
+     Process {
+          Write-Host ($version | Format-Table | Out-String)
+     }
+     End {
+
+     }
+}
+# End Get-PSVersion Function
+#-----------------------------------------------------------------------
 # Show-MyAliasList Function
 function Show-MyAliasList {
      Write-Output {
@@ -231,10 +247,11 @@ function Show-MyAliasList {
           gh      Get-Help
           gtd     Goto-Desktop
           notepad Out-Notepad
+          psv     Get-PSVersion
           rdp     Start-RDP
           repos   Goto-Repo
-          rt      Start-ConsoleTranscript
-          st      Stop-Transcript
+          staTr   Start-ConsoleTranscript
+          stoTr   Stop-Transcript
      }
 }
 # End Show-MyAliasList Function
@@ -260,7 +277,9 @@ function prompt {
           Write-Host "{$}-{$($(Get-Location).Path.replace($HOME,'~'))}" -NoNewline -ForegroundColor Green
      }
      Write-Host $(Get-GitInfoForDirectory) -ForegroundColor Magenta
-     Write-Host $(if ($nestedpromptlevel -ge 1) {'>>'}) -NoNewline
+     Write-Host $(if ($nestedpromptlevel -ge 1) {
+               '>>'
+          }) -NoNewline
      Write-Host "=======================================================================" -ForegroundColor Blue
      return "--> "
 }
@@ -276,10 +295,11 @@ Set-Alias gh Get-Help
 Set-Alias gtd Goto-Desktop
 Set-Alias ma Show-MyAliasList
 Set-Alias notepad Out-Notepad
+Set-Alias psv Get-PSVersion
 Set-Alias repos Goto-Repos
 Set-Alias rdp Start-RDP
-Set-Alias rt Start-ConsoleTranscript
-Set-Alias st Stop-Transcript
+Set-Alias staTr Start-ConsoleTranscript
+Set-Alias stoTr Stop-Transcript
 
 #endregion
 
