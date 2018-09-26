@@ -243,6 +243,8 @@ Function Relaunch-AsAdmin {
      }
 }
 
+#-----------------
+
 # ====================================================================================
 #  Check-RunningProcessesAndPercentages
 #  Func: Check the listed machines running processes and get a report
@@ -257,6 +259,8 @@ Get-WmiObject Win32_PerfFormattedData_PerfProc_Process -ComputerName localhost |
      ForEach-Object {
      "Process={0,-25} CPU_Usage={1,-12} Memory_Usage_(MB)={2,-16}" -f $_.Name, $_.PercentProcessorTime, ([math]::Round($_.WorkingSetPrivate / 1Mb, 2))
 }
+
+#-----------------
 
 # ====================================================================================
 #  Check-ForStaticIP
@@ -275,4 +279,35 @@ foreach ($ip in $iplist) {
           Name = 'IpAddress'; Expression = {$_.IpAddress -join '; '}
      }, DNSHostname |
           Export-Csv "list.csv" -Append -NoTypeInformation
+}
+
+#-----------------
+
+# ====================================================================================
+#  Get-LastloggedOnUSer
+#  Func: Get the Last logged on user for a Windows Workstation
+#  Desc: Get the Last logged on user for a WIndows Workstation, to different ways
+# ====================================================================================
+
+# 1: Uses Explorer process, good for when someon is currently logged on
+$lastLoggedUserSAM = (Get-WmiObject -Class win32_process -ComputerName $pc | Where-Object name -Match explorer).getowner().user | Select-Object -First 1
+# 2: Uses profile folders and the last write dates in C:\Users Folder
+$lastLoggedUserSAM = Get-ChildItem "\\$pc\c$\Users" | Sort-Object LastWriteTime -Descending | Select-Object Name -first 1
+
+#-----------------
+
+# ====================================================================================
+#  Get-DropboxPath
+#  Func: Find the Local Dropbox Folder
+#  Desc: Finds the local Dropbox folder, by searching Info.json in the
+#  $ENV:LOCALAPPDATA\Dropbox\ Folder
+# ====================================================================================
+function Get-DropBoxPath {
+     if (Test-Path "$ENV:LOCALAPPDATA\Dropbox\info.json") {
+          [string]$dropboxPath = Get-Content "$ENV:LOCALAPPDATA\Dropbox\info.json" -ErrorAction Stop | ConvertFrom-Json | ForEach-Object 'personal' | ForEach-Object 'path'
+          return $dropboxPath
+     }
+     Else {
+          Write-Host "Dropbox Not Found. Repos alias will not function" -BackgroundColor "red" -ForegroundColor "White"
+     }
 }

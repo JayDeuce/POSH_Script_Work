@@ -1,6 +1,6 @@
 #region Set Windows Size and Shape in Console
 
-if ($host.Name -eq 'ConsoleHost') {
+if ($host.Name -eq "ConsoleHost") {
      # Set Variable
      $pshost = get-host
      $pswindow = $pshost.ui.rawui
@@ -20,16 +20,16 @@ if ($host.Name -eq 'ConsoleHost') {
 
 #=======================================================================
 
-#region Set Colors of 'Write-' Messages
+#region Set Colors of "Write-" Messages
 
 $colors = $host.PrivateData
-$colors.VerboseForegroundColor = 'white'
-$colors.VerboseBackgroundColor = 'blue'
-$colors.WarningForegroundColor = 'yellow'
-$colors.WarningBackgroundColor = 'darkgreen'
+$colors.VerboseForegroundColor = "white"
+$colors.VerboseBackgroundColor = "blue"
+$colors.WarningForegroundColor = "yellow"
+$colors.WarningBackgroundColor = "darkgreen"
 # Comment out the next two lines to set the default Fore=Red, Back=black
-$colors.ErrorForegroundColor = 'white'
-$colors.ErrorBackgroundColor = 'red'
+$colors.ErrorForegroundColor = "white"
+$colors.ErrorBackgroundColor = "red"
 
 #endregion
 
@@ -44,7 +44,7 @@ $colors.ErrorBackgroundColor = 'red'
 #region System Module Directory
 
 # Load ActiveDirectory module from system modules directory if available
-if (get-module -ListAvailable -Name 'ActiveDirectory') {
+if (get-module -ListAvailable -Name "ActiveDirectory") {
      Import-Module ActiveDirectory
 }
 
@@ -65,39 +65,51 @@ function Check-IfNotPathCreate([string]$FolderPath) {
 }
 # End Check-IfNotPathCreate Function
 #-----------------------------------------------------------------------
+# Get-DropBoxPath Function
+function Get-DropBoxPath {
+     if (Test-Path "$ENV:LOCALAPPDATA\Dropbox\info.json") {
+          [string]$dropboxPath = Get-Content "$ENV:LOCALAPPDATA\Dropbox\info.json" -ErrorAction Stop | ConvertFrom-Json | ForEach-Object 'personal' | ForEach-Object 'path'
+          return $dropboxPath
+     }
+     Else {
+          Write-Host "Dropbox Not Found. Repos alias will not function" -BackgroundColor "red" -ForegroundColor "White"
+     }
+}
+# End Get-DropBoxPath Function
+#-----------------------------------------------------------------------
 # Start-ConsoleTranscript Function
 function Start-ConsoleTranscript {
 
      # Check if I want to start a Transcript, Used if I am trying out commands
-     [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
-     [string]$tranYN = [Microsoft.VisualBasic.Interaction]::MsgBox('Would you Like to Start a Transcript?', 'YesNo, DefaultButton2', 'Start Transcript?')
-     # Check the answer for 'Yes' or 'No' and act upon the choice
+     [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic") | Out-Null
+     [string]$tranYN = [Microsoft.VisualBasic.Interaction]::MsgBox("Would you Like to Start a Transcript?", "YesNo, DefaultButton2", "Start Transcript?")
+     # Check the answer for "Yes" or "No" and act upon the choice
      switch ($tranYN) {
           Yes {
                [string]$computerName = $env:COMPUTERNAME
                [string]$dateTime = get-date -format MM-dd-yyyy_HH-mm
-               [string]$logFileName = $computerName + '_' + $dateTime + '.txt'
+               [string]$logFileName = $computerName + "_" + $dateTime + ".txt"
                # Check for my Standard Coding Folder, and act accordingly to its presence or not
-               If (Test-Path -Path 'C:\Users\Deuce\Dropbox\Jon\Coding\') {
-                    start-transcript -path 'C:\Users\Deuce\Dropbox\Jon\Coding\Source_Code\PowerShell\Transcripts\$logFileName' | Write-Host -BackgroundColor 'darkgreen' -ForegroundColor 'yellow'
+               If (Test-Path -Path "C:\Users\Deuce\Dropbox\Jon\Coding\") {
+                    start-transcript -path "C:\Users\Deuce\Dropbox\Jon\Coding\Source_Code\PowerShell\Transcripts\$logFileName" | Write-Host -BackgroundColor "darkgreen" -ForegroundColor "yellow"
                }
                Else {
                     # If Standard Coding Path is not available, ask where to save
-                    [string]$logPath = [Microsoft.VisualBasic.Interaction]::InputBox('Where would you like to save the transcript file?', 'Trascript Path')
-                    If ($logPath -eq '') {
+                    [string]$logPath = [Microsoft.VisualBasic.Interaction]::InputBox("Where would you like to save the transcript file?", "Trascript Path")
+                    If ($logPath -eq "") {
                          # Error handling if answer is blank or Cancel is hit
-                         Write-Warning 'HEY!!!, No transcript save file location set, defaulting to Transcript Off!!'
-                         [Microsoft.VisualBasic.Interaction]::MsgBox('Transcript is off!', 'OKOnly, Exclamation', 'Transcript Status') | Out-Null
+                         Write-Warning "HEY!!!, No transcript save file location set, defaulting to Transcript Off!!"
+                         [Microsoft.VisualBasic.Interaction]::MsgBox("Transcript is off!", "OKOnly, Exclamation", "Transcript Status") | Out-Null
                     }
                     else {
-                         $logPath = $logPath.TrimEnd('\')
+                         $logPath = $logPath.TrimEnd("\")
                          Check-IfNotPathCreate($logPath)
-                         start-transcript -path '$logPath\$logFileName' | Write-Host -BackgroundColor 'darkgreen' -ForegroundColor 'yellow'
+                         start-transcript -path "$logPath\$logFileName" | Write-Host -BackgroundColor "darkgreen" -ForegroundColor "yellow"
                     }
                }
           }
           No {
-               Write-Host 'Transcripting is turned off for this console session.' -BackgroundColor 'darkgreen' -ForegroundColor 'yellow'
+               Write-Host "Transcripting is turned off for this console session." -BackgroundColor "darkgreen" -ForegroundColor "yellow"
           }
      }
 }
@@ -108,7 +120,7 @@ function Start-RDP {
      param (
           [string]$ip
      )
-     Start-Process -FilePath mstsc -ArgumentList '/admin /w:1024 /h:768 /v:$ip'
+     Start-Process -FilePath mstsc -ArgumentList "/admin /w:1024 /h:768 /v:$ip"
 }
 # End Start-RDP Function
 #-----------------------------------------------------------------------
@@ -117,11 +129,11 @@ function Start-Chrome {
      param (
           [string]$webAddy
      )
-     if ($webAddy -eq '') {
-          Start-Process -FilePath 'chrome.exe'
+     if ($webAddy -eq "") {
+          Start-Process -FilePath "chrome.exe"
      }
      else {
-          Start-Process -FilePath 'chrome.exe' $webAddy
+          Start-Process -FilePath "chrome.exe" $webAddy
      }
 }
 # End Start-Chrome Function
@@ -134,11 +146,14 @@ function Goto-Desktop {
 #-----------------------------------------------------------------------
 # Goto-Repos Function
 function Goto-Repos {
-     Set-Location "C:\Users\Deuce\Dropbox\Jon\Coding\Repos"
+     if ($dropboxPath.Length -ne 0) {
+          Set-Location "$dropboxPath\Jon\Coding\Repos"
+     }
 }
 # End Goto-Repos Function
 #-----------------------------------------------------------------------
 # Out-Notepad Function
+# Send pipeline to Notedpad, does not open files
 function Out-Notepad {
      param (
           [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -194,19 +209,19 @@ function Get-GitInfoForDirectory {
      process {
           try {
                foreach ($branch in $gitBranch) {
-                    if ($branch -match '^\* (.*)') {
-                         $gitBranchName = 'Git Repo - Branch: ' + $matches[1].ToUpper()
+                    if ($branch -match "^\* (.*)") {
+                         $gitBranchName = "Git Repo - Branch: " + $matches[1].ToUpper()
                     }
                }
 
-               if (!($gitStatus -like '*working tree clean*')) {
-                    $gitStatusMark = ' ' + '/' + ' Status: ' + 'NEEDS UPDATING'
+               if (!($gitStatus -like "*working tree clean*")) {
+                    $gitStatusMark = " " + "/" + " Status: " + "NEEDS UPDATING"
                }
-               elseif ($gitStatus -like '*Your branch is ahead*') {
-                    $gitStatusMark = ' ' + '/' + ' Status: ' + 'PUBLISH COMMITS'
+               elseif ($gitStatus -like "*Your branch is ahead*") {
+                    $gitStatusMark = " " + "/" + " Status: " + "PUBLISH COMMITS"
                }
                else {
-                    $gitStatusMark = ' ' + '/' + ' Status: ' + 'UP TO DATE'
+                    $gitStatusMark = " " + "/" + " Status: " + "UP TO DATE"
                }
           }
           catch {
@@ -215,7 +230,7 @@ function Get-GitInfoForDirectory {
 
      end {
           if ($gitBranch) {
-               $gitTextLine = "`n" + ' {' + $gitBranchName + $gitStatusMark + '}'
+               $gitTextLine = "`n" + " {" + $gitBranchName + $gitStatusMark + "}"
           }
           return $gitTextLine
      }
@@ -270,15 +285,15 @@ function prompt {
 
      Write-Host "`n=======================================================================" -ForegroundColor Blue
      Write-Host "($dateFormat)" -ForegroundColor Yellow
-     if ($principal.IsInRole('Administrators')) {
+     if ($principal.IsInRole("Administrators")) {
           Write-Host "{#}-{$($(Get-Location).Path)}" -NoNewline -ForegroundColor Red
      }
      else {
-          Write-Host "{$}-{$($(Get-Location).Path.replace($HOME,'~'))}" -NoNewline -ForegroundColor Green
+          Write-Host "{$}-{$($(Get-Location).Path.replace($HOME,"~"))}" -NoNewline -ForegroundColor Green
      }
      Write-Host $(Get-GitInfoForDirectory) -ForegroundColor Magenta
      Write-Host $(if ($nestedpromptlevel -ge 1) {
-               '>>'
+               ">>"
           }) -NoNewline
      Write-Host "=======================================================================" -ForegroundColor Blue
      return "--> "
@@ -307,8 +322,9 @@ Set-Alias stoTr Stop-Transcript
 
 #region Command/Function Call
 
-if ($host.Name -eq 'ConsoleHost') {
+if ($host.Name -eq "ConsoleHost") {
      Show-MyAliasList
+     $dropboxPath = Get-DropBoxPath
 }
 
 #endregion
