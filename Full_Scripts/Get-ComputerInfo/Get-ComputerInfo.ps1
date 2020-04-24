@@ -9,8 +9,8 @@
           - PC Name
           - PC Serial #
           - PC Manufacturer
-          - PC Model     
-          - PC Type (Virtual/Physical)          
+          - PC Model
+          - PC Type (Virtual/Physical)
           - Last Logged On User
           - Operating System Type
           - Operating System Name
@@ -46,7 +46,7 @@
 .PARAMETER  csvReportName
      (Default = "Get-ComputerInfo")
 
-     The name you want the csv report to be called, Script automtically adds Date and time to end of filename. 
+     The name you want the csv report to be called, Script automtically adds Date and time to end of filename.
      Defaults to "Get-ComputerInfo-2020-04-13_10:31:41" (Date/Time change based on Sysem Date Variable when ran)
 
 .PARAMETER errorLogPath
@@ -64,7 +64,7 @@
      (Default = $false)
 
      Switch to set whether the output should go to the Console screen instead of a file
-     
+
 .PARAMETER xlsxOutput
      (Default = $false)
 
@@ -197,9 +197,7 @@ BEGIN {
           [string]$date = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
           return $date
      }
-
      function Convert-CsvToXls {
-
           Param (
                [string]$inputFilePath,
                [string]$outputFilePath
@@ -246,7 +244,7 @@ BEGIN {
           [string]$csvReport = "$csvReportPath\$csvReportName" + "-" + (Get-FormattedDate) + ".csv"
      }
      [string]$errorLog = "$errorLogPath\$errorLogName.log"
-     
+
      # Check the report and log folder paths and create if necessary
      Test-IfNotPathCreate($csvReportPath)
      Test-IfNotPathCreate($errorLogPath)
@@ -258,7 +256,7 @@ PROCESS {
      # Loop to test each PC in the $computerName array
      ForEach ($pc in $computerName) {
           [string]$formattedDate = Get-FormattedDate
-          
+
           # Send a progress message to user in the console
           Write-Host -Object "Getting System Info for $pc"
 
@@ -280,17 +278,16 @@ PROCESS {
           catch {
                $logMessage = "$formattedDate - $($pc.ToUpper()): CIM failed to connect, usaully due to DNS issues or you do not have Administrator rights to the remote machine"
                Write-Host $logMessage
-               Write-ToLogFile($logMessage)               
+               Write-ToLogFile($logMessage)
                Add-Content "$errorLogPath\fail_list.txt" $pc
                continue
           }
-          
+
           # Main Program
           # Gather all computer info
           # Run CIM Calls
           $osInfo = Get-CimInstance -ClassName Win32_operatingSystem -CimSession $cimSession
           $sys = Get-CimInstance -ClassName Win32_ComputerSystem -CimSession $cimSession -Property Name, Model, Manufacturer, Domain
-          #$netAdapter = Get-CimInstance -ClassName Win32_NetworkAdapter -CimSession $cimSession | Where-Object { ($_.PhysicalAdapter -eq $true) }
           $netIpAddress = Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration -CimSession $cimSession | Where-Object { $_.IPEnabled -eq $True }
           $RAM = Get-CimInstance -ClassName Win32_PhysicalMemory -CimSession $cimSession
           $cpu = Get-CimInstance -ClassName Win32_Processor -CimSession $cimSession
@@ -313,7 +310,7 @@ PROCESS {
                $lastLoggedUser = $lastLoggedUserSAM
           }
           else {
-               $lastLoggedUserDisplay = ([adsisearcher]"samaccountname=$lastLoggedUserSAM").FindOne().Properties["displayname"] 
+               $lastLoggedUserDisplay = ([adsisearcher]"samaccountname=$lastLoggedUserSAM").FindOne().Properties["displayname"]
                $lastLoggedUser = $lastLoggedUserDisplay.Item(0).ToString()
           }
           $osCapt = $osInfo.Caption
@@ -366,13 +363,12 @@ PROCESS {
           $spMajVer = $osInfo.ServicePackMajorVersion.ToString()
           $spMinVer = $osInfo.ServicePackMinorVersion.ToString()
           $serPackVer = "SP $spMajVer.$spMinVer"
-          $cpuName = $cpu.Name | Get-Unique 
+          $cpuName = $cpu.Name | Get-Unique
           $cpuCores = $cpu.NumberOfCores | Get-Unique
           $cpuLogProc = $cpu.NumberOfLogicalProcessors | Get-Unique
           $totalRam = [Math]::Round((($ram | Measure-Object -property "Capacity" -Sum).Sum) / 1GB)
           $actIPAddr = (@($netIpAddress | Select-Object -ExpandProperty IPAddress | Where-Object { $_ -notlike "*:*" }) -join ", ")
           $actMacAddr = (@($netIpAddress.MACAddress) -join ", ")
-          #$allMacAddr = (@($netAdapter.MACAddress) -join ", ")
 
           # Create new custom object and add all porperties
           $sysInfo = New-Object -TypeName PSObject
@@ -393,9 +389,8 @@ PROCESS {
           $sysInfo | Add-Member -MemberType NoteProperty -Name "CPU # of Logical Processors" -Value $cpuLogProc
           $sysInfo | add-member -memberType NoteProperty -Name "Total Memory (GB)" -value $totalRam
           $sysInfo | Add-Member -MemberType NoteProperty -Name "Active Domain Or WorkGroup" -Value $domain
-          $sysInfo | Add-Member -MemberType NoteProperty -Name "Active IP Address" -Value $actIPAddr          
+          $sysInfo | Add-Member -MemberType NoteProperty -Name "Active IP Address" -Value $actIPAddr
           $sysInfo | Add-Member -MemberType NoteProperty -Name "Active Network Adapter MAC Address" -Value $actMacAddr
-          #$sysInfo | Add-Member -MemberType NoteProperty -Name "ALL Network Adapter MAC Addresses" -Value $allMacAddr
 
           # Add custom object to results array
           [array]$results += $sysInfo
@@ -417,7 +412,7 @@ END {
                Remove-Item -Path $tempCSV
           }
           Else {
-               
+
                $results | Export-Csv -Path $csvReport -NoTypeInformation -Force
           }
      }
