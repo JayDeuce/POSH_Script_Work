@@ -197,7 +197,9 @@ BEGIN {
           [string]$date = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
           return $date
      }
+
      function Convert-CsvToXls {
+
           Param (
                [string]$inputFilePath,
                [string]$outputFilePath
@@ -288,6 +290,7 @@ PROCESS {
           # Run CIM Calls
           $osInfo = Get-CimInstance -ClassName Win32_operatingSystem -CimSession $cimSession
           $sys = Get-CimInstance -ClassName Win32_ComputerSystem -CimSession $cimSession -Property Name, Model, Manufacturer, Domain
+          $netAdapter = Get-CimInstance -ClassName Win32_NetworkAdapter -CimSession $cimSession | Where-Object { ($_.PhysicalAdapter -eq $true) }
           $netIpAddress = Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration -CimSession $cimSession | Where-Object { $_.IPEnabled -eq $True }
           $RAM = Get-CimInstance -ClassName Win32_PhysicalMemory -CimSession $cimSession
           $cpu = Get-CimInstance -ClassName Win32_Processor -CimSession $cimSession
@@ -369,6 +372,7 @@ PROCESS {
           $totalRam = [Math]::Round((($ram | Measure-Object -property "Capacity" -Sum).Sum) / 1GB)
           $actIPAddr = (@($netIpAddress | Select-Object -ExpandProperty IPAddress | Where-Object { $_ -notlike "*:*" }) -join ", ")
           $actMacAddr = (@($netIpAddress.MACAddress) -join ", ")
+          $allMacAddr = (@($netAdapter.MACAddress) -join ", ")
 
           # Create new custom object and add all porperties
           $sysInfo = New-Object -TypeName PSObject
@@ -391,6 +395,7 @@ PROCESS {
           $sysInfo | Add-Member -MemberType NoteProperty -Name "Active Domain Or WorkGroup" -Value $domain
           $sysInfo | Add-Member -MemberType NoteProperty -Name "Active IP Address" -Value $actIPAddr
           $sysInfo | Add-Member -MemberType NoteProperty -Name "Active Network Adapter MAC Address" -Value $actMacAddr
+          $sysInfo | Add-Member -MemberType NoteProperty -Name "ALL Network Adapter MAC Addresses" -Value $allMacAddr
 
           # Add custom object to results array
           [array]$results += $sysInfo
