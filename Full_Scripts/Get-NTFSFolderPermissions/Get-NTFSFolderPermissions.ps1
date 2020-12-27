@@ -1,14 +1,155 @@
 #Requires -Version 3
 
+<#
+.SYNOPSIS
+    Gather the NTFS Folder permissions for targeted path's Access Control List; including child folders,
+    and output to CSV/EXCEL file or Console Window.
+
+.DESCRIPTION
+    This sript will allow you to pull a breakdown of all groups and their NTFS permissions and inheritance
+    structures for a path or paths you pass to the script. It will output a report to a CSV/EXCEL file or to the
+    console window based on switch parameters passed from the command line.
+
+    Default information included is:
+    - Full Folder Name
+    - User-Group Name (From IdentityReference Property)
+    - Access Control Type
+    - File System Rights
+    - If Permissions are Inherited from Parent Folder
+
+    Using parameter switch, also includes:
+    - Inheritence Flags
+    - Propagation Flags
+    - Owner of the Folder
+
+.PARAMETER rootPath
+    (MANDATORY = TRUE)
+
+    The path that you want to scan and pull NTFS Permissions from. You can use the "Get-Content" cmdlet to
+    pull a list of paths as well from a text file.
+
+.PARAMETER reportPath
+    (MANDATORY = False)
+
+    (DEFAULT: "$ENV:USERPROFILE\Documents")
+
+    Path to folder that the report will be saved to.
+
+.PARAMETER reportName
+    (MANDATORY = False)
+
+    (DEAULT: "Get-NTFSFolderPermissions")
+
+    Name used for the report. Final name will include the Folder name and the date and time.
+
+    For Example: "Get-NTFSFolderPermissions-Folder1-2020-10-07_23-24-52.csv"
+
+.PARAMETER includeFlags
+    (MANDATORY = False)
+
+    (DEFAULT: False)
+
+    Switch to decide if you want to have the Inheritence and Propagation Flags of the folder
+    being scanned to be icluded in the report.
+
+.PARAMETER includeOwner
+    (MANDATORY = False)
+
+    (DEFAULT: False)
+
+    Switch to decide if you want to include the Owner of the folder being scanned in the report.
+
+.PARAMETER consoleOutput
+    (MANDATORY = False)
+
+    (DEFAULT: False)
+
+    Switch to push the output to the Console Window instead of a CSV/EXCEL file.
+
+.PARAMETER xlsxOutput
+    (MANDATORY = False)
+
+    (DEFAULT: False)
+
+    Switch to push the reprot to an EXCEL file instead of a CSV file. NOTE: MUST HAVE EXCEL
+    INSTALLED TO THE PC RUNNING THE SCRIPT.
+
+    For Example: "Get-NTFSFolderPermissions-Folder1-2020-10-07_23-24-52.xlsx"
+
+.EXAMPLE
+    .\Get-NTFSFolderPermissions.ps1 -rootPath "C:\Users"
+
+    Description:
+
+    Pulls the folder NTFS permissions from the Path "C:\Users" and its child folders then outputs
+    to a CSV file.
+
+.EXAMPLE
+    .\Get-NTFSFolderPermissions.ps1 -rootPath "C:\Users" -reportPath "C:\SavedReport"
+
+    Description:
+
+    Pulls the folder NTFS permissions from the Path "C:\Users" and its child folders then outputs
+    to a CSV file located in the "C:\SavedReport".
+
+.EXAMPLE
+    .\Get-NTFSFolderPermissions.ps1 -rootPath "C:\Users" -reportPath "C:\SavedReport" -reportName "SearchFolderPerms"
+
+    Description:
+
+    Pulls the folder NTFS permissions from the Path "C:\Users" and its child folders then outputs
+    to a CSV file named "SearchFolderPerms-Folder1-2020-10-07_23-24-52.csv" located in the "C:\SavedReport".
+
+.EXAMPLE
+    .\Get-NTFSFolderPermissions.ps1 -rootPath "C:\Users" -reportPath "C:\SavedReport" -reportName "SearchFolderPerms" -includeFlags
+
+    Description:
+
+    Pulls the folder NTFS permissions from the Path "C:\Users" and its child folders to include Inheritence
+    and Propagation Flags then outputs to a CSV file named "SearchFolderPerms-Folder1-2020-10-07_23-24-52.csv"
+    located in the "C:\SavedReport".
+
+.EXAMPLE
+    .\Get-NTFSFolderPermissions.ps1 -rootPath "C:\Users" -reportPath "C:\SavedReport" -reportName "SearchFolderPerms" -includeFlags -includeOwner
+
+    Description:
+
+    Pulls the folder NTFS permissions from the Path "C:\Users" and its child folders to include Inheritence
+    and Propagation Flags, as well as the Owner's username then outputs to a CSV file named
+    "SearchFolderPerms-Folder1-2020-10-07_23-24-52.csv" located in the "C:\SavedReport".
+
+.EXAMPLE
+    .\Get-NTFSFolderPermissions.ps1 -rootPath "C:\Users" -reportPath "C:\SavedReport" -reportName "SearchFolderPerms" -includeFlags -includeOwner -xlsxOutput
+
+    Description:
+
+    Pulls the folder NTFS permissions from the Path "C:\Users" and its child folders to include Inheritence
+    and Propagation Flags, as well as the Owner's username then outputs to a EXCEL file named
+    "SearchFolderPerms-Folder1-2020-10-07_23-24-52.xlsx" located in the "C:\SavedReport".
+
+.NOTES
+     Name: Get-NTFSFolderPermissions.ps1
+     Author: Jonathan Durant
+     Version: 1.0
+     DateUpdated: 9 Oct 2020
+
+.INPUTS
+     Single object or Array of objects
+
+.OUTPUTS
+     CSV File or xlsx File
+
+#>
+
 [CmdletBinding()]
 param
 (
     [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
     [string[]]$rootPath,
     [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
-    [string[]]$csvReportPath = "$ENV:USERPROFILE\Documents",
+    [string[]]$reportPath = "$ENV:USERPROFILE\Documents",
     [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
-    [string[]]$csvReportName = "Get-NTFSPermissions",
+    [string[]]$reportName = "Get-NTFSFolderPermissions",
     [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
     [switch]$includeFlags = $false,
     [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
@@ -69,7 +210,8 @@ Begin {
         $excel.Quit()
     }
     function Invoke-cmdletWithProgressBar {
-        <#    .SYNOPSIS
+<#
+    .SYNOPSIS
         Run a long running command with a progress bar, if there is no other way to use write-progress bar.
 
     .DESCRIPTION
@@ -145,7 +287,7 @@ Process {
     $currentPath = 0
 
     # Check the report folder paths and create if necessary
-    Test-IfNotPathCreate($csvReportPath)
+    Test-IfNotPathCreate($reportPath)
 
     # Paths loop
     foreach ($path in $rootPath) {
@@ -163,10 +305,10 @@ Process {
 
         # Set Filename for Output file, Uses the folder name as part of the file name.
         if ($xlsxOutput -eq $True) {
-            [string]$xlsxReport = "$csvReportPath\$csvReportName" + "-" + (Split-Path $path -Leaf) + "-" + (Get-FormattedDate) + ".xlsx"
+            [string]$xlsxReport = "$reportPath\$reportName" + "-" + (Split-Path $path -Leaf) + "-" + (Get-FormattedDate) + ".xlsx"
         }
         else {
-            [string]$csvReport = "$csvReportPath\$csvReportName" + "-" + (Split-Path $path -Leaf) + "-" + (Get-FormattedDate) + ".csv"
+            [string]$csvReport = "$reportPath\$reportName" + "-" + (Split-Path $path -Leaf) + "-" + (Get-FormattedDate) + ".csv"
         }
 
         # Progress Bar for Path Listing

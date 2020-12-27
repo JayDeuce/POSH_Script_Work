@@ -1,5 +1,6 @@
-function Invoke-cmdletWithProgressBar {
-        <#    .SYNOPSIS
+function Invoke-cmdWithProgressBar {
+<#
+    .SYNOPSIS
         Run a long running command with a progress bar, if there is no other way to use write-progress bar.
 
     .DESCRIPTION
@@ -20,7 +21,7 @@ function Invoke-cmdletWithProgressBar {
 
         This function is designed for 0 or 1 parameter to be passed, usually a path like in Get-ChildItem
         To increase parameters, add a param in the param block and then add a call to .addparameter in
-        the ".addscript" line (See commentign examples addition in the function). Ensure the Scriptblock
+        the ".addscript" line (See commenting examples addition in the function). Ensure the Scriptblock
         sent to "Task" has the parameter listed. Finally pass the parameter when calling the function.
 #>
         param
@@ -70,8 +71,8 @@ function Invoke-cmdletWithProgressBar {
     }
 
 
-#Just for testing do not use except for example
-$paths = Get-Content 'C:\pathList.txt'
+# Just for testing and example do not use except for example, Uncomment and change $paths value to test
+<# $paths = Get-Content 'C:\pathList.txt'
 
 foreach ($path in $paths) {
 
@@ -80,11 +81,8 @@ foreach ($path in $paths) {
         Get-ChildItem $sbParam -Recurse -Directory -ErrorAction SilentlyContinue
     }
 
-    $folders = Invoke-WithProgressBar -task $scriptBlock -message "Gathering Data on Folders, one Moment..." -sbParam $path
+    $folders = Invoke-cmdWithProgressBar -task $scriptBlock -message "Gathering Data on Folders, one Moment..." -sbParam $path
 
-    Write-Host $folders
-    Write-Host " "
-    Write-Host "Break ------------------------------------------------------------------------"
-    Write-Host " "
+    Out-Host $folders
     Clear-Variable folders
-}
+} #>
