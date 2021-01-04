@@ -4,16 +4,19 @@ if ($host.Name -eq "ConsoleHost") {
     # Set Variable
     $pshost = Get-Host
     $pswindow = $pshost.ui.rawui
-    # Set Screen Buffer Size
-    $newsize = $pswindow.buffersize
-    $newsize.height = 300
-    $newsize.width = 150
-    $pswindow.buffersize = $newsize
-    # Set Windows Size
-    $newsize = $pswindow.windowsize
-    $newsize.height = 38
-    $newsize.width = 150
-    $pswindow.windowsize = $newsize
+    if (!($ENV:WT_SESSION)) {
+        # Set Screen Buffer Size
+        $newsize = $pswindow.buffersize
+        $newsize.height = 300
+        $newsize.width = 150
+        $pswindow.buffersize = $newsize
+
+        # Set Windows Size
+        $newsize = $pswindow.windowsize
+        $newsize.height = 38
+        $newsize.width = 150
+        $pswindow.windowsize = $newsize
+    }
 }
 
 #endregion
@@ -128,7 +131,7 @@ function Set-DesktopPath {
 #-----------------------------------------------------------------------
 # Set-ReposPath Function
 function Set-ReposPath {
-    if ((Test-Path -Path F:\Coding)){
+    if ((Test-Path -Path F:\Coding)) {
         Set-Location "F:\Coding\"
     }
     else {
@@ -199,7 +202,7 @@ function Get-GitInfoForDirectory {
                 $gitStatusMark = " " + "/" + " Status: " + "PUBLISH COMMITS"
             }
             elseif ($gitstatus -like "*Your branch is behind*") {
-                    $gitstatusMark = " " + "/" + " Status: " + "NEED TO PULL"
+                $gitstatusMark = " " + "/" + " Status: " + "NEED TO PULL"
             }
             else {
                 $gitStatusMark = " " + "/" + " Status: " + "UP TO DATE"
