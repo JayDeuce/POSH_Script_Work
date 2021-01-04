@@ -122,13 +122,19 @@ function Start-Edge {
 #-----------------------------------------------------------------------
 # Set-DesktopPath Function
 function Set-DesktopPath {
-    Set-Location $env:USERPROFILE\Desktop
+    Set-Location "$env:USERPROFILE\Desktop"
 }
 # End Set-DesktopPath Function
 #-----------------------------------------------------------------------
 # Set-ReposPath Function
 function Set-ReposPath {
-    Set-Location "F:\Coding\"
+    if ((Test-Path -Path F:\Coding)){
+        Set-Location "F:\Coding\"
+    }
+    else {
+        Set-Location "$env:USERPROFILE\Documents\Coding"
+    }
+
 }
 # End Set-ReposPath Function
 #-----------------------------------------------------------------------
