@@ -67,7 +67,7 @@ function Test-IfNotPathCreate([string]$FolderPath) {
 # Start-ConsoleTranscript Function
 function Start-ConsoleTranscript {
 
-    # Check if I want to start a Transcript, Used if I am trying out commands
+    # Check if I want to start a Transcript, Used if trying out commands
     [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic") | Out-Null
     [string]$tranYN = [Microsoft.VisualBasic.Interaction]::MsgBox("Would you Like to Start a Transcript?", "YesNo, DefaultButton2", "Start Transcript?")
     # Check the answer for "Yes" or "No" and act upon the choice
