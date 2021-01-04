@@ -128,7 +128,7 @@ function Set-DesktopPath {
 #-----------------------------------------------------------------------
 # Set-ReposPath Function
 function Set-ReposPath {
-    Set-Location "$env:USERPROFILE\Documents\Coding"
+    Set-Location "F:\Coding\"
 }
 # End Set-ReposPath Function
 #-----------------------------------------------------------------------
@@ -172,6 +172,7 @@ function Get-GitInfoForDirectory {
     )
 
     begin {
+        git remote update | Out-Null
         $gitBranch = (git branch)
         $gitStatus = (git status)
         $gitTextLine = ""
@@ -190,6 +191,9 @@ function Get-GitInfoForDirectory {
             }
             elseif ($gitStatus -like "*Your branch is ahead*") {
                 $gitStatusMark = " " + "/" + " Status: " + "PUBLISH COMMITS"
+            }
+            elseif ($gitstatus -like "*Your branch is behind*") {
+                    $gitstatusMark = " " + "/" + " Status: " + "NEED TO PULL"
             }
             else {
                 $gitStatusMark = " " + "/" + " Status: " + "UP TO DATE"
