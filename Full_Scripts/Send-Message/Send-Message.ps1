@@ -83,10 +83,10 @@ progressLabel = Label to show which machine is processing on the prgoress bar fo
 grpListComp = The Send to Computers section of the tab
 autoEntListComp = Automatic list choices for the computer entry section Title
 labelAutoEntListComp = Instructions Label for the Auto List entry area
-checkBoxDunhamIP = Check box for the Dunham Default IP List
-checkBoxFillmoreIP = Check box for the Fillmore Default IP List
-checkBoxFIGIP = Check box for the FIG Default IP List
-checkBoxLEADIP = Check box for the LEAD Default IP List
+checkBoxBearIP = Check box for the Dunham Default IP List
+checkBoxPearIP = Check box for the Fillmore Default IP List
+checkBoxFigsIP = Check box for the FIG Default IP List
+checkBoxFireIP = Check box for the LEAD Default IP List
 buttonManEntClearComp = The Clear button in the Send to Computers sectio
 buttonManEntListComp = The Open button in the Send to Computers section
 textBoxManEntListComp = The Text box in the Send to Computers section
@@ -105,10 +105,10 @@ $processingLabel = New-Object System.Windows.Forms.Label
 $grpListComp = New-Object System.Windows.Forms.GroupBox
 $autoEntListComp = New-Object System.Windows.Forms.Label
 $labelAutoEntListComp = New-Object System.Windows.Forms.Label
-$checkBoxDunhamIP = New-Object System.Windows.Forms.CheckBox
-$checkBoxFillmoreIP = New-Object System.Windows.Forms.CheckBox
-$checkBoxFIGIP = New-Object System.Windows.Forms.CheckBox
-$checkBoxLEADIP = New-Object System.Windows.Forms.CheckBox
+$checkBoxBearIP = New-Object System.Windows.Forms.CheckBox
+$checkBoxPearIP = New-Object System.Windows.Forms.CheckBox
+$checkBoxFigsIP = New-Object System.Windows.Forms.CheckBox
+$checkBoxFireIP = New-Object System.Windows.Forms.CheckBox
 $buttonManEntClearComp = New-Object System.Windows.Forms.Button
 $buttonManEntListComp = New-Object System.Windows.Forms.Button
 $textBoxManEntListComp = New-Object System.Windows.Forms.RichTextBox
@@ -126,14 +126,14 @@ $initialFormWindowState = New-Object System.Windows.Forms.FormWindowState
 #region IP Lists
 
 # Single IP Ranges used to create the DunhamIPs Variable
-[array]$198IPlist = 30..254 | ForEach-Object {"192.168.198.$_"}
+[array]$155IPlist = 1..254 | ForEach-Object {"192.168.155.$_"}
 [array]$199IPlist = 1..254 | ForEach-Object {"192.161.199.$_"}
-[array]$205IPlist = 129..190 | ForEach-Object {"192.171.205.$_"}
+[array]$255IPlist = 1..254 | ForEach-Object {"192.171.205.$_"}
 # Build DunhamIPs Variable
-[array]$dunhamIPs = $198IPlist + $199IPlist + $205IPlist
-[array]$figIPs = 129..254 | ForEach-Object {"192.168.203.$_"}
-[array]$fillmoreIPs = 129..191 | ForEach-Object {"192.168.202.$_"}
-[array]$leadIPs = 193..254 | ForEach-Object {"192.168.202.$_"}
+[array]$bearIPs = $155IPlist + $199IPlist + $255IPlist
+[array]$figsIPs = 1..254 | ForEach-Object {"192.168.166.$_"}
+[array]$pearsIPs = 1..254 | ForEach-Object {"192.168.244.$_"}
+[array]$fireIPs = 1..254 | ForEach-Object {"192.168.250.$_"}
 [array]$targetList
 
 #endregion IP Lists
@@ -231,7 +231,7 @@ Function Send-Message ([string]$message, [array]$workstations) {
           }
           else {
                # Test for at least one computer has been entered
-               if ($workstations -or $checkBoxDunhamIP.checked -or $checkBoxFillmoreIP.Checked -or $checkBoxFIGIP.Checked -or $checkBoxLEADIP.Checked) {
+               if ($workstations -or $checkBoxBearIP.checked -or $checkBoxPearIP.Checked -or $checkBoxFigsIP.Checked -or $checkBoxFireIP.Checked) {
 
                     # Iterate through array of computer names
                     foreach ($workstation in $workstations) {
@@ -815,10 +815,10 @@ $buttonSend.add_Click( {
           if ($textBoxManEntListComp.TextLength -eq 0) {
                Send-Message -message $richTextBoxMsg.Text -workstations $Script:targetList
                $Script:targetList = @()
-               $checkBoxDunhamIP.Checked = $False
-               $checkBoxFillmoreIP.Checked = $False
-               $checkBoxFIGIP.Checked = $False
-               $checkBoxLEADIP.Checked = $False
+               $checkBoxBearIP.Checked = $False
+               $checkBoxPearIP.Checked = $False
+               $checkBoxFigsIP.Checked = $False
+               $checkBoxFireIP.Checked = $False
                $textBoxManEntListComp.clear()
                $processingLabel.hide()
           }
@@ -826,10 +826,10 @@ $buttonSend.add_Click( {
                Parse-Input -message $richTextBoxMsg.Text -workstations $textBoxManEntListComp.Text
                Send-Message -message $richTextBoxMsg.Text -workstations $Script:targetList
                $Script:targetList = @()
-               $checkBoxDunhamIP.Checked = $False
-               $checkBoxFillmoreIP.Checked = $False
-               $checkBoxFIGIP.Checked = $False
-               $checkBoxLEADIP.Checked = $False
+               $checkBoxBearIP.Checked = $False
+               $checkBoxPearIP.Checked = $False
+               $checkBoxFigsIP.Checked = $False
+               $checkBoxFireIP.Checked = $False
                $textBoxManEntListComp.Clear()
                $processingLabel.hide()
           }
@@ -955,104 +955,104 @@ $grpListComp.Controls.Add($labelAutoEntListComp)
 
 #-------------------------------------------
 
-# Adds Dunahm IP Standard list Checkbox to Auto Entry List Computers Group Area
-$checkBoxDunhamIP.Anchor = 13
-$checkBoxDunhamIP.DataBindings.DefaultDataSourceUpdateMode = 0
+# Adds Bear IP Standard list Checkbox to Auto Entry List Computers Group Area
+$checkBoxBearIP.Anchor = 13
+$checkBoxBearIP.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Point = New-Object System.Drawing.Point
 # Sets location of Checkbox
 $System_Drawing_Point.X = 14
 $System_Drawing_Point.Y = 60
-$checkBoxDunhamIP.Location = $System_Drawing_Point
-$checkBoxDunhamIP.Name = "checkBoxDunhamIP"
+$checkBoxBearIP.Location = $System_Drawing_Point
+$checkBoxBearIP.Name = "checkBoxBearIP"
 $System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 24
 $System_Drawing_Size.Width = 150
-$checkBoxDunhamIP.Size = $System_Drawing_Size
-$checkBoxDunhamIP.TabIndex = 9
+$checkBoxBearIP.Size = $System_Drawing_Size
+$checkBoxBearIP.TabIndex = 9
 # Sets Text of Checkbox
-$checkBoxDunhamIP.Text = "Dunham Workstations"
-$checkBoxDunhamIP.UseVisualStyleBackColor = $True
-$checkBoxDunhamIP.Add_Click( {
-          Set-TargetVariable -ipList $dunhamIPs -CheckBox $checkBoxDunhamIP
+$checkBoxBearIP.Text = "Bear Workstations"
+$checkBoxBearIP.UseVisualStyleBackColor = $True
+$checkBoxBearIP.Add_Click( {
+          Set-TargetVariable -ipList $bearIPs -CheckBox $checkBoxBearIP
      })
 
 # Adds Checkbox to Area
-$grpListComp.Controls.Add($checkBoxDunhamIP)
+$grpListComp.Controls.Add($checkBoxBearIP)
 
 #-------------------------------------------
 
-# Adds Fillmore IP Standard list Checkbox to Auto Entry List Computers Group Area
-$checkBoxFillmoreIP.Anchor = 13
-$checkBoxFillmoreIP.DataBindings.DefaultDataSourceUpdateMode = 0
+# Adds Pear IP Standard list Checkbox to Auto Entry List Computers Group Area
+$checkBoxPearIP.Anchor = 13
+$checkBoxPearIP.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Point = New-Object System.Drawing.Point
 # Sets location of Checkbox
 $System_Drawing_Point.X = 14
 $System_Drawing_Point.Y = 90
-$checkBoxFillmoreIP.Location = $System_Drawing_Point
-$checkBoxFillmoreIP.Name = "checkBoxFillmoreIP"
+$checkBoxPearIP.Location = $System_Drawing_Point
+$checkBoxPearIP.Name = "checkBoxPearIP"
 $System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 24
 $System_Drawing_Size.Width = 150
-$checkBoxFillmoreIP.Size = $System_Drawing_Size
-$checkBoxFillmoreIP.TabIndex = 9
+$checkBoxPearIP.Size = $System_Drawing_Size
+$checkBoxPearIP.TabIndex = 9
 # Sets Text of Checkbox
-$checkBoxFillmoreIP.Text = "Fillmore Workstations"
-$checkBoxFillmoreIP.UseVisualStyleBackColor = $True
-$checkBoxFillmoreIP.Add_Click( {
-          Set-TargetVariable -ipList $fillmoreIPs -CheckBox $checkBoxFillmoreIP
+$checkBoxPearIP.Text = "Pear Workstations"
+$checkBoxPearIP.UseVisualStyleBackColor = $True
+$checkBoxPearIP.Add_Click( {
+          Set-TargetVariable -ipList $pearsIPs -CheckBox $checkBoxPearIP
      })
 # Adds Checkbox to Area
-$grpListComp.Controls.Add($checkBoxFillmoreIP)
+$grpListComp.Controls.Add($checkBoxPearIP)
 
 #-------------------------------------------
 
-# Adds FIG IP Standard list Checkbox to Auto Entry List Computers Group Area
-$checkBoxFIGIP.Anchor = 13
-$checkBoxFIGIP.DataBindings.DefaultDataSourceUpdateMode = 0
+# Adds Figs IP Standard list Checkbox to Auto Entry List Computers Group Area
+$checkBoxFigsIP.Anchor = 13
+$checkBoxFigsIP.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Point = New-Object System.Drawing.Point
 # Sets location of Checkbox
 $System_Drawing_Point.X = 194
 $System_Drawing_Point.Y = 60
-$checkBoxFIGIP.Location = $System_Drawing_Point
-$checkBoxFIGIP.Name = "checkBoxFIGIP"
+$checkBoxFigsIP.Location = $System_Drawing_Point
+$checkBoxFigsIP.Name = "checkBoxFigsIP"
 $System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 24
 $System_Drawing_Size.Width = 150
-$checkBoxFIGIP.Size = $System_Drawing_Size
-$checkBoxFIGIP.TabIndex = 9
+$checkBoxFigsIP.Size = $System_Drawing_Size
+$checkBoxFigsIP.TabIndex = 9
 # Sets Text of Checkbox
-$checkBoxFIGIP.Text = "FIG Workstations"
-$checkBoxFIGIP.UseVisualStyleBackColor = $True
-$checkBoxFIGIP.Add_Click( {
-          Set-TargetVariable -ipList $figIPs -CheckBox $checkBoxFIGIP
+$checkBoxFigsIP.Text = "Figs Workstations"
+$checkBoxFigsIP.UseVisualStyleBackColor = $True
+$checkBoxFigsIP.Add_Click( {
+          Set-TargetVariable -ipList $figsIPs -CheckBox $checkBoxFigsIP
      })
 # Adds Checkbox to Area
-$grpListComp.Controls.Add($checkBoxFIGIP)
+$grpListComp.Controls.Add($checkBoxFigsIP)
 
 #-------------------------------------------
 
-# Adds Letterkenny IP Standard list Checkbox to Auto Entry List Computers Group Area
-$checkBoxLEADIP.Anchor = 13
-$checkBoxLEADIP.DataBindings.DefaultDataSourceUpdateMode = 0
+# Adds Fire IP Standard list Checkbox to Auto Entry List Computers Group Area
+$checkBoxFireIP.Anchor = 13
+$checkBoxFireIP.DataBindings.DefaultDataSourceUpdateMode = 0
 $System_Drawing_Point = New-Object System.Drawing.Point
 # Sets location of Checkbox
 $System_Drawing_Point.X = 194
 $System_Drawing_Point.Y = 90
-$checkBoxLEADIP.Location = $System_Drawing_Point
-$checkBoxLEADIP.Name = "checkBoxLEADIP"
+$checkBoxFireIP.Location = $System_Drawing_Point
+$checkBoxFireIP.Name = "checkBoxFireIP"
 $System_Drawing_Size = New-Object System.Drawing.Size
 $System_Drawing_Size.Height = 24
 $System_Drawing_Size.Width = 200
-$checkBoxLEADIP.Size = $System_Drawing_Size
-$checkBoxLEADIP.TabIndex = 9
+$checkBoxFireIP.Size = $System_Drawing_Size
+$checkBoxFireIP.TabIndex = 9
 # Sets Text of Checkbox
-$checkBoxLEADIP.Text = "Letterkenny Workstations"
-$checkBoxLEADIP.UseVisualStyleBackColor = $True
-$checkBoxLEADIP.Add_Click( {
-          Set-TargetVariable -ipList $leadIPs -CheckBox $checkBoxLEADIP
+$checkBoxFireIP.Text = "Fire Workstations"
+$checkBoxFireIP.UseVisualStyleBackColor = $True
+$checkBoxFireIP.Add_Click( {
+          Set-TargetVariable -ipList $fireIPs -CheckBox $checkBoxFireIP
      })
 # Adds Checkbox to Area
-$grpListComp.Controls.Add($checkBoxLEADIP)
+$grpListComp.Controls.Add($checkBoxFireIP)
 
 #endregion Auto Entry list Computers Group Area
 
