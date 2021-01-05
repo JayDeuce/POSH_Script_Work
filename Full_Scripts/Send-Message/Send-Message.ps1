@@ -83,10 +83,10 @@ progressLabel = Label to show which machine is processing on the prgoress bar fo
 grpListComp = The Send to Computers section of the tab
 autoEntListComp = Automatic list choices for the computer entry section Title
 labelAutoEntListComp = Instructions Label for the Auto List entry area
-checkBoxBearIP = Check box for the Dunham Default IP List
-checkBoxPearIP = Check box for the Fillmore Default IP List
-checkBoxFigsIP = Check box for the FIG Default IP List
-checkBoxFireIP = Check box for the LEAD Default IP List
+checkBoxBearIP = Check box for the Bear Default IP List
+checkBoxPearIP = Check box for the Pear Default IP List
+checkBoxFigsIP = Check box for the Figs Default IP List
+checkBoxFireIP = Check box for the Fire Default IP List
 buttonManEntClearComp = The Clear button in the Send to Computers sectio
 buttonManEntListComp = The Open button in the Send to Computers section
 textBoxManEntListComp = The Text box in the Send to Computers section
@@ -125,11 +125,11 @@ $initialFormWindowState = New-Object System.Windows.Forms.FormWindowState
 
 #region IP Lists
 
-# Single IP Ranges used to create the DunhamIPs Variable
+# Single IP Ranges used to create the IPs Variable
 [array]$155IPlist = 1..254 | ForEach-Object {"192.168.155.$_"}
 [array]$199IPlist = 1..254 | ForEach-Object {"192.161.199.$_"}
 [array]$255IPlist = 1..254 | ForEach-Object {"192.171.205.$_"}
-# Build DunhamIPs Variable
+# Build IPs Variable
 [array]$bearIPs = $155IPlist + $199IPlist + $255IPlist
 [array]$figsIPs = 1..254 | ForEach-Object {"192.168.166.$_"}
 [array]$pearsIPs = 1..254 | ForEach-Object {"192.168.244.$_"}
