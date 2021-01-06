@@ -250,6 +250,31 @@ function Show-MyAliasList {
     }
 }
 # End Show-MyAliasList Function
+#-----------------------------------------------------------------------
+# Start Git Functions
+function Get-GitStatus {
+    git status
+}
+function set-GitAddAll {
+    git add -A
+}
+function Set-GitCommit  {
+    param (
+        [string]$message
+    )
+    git commit -m $message
+}
+function Set-GitPush {
+    git push
+}
+function Get-GitPull {
+    git pull
+}
+function Get-GitLog {
+    git log
+}
+
+
 
 #endregion
 
@@ -298,6 +323,18 @@ Set-Alias repos Set-ReposPath
 Set-Alias rdp Start-RDP
 Set-Alias staTr Start-ConsoleTranscript
 Set-Alias stoTr Stop-Transcript
+
+# Git Aliases
+if ("C:\Program Files\Git\cmd\git.exe"){
+    Set-Alias gits Get-GitStatus
+    Set-Alias gitpl Get-GitPull
+    Set-Alias gitaa set-GitAddAll
+    Set-Alias gitcm Set-GitCommit
+    Set-Alias gitpu Set-GitPush
+    Set-Alias gitl  Get-GitLog
+}
+
+
 
 #endregion
 
