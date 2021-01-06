@@ -68,7 +68,7 @@ function deleteOldFiles {
      Get-ChildItem -Path $pathRoot -Recurse -Force |
           Select-Object FullName, PSISContainer |
           Sort-Object -descending -property FullName |
-          Where-Object { $_.PSIsContainer -and (Get-ChildItem -Path $_.FullName -Recurse -Force | Where-Object { !$_.PSIsContainer }) -eq $null } |
+          Where-Object { $_.PSIsContainer -and $null -eq (Get-ChildItem -Path $_.FullName -Recurse -Force | Where-Object { !$_.PSIsContainer }) } |
           ForEach-Object {
                Write-Output "Deleted $($_.FullName)"
                Remove-Item $_.FullName -Force -Recurse

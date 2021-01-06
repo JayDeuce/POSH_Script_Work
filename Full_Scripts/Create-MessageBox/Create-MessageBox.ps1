@@ -9,7 +9,7 @@
 .PARAMETER  message
     (Required, No Default)
 
-    This Parametewr is the message the popup will show
+    This Parameter is the message the popup will show
 
 .PARAMETER  title
     (Required, No Default)

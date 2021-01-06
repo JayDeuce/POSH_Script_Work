@@ -108,7 +108,7 @@ PROCESS {
                          MinorVers = $result.minor
                     }
                     # If PS Remoting error set object to report it.
-                    If ($result.major -eq $null) {
+                    If ($null -eq $result.major) {
                          $obj.MajorVers = "[!] Failed to connect"
                          $obj.MinorVers = "PowerShell Remoting Not configured"
                     }

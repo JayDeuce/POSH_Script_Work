@@ -65,7 +65,7 @@ try {
           $name = $item.username
           $descrip = $item.description
           $vlan = $item.vlan
-          if ($name -ne $null -and $name -ne '') {
+          if ($null -ne $name -and $name -ne '') {
                format-name($name)
                if ($format -eq $true) {
                     if (Get-WmiObject Win32_UserAccount -Filter "LocalAccount='True' and Name='$name'") {

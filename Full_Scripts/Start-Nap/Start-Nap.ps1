@@ -139,7 +139,7 @@ If ($Voice) {
      Add-Type -AssemblyName System.speech
      $speech = New-Object System.Speech.Synthesis.SpeechSynthesizer
      # Find the matching voice object
-     $selected = [System.Speech.Synthesis.SpeechSynthesizer]::new().GetInstalledVoices().voiceinfo.Name | where {$_ -match $voice}
+     $selected = [System.Speech.Synthesis.SpeechSynthesizer]::new().GetInstalledVoices().voiceinfo.Name | Where-Object {$_ -match $voice}
      $speech.SelectVoice($selected)
      $speech.Rate = $Rate
      $speech.SpeakAsync($message) | Out-Null
@@ -149,5 +149,3 @@ If ($Voice) {
 else {
      Write-Host "`n$Message" -ForegroundColor Yellow
 }
-
-

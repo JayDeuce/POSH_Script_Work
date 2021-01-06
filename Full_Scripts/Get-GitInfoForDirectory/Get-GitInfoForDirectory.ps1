@@ -53,7 +53,7 @@
     Name: Get-GitInfoForDirectory
     Author: Jonathan Durant
     Version: 1.1
-    DateUpdated: 20 June 2017
+    DateUpdated: 6 Jan 2021
 
 .INPUTS
     NONE
@@ -102,42 +102,45 @@ Requires "Git For Windows" -> https://git-scm.com/download/win
 
 function Get-GitInfoForDirectory {
 
-     param (
-     )
+    param (
+    )
 
-     begin {
-          $gitBranch = (git branch)
-          $gitStatus = (git status)
-          $gitTextLine = ""
-     }
+    begin {
+        git remote update | Out-Null
+        $gitBranch = (git branch)
+        $gitStatus = (git status)
+        $gitTextLine = ""
+    }
 
-     process {
-          try {
-               foreach ($branch in $gitBranch) {
-                    if ($branch -match '^\* (.*)') {
-                         # Funds the current Branch Name by looking for the asterix character
-                         $gitBranchName = 'Git Repo - Branch: ' + $matches[1].ToUpper()
-                    }
-               }
+    process {
+        try {
+            foreach ($branch in $gitBranch) {
+                if ($branch -match "^\* (.*)") {
+                    $gitBranchName = "Git Repo - Branch: " + $matches[1].ToUpper()
+                }
+            }
 
-               if (!($gitStatus -like '*working tree clean*')) {
-                    $gitStatusMark = ' ' + '/' + ' Status: ' + 'NEEDS UPDATING'
-               }
-               elseif ($gitStatus -like '*Your branch is ahead*') {
-                    $gitStatusMark = ' ' + '/' + ' Status: ' + 'PUBLISH COMMITS'
-               }
-               else {
-                    $gitStatusMark = ' ' + '/' + ' Status: ' + 'UP TO DATE'
-               }
-          }
-          catch {
-          }
-     }
+            if (!($gitStatus -like "*working tree clean*")) {
+                $gitStatusMark = " " + "/" + " Status: " + "NEEDS UPDATING"
+            }
+            elseif ($gitStatus -like "*Your branch is ahead*") {
+                $gitStatusMark = " " + "/" + " Status: " + "PUBLISH COMMITS"
+            }
+            elseif ($gitstatus -like "*Your branch is behind*") {
+                $gitstatusMark = " " + "/" + " Status: " + "NEED TO PULL"
+            }
+            else {
+                $gitStatusMark = " " + "/" + " Status: " + "UP TO DATE"
+            }
+        }
+        catch {
+        }
+    }
 
-     end {
-          if ($gitBranch) {
-               $gitTextLine = ' {' + $gitBranchName + $gitStatusMark + '}'
-          }
-          return $gitTextLine
-     }
+    end {
+        if ($gitBranch) {
+            $gitTextLine = "{" + $gitBranchName + $gitStatusMark + "}"
+        }
+        return $gitTextLine
+    }
 }

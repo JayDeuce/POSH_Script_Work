@@ -94,14 +94,14 @@ Param (
 )
 
 Begin {
-     function Check-IfNotPathCreate([string]$FolderPath) {
+     function Test-IfNotPathCreate([string]$FolderPath) {
           # Check the past folder path, if is does not exist create it.
           if (!(Test-Path -Path $FolderPath)) {
                New-Item -Path $FolderPath -ItemType directory | Out-Null
           }
      }
 
-     Check-IfNotPathCreate($resultsFileOutPath)
+     Test-IfNotPathCreate($resultsFileOutPath)
 }
 
 Process {
@@ -136,4 +136,3 @@ Process {
           Write-Host "The $computer is not pingable"
      }
 }
-

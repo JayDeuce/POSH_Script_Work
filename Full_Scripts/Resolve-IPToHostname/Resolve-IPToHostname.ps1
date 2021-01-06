@@ -151,7 +151,7 @@ Process {
 }
 
 End {
-     if ($results -ne $null) {
+     if ($null -ne $results) {
           # Check which report to create and create it.
           If ($textReport -eq $true) {
                $results | Out-File -FilePath "$reportPath\$reportName.txt"
