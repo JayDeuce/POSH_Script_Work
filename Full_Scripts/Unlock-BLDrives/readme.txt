@@ -4,4 +4,4 @@
 
 When the computer logs in your account it will find the Bitlockered drives and ask for the password to unlock them. 
 
-Note: This script expects all BL storage drives to have the same password.
+Note: This script expects all BL storage drives to have the same password, run it manually for drives using differnt passwords.
