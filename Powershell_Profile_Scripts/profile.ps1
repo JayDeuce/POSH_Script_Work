@@ -182,6 +182,7 @@ function Get-GitInfoForDirectory {
 
     begin {
         git remote update | Out-Null
+        $gitRepo = ((Split-Path -Leaf (git remote get-url origin)).Split(".")[0]).ToUpper()
         $gitBranch = (git branch)
         $gitStatus = (git status)
         $gitTextLine = ""
@@ -191,7 +192,7 @@ function Get-GitInfoForDirectory {
         try {
             foreach ($branch in $gitBranch) {
                 if ($branch -match "^\* (.*)") {
-                    $gitBranchName = "Git Repo - Branch: " + $matches[1].ToUpper()
+                    $gitRepoBranchName = "Repo: " + $gitRepo + " - Branch: " + $matches[1].ToUpper()
                 }
             }
 
@@ -209,12 +210,13 @@ function Get-GitInfoForDirectory {
             }
         }
         catch {
+
         }
     }
 
     end {
         if ($gitBranch) {
-            $gitTextLine = "{" + $gitBranchName + $gitStatusMark + "}"
+            $gitTextLine = "{" + $gitRepoBranchName + $gitStatusMark + "}"
         }
         return $gitTextLine
     }
@@ -246,7 +248,8 @@ function Show-MyAliasList {
         gh      Get-Help            repos   Set-ReposPath
         gtd     Set-DesktopPath     staTr   Start-ConsoleTranscript
         notepad Out-Notepad         stoTr   Stop-Transcript
-        psv     Get-PSVersion
+        psv     Get-PSVersion       sma     Show-MyAliasList
+                                    smga    Show-MyGitAlias
     }
 }
 # End Show-MyAliasList Function
@@ -258,8 +261,9 @@ function Get-GitStatus {
 function set-GitAddAll {
     git add -A
 }
-function Set-GitCommit  {
+function Set-GitCommitMessage  {
     param (
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [string]$message
     )
     git commit -m $message
@@ -272,6 +276,21 @@ function Get-GitPull {
 }
 function Get-GitLog {
     git log
+}
+function Get-GitFetch {
+    git fetch
+}
+
+function Show-MyGitAlias {
+    Write-Output {
+        MY GIT ALIASES
+
+        gits   Get-GitStatus          gitpl Get-GitPull
+        gitaa  set-GitAddAll          gitpu Set-GitPush
+        gitcm  Set-GitCommitMessage   gitl  Get-GitLog
+        gitf   Get-GitFetch
+    }
+
 }
 
 
@@ -323,19 +342,19 @@ Set-Alias repos Set-ReposPath
 Set-Alias rdp Start-RDP
 Set-Alias staTr Start-ConsoleTranscript
 Set-Alias stoTr Stop-Transcript
+Set-Alias sma Show-MyAliasList
+Set-Alias smga Show-MyGitAlias
 
 # Git Aliases
 if ("C:\Program Files\Git\cmd\git.exe"){
     Set-Alias gits Get-GitStatus
     Set-Alias gitpl Get-GitPull
     Set-Alias gitaa set-GitAddAll
-    Set-Alias gitcm Set-GitCommit
+    Set-Alias gitcm Set-GitCommitMessage
     Set-Alias gitpu Set-GitPush
     Set-Alias gitl  Get-GitLog
+    Set-Alias gitf Get-GitFetch
 }
-
-
-
 #endregion
 
 #=======================================================================
