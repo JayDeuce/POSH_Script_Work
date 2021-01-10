@@ -69,7 +69,6 @@ function Test-IfNotPathCreate([string]$FolderPath) {
 #-----------------------------------------------------------------------
 # Start-ConsoleTranscript Function
 function Start-ConsoleTranscript {
-
     # Check if I want to start a Transcript, Used if trying out commands
     [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic") | Out-Null
     [string]$tranYN = [Microsoft.VisualBasic.Interaction]::MsgBox("Would you Like to Start a Transcript?", "YesNo, DefaultButton2", "Start Transcript?")
@@ -102,21 +101,38 @@ function Start-ConsoleTranscript {
 #-----------------------------------------------------------------------
 # Start-RDP Function
 function Start-RDP {
+    <#
+    .SYNOPSIS
+        Start Remote Desktop Protocol
+    .PARAMETER ip
+        The IP or network name of the remote machine
+    .EXAMPLE
+        "192.168.1.2" | rdp
+    .EXAMPLE
+        rdp "192.168.1.2"
+    #>
     param (
-        [string]$ip
+        [Parameter(Mandatory = $false,
+            ValueFromPipeline = $true)]
+        [string]$IP
     )
-    Start-Process -FilePath mstsc -ArgumentList "/admin /v:$ip"
+    process {
+        Start-Process -FilePath mstsc -ArgumentList "/admin /v:$ip"
+    }
 }
 # End Start-RDP Function
 #-----------------------------------------------------------------------
 # Start-Edge Function
 function Start-Edge {
     param (
+        [Parameter(Mandatory = $false,
+            ValueFromPipeline = $true)]
         [string]$webAddress
     )
     if ($webAddress -eq "") {
         Start-Process -FilePath "msedge.exe"
     }
+
     else {
         Start-Process -FilePath "msedge.exe" $webAddress
     }
@@ -129,8 +145,8 @@ function Set-DesktopPath {
 }
 # End Set-DesktopPath Function
 #-----------------------------------------------------------------------
-# Set-ReposPath Function
-function Set-ReposPath {
+# Set-RepoPath Function
+function Set-RepoPath {
     if ((Test-Path -Path F:\Coding)) {
         Set-Location "F:\Coding\"
     }
@@ -139,35 +155,79 @@ function Set-ReposPath {
     }
 
 }
-# End Set-ReposPath Function
+# End Set-RepoPath Function
 #-----------------------------------------------------------------------
 # Out-Notepad Function
-# Send pipeline data to Notedpad, does not open files
+# Send pipeline data to Notepad, does not open files
 function Out-Notepad {
+    <#
+    .SYNOPSIS
+        Send object as string to Notepad App
+
+    .DESCRIPTION
+        This function takes the parameter object, converts
+        it to a formatted string, and sends it to a notepad
+        file for easier viewing and manipulation of output.
+        (Can also be sent as pipline output by sending through
+        Out-String first.)
+
+    .PARAMETER object
+        (Required, No default)
+
+        THis parameter is the object data you wish to convert and send to notepad
+
+        Examples: $object
+                  (get-process)
+                  "text in a sentence"
+                  "Textword"
+
+    .EXAMPLE
+        Out-Notepad $object
+
+        Takes the $object (Can be anything) and sends it to notepad
+
+    .EXAMPLE
+        Out-Notepad (Get-Process)
+
+        Runs the command Get-process and sends it to notepad.
+
+    .EXAMPLE
+        $object | Out-String | Out-Notepad
+
+        Takes the $object Variable, converts it to string and sends it to notepad.
+
+    .EXAMPLE
+        (Get-Process) | Out-String | Out-Notepad
+
+        Runs the command Get-process, converts it to string and sends it to notepad.
+    #>
     param (
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true,
+            ValueFromPipeline = $true)]
         [Object][AllowEmptyString()]$Object
     )
 
     begin {
         [Int]$Width = 150
         $al = New-Object System.Collections.ArrayList
-        $sig = '
-              [DllImport("user32.dll", EntryPoint = "FindWindowEx")]public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
-              [DllImport("User32.dll")]public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
-            '
     }
 
     Process {
         $null = $al.Add($Object)
         $text = $al | Format-Table -AutoSize -Wrap | Out-String -Width $Width
-        $process = Start-Process notepad -PassThru
-        $null = $process.WaitForInputIdle()
-        $type = Add-Type -MemberDefinition $sig -Name APISendMessage2 -PassThru
-        $hwnd = $process.MainWindowHandle
     }
 
     end {
+        $process = Start-Process notepad -PassThru
+        $null = $process.WaitForInputIdle()
+
+        $sig = '
+              [DllImport("user32.dll", EntryPoint = "FindWindowEx")]public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+              [DllImport("User32.dll")]public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
+            '
+        $type = Add-Type -MemberDefinition $sig -Name APISendMessage2 -PassThru
+        $hwnd = $process.MainWindowHandle
+
         [IntPtr]$child = $type::FindWindowEx($hwnd, [IntPtr]::Zero, "Edit", $null)
         $null = $type::SendMessage($child, 0x000C, 0, $text)
     }
@@ -176,66 +236,47 @@ function Out-Notepad {
 #-----------------------------------------------------------------------
 # Start Get-GitInfoForDirectory Function
 function Get-GitInfoForDirectory {
-
-    param (
-    )
-
-    begin {
-        git remote update | Out-Null
-        $gitRepo = ((Split-Path -Leaf (git remote get-url origin)).Split(".")[0]).ToUpper()
-        $gitBranch = (git branch)
-        $gitStatus = (git status)
-        $gitTextLine = ""
-    }
-
-    process {
-        try {
-            foreach ($branch in $gitBranch) {
-                if ($branch -match "^\* (.*)") {
-                    $gitRepoBranchName = "Repo: " + $gitRepo + " - Branch: " + $matches[1].ToUpper()
-                }
-            }
-
-            if (!($gitStatus -like "*working tree clean*")) {
-                $gitStatusMark = " " + "/" + " Status: " + "NEEDS UPDATING"
-            }
-            elseif ($gitStatus -like "*Your branch is ahead*") {
-                $gitStatusMark = " " + "/" + " Status: " + "PUBLISH COMMITS"
-            }
-            elseif ($gitstatus -like "*Your branch is behind*") {
-                $gitstatusMark = " " + "/" + " Status: " + "NEED TO PULL"
-            }
-            else {
-                $gitStatusMark = " " + "/" + " Status: " + "UP TO DATE"
+    # Initialization of Variables
+    git remote update | Out-Null
+    $gitRepo = ((Split-Path -Leaf (git remote get-url origin)).Split(".")[0]).ToUpper()
+    $gitBranch = (git branch)
+    $gitStatus = (git status)
+    $gitTextLine = ""
+    # Gather Data on Repo and build Variables
+    try {
+        foreach ($branch in $gitBranch) {
+            if ($branch -match "^\* (.*)") {
+                $gitRepoBranchName = "Repo: " + $gitRepo + " - Branch: " + $matches[1].ToUpper()
             }
         }
-        catch {
-
+        if (!($gitStatus -like "*working tree clean*")) {
+            $gitStatusMark = " " + "/" + " Status: " + "NEEDS UPDATING"
+        }
+        elseif ($gitStatus -like "*Your branch is ahead*") {
+            $gitStatusMark = " " + "/" + " Status: " + "PUBLISH COMMITS"
+        }
+        elseif ($gitstatus -like "*Your branch is behind*") {
+            $gitstatusMark = " " + "/" + " Status: " + "NEED TO PULL"
+        }
+        else {
+            $gitStatusMark = " " + "/" + " Status: " + "UP TO DATE"
         }
     }
+    catch {
 
-    end {
-        if ($gitBranch) {
-            $gitTextLine = "{" + $gitRepoBranchName + $gitStatusMark + "}"
-        }
-        return $gitTextLine
     }
+    # Return proper git text line for prompt
+    if ($gitBranch) {
+        $gitTextLine = "{" + $gitRepoBranchName + $gitStatusMark + "}"
+    }
+    return $gitTextLine
 }
 # End Get-GitInfoForDirectory Function
 #-----------------------------------------------------------------------
 # Start Get-PSVersion Function
 function Get-PSVersion {
-    Param (
-    )
-    Begin {
-        $version = $PSVersionTable
-    }
-    Process {
-        Write-Host ($version | Format-Table | Out-String)
-    }
-    End {
-
-    }
+    $version = $PSVersionTable
+    Write-Host ($version | Format-Table | Out-String)
 }
 # End Get-PSVersion Function
 #-----------------------------------------------------------------------
@@ -245,11 +286,11 @@ function Show-MyAliasList {
         MY CUSTOM ALIASES/FUNCTIONS
 
         edge    Start-Edge          rdp     Start-RDP
-        gh      Get-Help            repos   Set-ReposPath
+        gh      Get-Help            repo    Set-RepoPath
         gtd     Set-DesktopPath     staTr   Start-ConsoleTranscript
         notepad Out-Notepad         stoTr   Stop-Transcript
         psv     Get-PSVersion       sma     Show-MyAliasList
-                                    smga    Show-MyGitAlias
+        smga    Show-MyGitAlias
     }
 }
 # End Show-MyAliasList Function
@@ -261,7 +302,7 @@ function Get-GitStatus {
 function set-GitAddAll {
     git add -A
 }
-function Set-GitCommitMessage  {
+function Set-GitCommitMessage {
     param (
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [string]$message
@@ -280,7 +321,6 @@ function Get-GitLog {
 function Get-GitFetch {
     git fetch
 }
-
 function Show-MyGitAlias {
     Write-Output {
         MY GIT ALIASES
@@ -292,8 +332,6 @@ function Show-MyGitAlias {
     }
 
 }
-
-
 
 #endregion
 
@@ -338,7 +376,7 @@ Set-Alias gtd Set-DesktopPath
 Set-Alias ma Show-MyAliasList
 Set-Alias notepad Out-Notepad
 Set-Alias psv Get-PSVersion
-Set-Alias repos Set-ReposPath
+Set-Alias repo Set-RepoPath
 Set-Alias rdp Start-RDP
 Set-Alias staTr Start-ConsoleTranscript
 Set-Alias stoTr Stop-Transcript
@@ -346,7 +384,7 @@ Set-Alias sma Show-MyAliasList
 Set-Alias smga Show-MyGitAlias
 
 # Git Aliases
-if ("C:\Program Files\Git\cmd\git.exe"){
+if ("C:\Program Files\Git\cmd\git.exe") {
     Set-Alias gits Get-GitStatus
     Set-Alias gitpl Get-GitPull
     Set-Alias gitaa set-GitAddAll
