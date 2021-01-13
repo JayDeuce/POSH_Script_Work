@@ -192,12 +192,12 @@ function Out-Notepad {
         Runs the command Get-process and sends it to notepad.
 
     .EXAMPLE
-        $object | Out-String | Out-Notepad
+        $object | Out-Notepad
 
         Takes the $object Variable, converts it to string and sends it to notepad.
 
     .EXAMPLE
-        (Get-Process) | Out-String | Out-Notepad
+        (Get-Process) | Out-Notepad
 
         Runs the command Get-process, converts it to string and sends it to notepad.
     #>
