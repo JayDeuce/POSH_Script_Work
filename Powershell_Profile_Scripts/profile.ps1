@@ -247,7 +247,7 @@ function Out-Notepad {
 # Start Get-GitInfoForDirectory Function
 function Get-GitInfoForDirectory {
     # Initialization of Variables
-    if (($null -eq $timeset) -or (($timeset).minutes -le (Get-date).TimeOfDay.Minutes - 2)) {
+    if (($null -eq $timeset) -or (($timeset).minutes -le (Get-date).TimeOfDay.Minutes - 5)) {
         git remote update | Out-Null
         $script:timeset = (Get-Date).TimeOfDay
     }
@@ -303,7 +303,7 @@ function Show-MyAliasList {
         gtd     Set-DesktopPath     staTr   Start-ConsoleTranscript
         notepad Out-Notepad         stoTr   Stop-Transcript
         psv     Get-PSVersion       sma     Show-MyAliasList
-        smga    Show-MyGitAlias *When Git Installed*
+                                    smga    Show-MyGitAlias *When Git Installed*
     }
 }
 # End Show-MyAliasList Function
