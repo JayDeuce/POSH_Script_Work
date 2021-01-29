@@ -34,6 +34,16 @@ $colors.WarningBackgroundColor = "darkgreen"
 $colors.ErrorForegroundColor = "white"
 $colors.ErrorBackgroundColor = "red"
 
+
+
+#endregion
+
+#=======================================================================
+
+#region Script Variables
+
+$timeset = $null # For use in Get-GitInfoForDirectory
+
 #endregion
 
 #=======================================================================
@@ -237,7 +247,10 @@ function Out-Notepad {
 # Start Get-GitInfoForDirectory Function
 function Get-GitInfoForDirectory {
     # Initialization of Variables
-    git remote update | Out-Null
+    if (($null -eq $timeset) -or (($timeset).minutes -le (Get-date).TimeOfDay.Minutes - 2)) {
+        git remote update | Out-Null
+        $script:timeset = (Get-Date).TimeOfDay
+    }
     $gitRepo = ((Split-Path -Leaf (git remote get-url origin)).Split(".")[0]).ToUpper()
     $gitBranch = (git branch)
     $gitStatus = (git status)
@@ -290,7 +303,7 @@ function Show-MyAliasList {
         gtd     Set-DesktopPath     staTr   Start-ConsoleTranscript
         notepad Out-Notepad         stoTr   Stop-Transcript
         psv     Get-PSVersion       sma     Show-MyAliasList
-        smga    Show-MyGitAlias
+        smga    Show-MyGitAlias *When Git Installed*
     }
 }
 # End Show-MyAliasList Function
@@ -298,6 +311,14 @@ function Show-MyAliasList {
 # Start Git Functions
 function Get-GitStatus {
     git status
+}
+function set-GitAdd {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [string]$filename
+    )
+    git add $filename
 }
 function set-GitAddAll {
     git add -A
@@ -321,14 +342,17 @@ function Get-GitLog {
 function Get-GitFetch {
     git fetch
 }
+function Get-GitDiff {
+    git diff
+}
 function Show-MyGitAlias {
     Write-Output {
         MY GIT ALIASES
 
-        gits   Get-GitStatus          gitpl Get-GitPull
-        gitaa  set-GitAddAll          gitpu Set-GitPush
-        gitcm  Set-GitCommitMessage   gitl  Get-GitLog
-        gitf   Get-GitFetch
+        gits   Get-GitStatus          gitf   Get-GitFetch
+        gita   Set-GitAdd             gitpl  Get-GitPull
+        gitaa  set-GitAddAll          gitpu  Set-GitPush
+        gitcm  Set-GitCommitMessage   gitl   Get-GitLog
     }
 
 }
@@ -381,13 +405,14 @@ Set-Alias rdp Start-RDP
 Set-Alias staTr Start-ConsoleTranscript
 Set-Alias stoTr Stop-Transcript
 Set-Alias sma Show-MyAliasList
-Set-Alias smga Show-MyGitAlias
 
 # Git Aliases
 if ("C:\Program Files\Git\cmd\git.exe") {
+    Set-Alias smga Show-MyGitAlias
     Set-Alias gits Get-GitStatus
     Set-Alias gitpl Get-GitPull
-    Set-Alias gitaa set-GitAddAll
+    Set-Alias gita  Set-GitAdd
+    Set-Alias gitaa Set-GitAddAll
     Set-Alias gitcm Set-GitCommitMessage
     Set-Alias gitpu Set-GitPush
     Set-Alias gitl  Get-GitLog
