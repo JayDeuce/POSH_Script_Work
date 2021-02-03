@@ -330,6 +330,9 @@ function Set-GitCommitMessage {
     )
     git commit -m $message
 }
+function Set-GitCommitAmend {
+    git commit --amend
+}
 function Set-GitPush {
     git push
 }
@@ -353,6 +356,7 @@ function Show-MyGitAlias {
         gita   Set-GitAdd             gitpl  Get-GitPull
         gitaa  set-GitAddAll          gitpu  Set-GitPush
         gitcm  Set-GitCommitMessage   gitl   Get-GitLog
+        gitcam Set-GitCommitAmend
     }
 
 }
@@ -414,6 +418,7 @@ if ("C:\Program Files\Git\cmd\git.exe") {
     Set-Alias gita  Set-GitAdd
     Set-Alias gitaa Set-GitAddAll
     Set-Alias gitcm Set-GitCommitMessage
+    Set-Alias gitcam Set-GitCommitAmend
     Set-Alias gitpu Set-GitPush
     Set-Alias gitl  Get-GitLog
     Set-Alias gitf Get-GitFetch
