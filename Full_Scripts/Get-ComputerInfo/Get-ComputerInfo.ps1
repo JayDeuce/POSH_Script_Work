@@ -46,8 +46,8 @@
 .PARAMETER  csvReportName
      (Default = "Get-ComputerInfo")
 
-     The name you want the csv report to be called, Script automtically adds Date and time to end of filename.
-     Defaults to "Get-ComputerInfo-2020-04-13_10:31:41" (Date/Time change based on Sysem Date Variable when ran)
+     The name you want the csv report to be called, Script automatically adds Date and time to end of filename.
+     Defaults to "Get-ComputerInfo-2020-04-13_10:31:41" (Date/Time change based on System Date Variable when ran)
 
 .PARAMETER errorLogPath
      (Default = "$ENV:USERPROFILE\Documents\Scripts\Logs")
@@ -90,7 +90,7 @@
      .\Get-ComputerInfo.ps1 -xlsxOutput
 
      Description:
-          Gathers info on the local machine and reports toand XLXS (Excel) File in the standard folder locations.
+          Gathers info on the local machine and reports to and XLXS (Excel) File in the standard folder locations.
           The error log is also created at the default location.
 
 
@@ -278,7 +278,7 @@ PROCESS {
                $cimSession = New-CimSession -ComputerName $pc -ErrorAction Stop
           }
           catch {
-               $logMessage = "$formattedDate - $($pc.ToUpper()): CIM failed to connect, usaully due to DNS issues or you do not have Administrator rights to the remote machine"
+               $logMessage = "$formattedDate - $($pc.ToUpper()): CIM failed to connect, usually due to DNS issues or you do not have Administrator rights to the remote machine"
                Write-Host $logMessage
                Write-ToLogFile($logMessage)
                Add-Content "$errorLogPath\fail_list.txt" $pc
@@ -374,7 +374,7 @@ PROCESS {
           $actMacAddr = (@($netIpAddress.MACAddress) -join ", ")
           $allMacAddr = (@($netAdapter.MACAddress) -join ", ")
 
-          # Create new custom object and add all porperties
+          # Create new custom object and add all properties
           $sysInfo = New-Object -TypeName PSObject
           $sysInfo | Add-Member -MemberType NoteProperty -Name "PC Name" -Value $pcName
           $sysInfo | Add-Member -MemberType NoteProperty -Name "PC Serial #" -Value $pcSerial
